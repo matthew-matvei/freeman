@@ -1,6 +1,7 @@
 const path = require("path");
 
 module.exports = {
+    entry: "./scripts/main",
     resolve: {
         extensions: [
             ".ts",

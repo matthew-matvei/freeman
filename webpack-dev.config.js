@@ -3,9 +3,9 @@ const merge = require("webpack-merge");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const baseConfig = require("./webpack-base.config");
+const extractSass = new ExtractTextPlugin("out.css");
 
 module.exports = merge(baseConfig, {
-    entry: "./scripts/main",
     output: {
         path: __dirname + "/app",
         filename: "out.js"
@@ -14,20 +14,21 @@ module.exports = merge(baseConfig, {
     module: {
         loaders: [
             {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract({ fallback: "style-loader", use: "css-loader" })
-            },
-            {
-                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: "url-loader?limit=10000&mimetype=application/font-woff"
-            },
-            {
-                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: "file-loader"
+                test: /\.scss$/,
+                use: extractSass.extract({
+                    use: [
+                        {
+                            loader: "css-loader"
+                        },
+                        {
+                            loader: "sass-loader"
+                        }
+                    ]
+                })
             }
         ]
     },
     plugins: [
-        new ExtractTextPlugin("out.css")
+        extractSass
     ]
 });

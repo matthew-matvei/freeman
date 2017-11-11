@@ -30,8 +30,12 @@
   },
   "dependencies": {
     "awesome-typescript-loader": "^3.3.0",
+    "css-loader": "^0.28.7",
     "electron": "^1.7.9",
     "extract-text-webpack-plugin": "^3.0.2",
+    "node-sass": "^4.6.0",
+    "react-split-pane": "^0.1.68",
+    "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.3",
     "tslib": "^1.8.0",
     "typescript": "^2.6.1",
