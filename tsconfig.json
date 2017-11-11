@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "alwaysStrict": true,
-        "baseUrl": "scripts",
+        "baseUrl": "src",
         "downlevelIteration": true,
         "sourceMap": true,
         "strict": true,
@@ -25,7 +25,7 @@
         ]
     },
     "include": [
-        "scripts",
+        "src",
         "test"
     ],
     "exclude": [
