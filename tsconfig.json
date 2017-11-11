@@ -1,7 +1,11 @@
 {
     "compilerOptions": {
+        "alwaysStrict": true,
         "baseUrl": "scripts",
+        "downlevelIteration": true,
         "sourceMap": true,
+        "strict": true,
+        "importHelpers": true,
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
@@ -10,9 +14,11 @@
         "moduleResolution": "node",
         "noUnusedLocals": true,
         "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
         "removeComments": true,
         "strictNullChecks": true,
         "target": "es5",
+        "allowSyntheticDefaultImports": true,
         "lib": [
             "es6",
             "dom"
