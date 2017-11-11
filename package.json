@@ -2,7 +2,6 @@
   "name": "freeman",
   "version": "0.1.0",
   "description": "A free, extensible, cross-platform file manager for power users",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/matthew-matvei/freeman.git"
@@ -16,5 +15,17 @@
   "bugs": {
     "url": "https://github.com/matthew-matvei/freeman/issues"
   },
-  "homepage": "https://github.com/matthew-matvei/freeman#readme"
+  "scripts": {
+    "build": "./node_modules/.bin/webpack --config webpack-dev.config.js",
+    "build:test": "./node_modules/.bin/webpack --config webpack-test.config.js",
+    "pretest": "npm run build:test",
+    "test": "./node_modules/.bin/mocha dist/outTest.js"
+  },
+  "homepage": "https://github.com/matthew-matvei/freeman#readme",
+  "devDependencies": {
+    "@types/react": "^16.0.22",
+    "@types/react-dom": "^16.0.3",
+    "react": "^16.1.0",
+    "react-dom": "^16.1.0"
+  }
 }
