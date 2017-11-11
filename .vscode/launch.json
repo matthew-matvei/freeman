@@ -10,7 +10,7 @@
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
             "runtimeArgs": [
-                "${workspaceRoot}/dist/server.js",
+                "${workspaceRoot}/app/server.js",
                 "--enable-logging",
                 "--remote-debugging-port=9222"
             ],
@@ -29,7 +29,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceRoot}/dist/outTest.js"
+                "${workspaceRoot}/app/outTest.js"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }
