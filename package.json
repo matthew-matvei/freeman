@@ -2,7 +2,6 @@
   "name": "freeman",
   "version": "0.1.0",
   "description": "A free, extensible, cross-platform file manager for power users",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/matthew-matvei/freeman.git"
@@ -16,5 +15,31 @@
   "bugs": {
     "url": "https://github.com/matthew-matvei/freeman/issues"
   },
-  "homepage": "https://github.com/matthew-matvei/freeman#readme"
+  "scripts": {
+    "build": "./node_modules/.bin/webpack --config webpack-dev.config.js",
+    "build:test": "./node_modules/.bin/webpack --config webpack-test.config.js",
+    "pretest": "npm run build:test",
+    "test": "./node_modules/.bin/mocha dist/outTest.js"
+  },
+  "homepage": "https://github.com/matthew-matvei/freeman#readme",
+  "devDependencies": {
+    "@types/react": "^16.0.22",
+    "@types/react-dom": "^16.0.3",
+    "react": "^16.1.0",
+    "react-dom": "^16.1.0"
+  },
+  "dependencies": {
+    "awesome-typescript-loader": "^3.3.0",
+    "css-loader": "^0.28.7",
+    "electron": "^1.7.9",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "node-sass": "^4.6.0",
+    "react-split-pane": "^0.1.68",
+    "sass-loader": "^6.0.6",
+    "source-map-loader": "^0.2.3",
+    "tslib": "^1.8.0",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-merge": "^4.1.1"
+  }
 }

@@ -1,0 +1,142 @@
+{
+    "rules": {
+        "adjacent-overload-signatures": true,
+        "array-type": [
+            true,
+            "array-simple"
+        ],
+        "arrow-parens": false,
+        "arrow-return-shorthand": true,
+        "await-promise": true,
+        "class-name": true,
+        "comment-format": [
+            true,
+            "check-space"
+        ],
+        "completed-docs": true,
+        "curly": true,
+        "cyclomatic-complexity": [
+            true,
+            15
+        ],
+        "deprecation": true,
+        "encoding": true,
+        "eofline": true,
+        "forin": true,
+        "import-spacing": true,
+        "indent": [
+            true,
+            "spaces",
+            4
+        ],
+        "interface-name": [
+            true,
+            "always-prefix"
+        ],
+        "jsdoc-format": true,
+        "label-position": true,
+        "max-classes-per-file": [
+            true,
+            1
+        ],
+        "max-line-length": {
+            "options": [
+                120
+            ]
+        },
+        "member-access": true,
+        "member-ordering": [
+            true,
+            "statics-first"
+        ],
+        "new-parens": true,
+        "newline-before-return": true,
+        "no-boolean-literal-compare": true,
+        "no-consecutive-blank-lines": true,
+        "no-duplicate-imports": true,
+        "no-console": {
+            "severity": "error",
+            "options": [
+                "debug",
+                "info",
+                "log",
+                "time",
+                "timeEnd",
+                "trace"
+            ]
+        },
+        "no-debugger": true,
+        "no-duplicate-super": true,
+        "no-duplicate-variable": true,
+        "no-eval": true,
+        "no-floating-promises": true,
+        "no-import-side-effect": true,
+        "no-inferrable-types": true,
+        "no-inferred-empty-object-type": true,
+        "no-invalid-template-strings": true,
+        "no-irregular-whitespace": true,
+        "no-invalid-this": true,
+        "no-magic-numbers": true,
+        "no-misused-new": true,
+        "no-parameter-reassignment": true,
+        "no-shadowed-variable": true,
+        "no-sparse-arrays": true,
+        "no-string-literal": true,
+        "no-string-throw": true,
+        "no-switch-case-fall-through": true,
+        "no-this-assignment": true,
+        "no-trailing-whitespace": true,
+        "no-unbound-method": true,
+        "no-unnecessary-callback-wrapper": true,
+        "no-unnecessary-initializer": true,
+        "no-unsafe-any": true,
+        "no-unsafe-finally": true,
+        "no-unused-expression": true,
+        "no-unused-variable": true,
+        "no-use-before-declare": false,
+        "no-var-keyword": true,
+        "no-var-requires": true,
+        "number-literal-format": true,
+        "object-literal-key-quotes": [
+            true,
+            "as-needed"
+        ],
+        "object-literal-shorthand": true,
+        "one-line": true,
+        "no-void-expression": true,
+        "only-arrow-functions": [
+            true,
+            "allow-declarations"
+        ],
+        "ordered-imports": true,
+        "prefer-conditional-expression": true,
+        "prefer-const": true,
+        "prefer-for-of": true,
+        "prefer-method-signature": true,
+        "prefer-object-spread": true,
+        "prefer-template": true,
+        "promise-function-async": true,
+        "quotemark": true,
+        "restrict-plus-operands": true,
+        "return-undefined": true,
+        "semicolon": [
+            true,
+            "always"
+        ],
+        "space-before-function-paren": false,
+        "space-within-parens": false,
+        "switch-default": true,
+        "trailing-comma": false,
+        "triple-equals": true,
+        "switch-final-break": true,
+        "typedef-whitespace": true,
+        "typeof-compare": true,
+        "unified-signatures": true,
+        "use-isnan": true,
+        "variable-name": [
+            true,
+            "allow-pascal-case"
+        ],
+        "whitespace": true
+    }
+}
