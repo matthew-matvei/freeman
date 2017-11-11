@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "baseUrl": "scripts",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "jsx": "react",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "removeComments": true,
+        "strictNullChecks": true,
+        "target": "es5",
+        "lib": [
+            "es6",
+            "dom"
+        ]
+    },
+    "include": [
+        "scripts",
+        "test"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

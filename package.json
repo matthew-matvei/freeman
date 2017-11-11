@@ -1,0 +1,20 @@
+{
+  "name": "freeman",
+  "version": "0.1.0",
+  "description": "A free, extensible, cross-platform file manager for power users",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/matthew-matvei/freeman.git"
+  },
+  "keywords": [
+    "File Manager",
+    "Power User"
+  ],
+  "author": "Matthew James",
+  "license": "GPL3",
+  "bugs": {
+    "url": "https://github.com/matthew-matvei/freeman/issues"
+  },
+  "homepage": "https://github.com/matthew-matvei/freeman#readme"
+}
