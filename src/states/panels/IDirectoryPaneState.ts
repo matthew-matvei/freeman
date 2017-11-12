@@ -4,6 +4,11 @@
 interface IDirectoryPaneState {
 
     /**
+     * The path to the directory the pane displays.
+     */
+    path: string;
+
+    /**
      * A list of folders in the current directory.
      */
     folders?: string[];

@@ -22,8 +22,8 @@ class App extends React.Component<{}, {}> {
                 defaultSize="50vw"
                 style={{ height: "95vh" }}
                 paneStyle={{ overflowY: "auto" }}>
-                <DirectoryPane path="/home/drumstix" />
-                <DirectoryPane path="/home/drumstix" />
+                <DirectoryPane />
+                <DirectoryPane />
             </SplitPane>
             <Status />
         </div>;

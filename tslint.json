@@ -116,7 +116,10 @@
         "prefer-object-spread": true,
         "prefer-template": true,
         "promise-function-async": true,
-        "quotemark": true,
+        "quotemark": [
+            true,
+            "double"
+        ],
         "restrict-plus-operands": true,
         "return-undefined": true,
         "semicolon": [

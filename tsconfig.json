@@ -1,5 +1,13 @@
 {
     "compilerOptions": {
+        "plugins": [
+            {
+                "name": "tslint-language-service",
+                "ignoreDefinitionFiles": true,
+                "configFile": "./tslint.json",
+                "suppressWhileTypeErrorsPresent": false
+            }
+        ],
         "alwaysStrict": true,
         "baseUrl": "src",
         "downlevelIteration": true,
@@ -13,12 +21,12 @@
         "module": "es2015",
         "moduleResolution": "node",
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "removeComments": true,
         "strictNullChecks": true,
         "target": "es5",
         "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
         "lib": [
             "es6",
             "dom"
