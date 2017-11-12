@@ -3,7 +3,7 @@ import * as React from "react";
 import "styles/panels/Status.scss";
 
 /**
- * The status indication component
+ * The status indication component.
  */
 class Status extends React.Component<{}, {}> {
 
