@@ -1,7 +1,7 @@
 import * as React from "react";
 import SplitPane from "react-split-pane";
 
-import { Status } from "components/panels";
+import { DirectoryPane, Status } from "components/panels";
 
 import "styles/App.scss";
 
@@ -17,9 +17,13 @@ class App extends React.Component<{}, {}> {
      */
     public render(): JSX.Element {
         return <div className="App">
-            <SplitPane split="vertical" style={{ height: "95vh" }}>
-                <div>Left</div>
-                <div>Right</div>
+            <SplitPane
+                split="vertical"
+                defaultSize="50vw"
+                style={{ height: "95vh" }}
+                paneStyle={{ overflowY: "auto" }}>
+                <DirectoryPane path="/home/drumstix" />
+                <DirectoryPane path="/home/drumstix" />
             </SplitPane>
             <Status />
         </div>;

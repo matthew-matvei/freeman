@@ -10,6 +10,20 @@ import { DirectoryReader } from "models";
 class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneState> {
 
     /**
+     * Instantiates the DirectoryPane component.
+     *
+     * @param props - the properties for the DirectoryPane component
+     */
+    public constructor(props: IDirectoryPaneProps) {
+        super(props);
+
+        this.state = {
+            files: [],
+            folders: []
+        }
+    }
+
+    /**
      * Updates the directory contents prior to loading the component.
      *
      * @param nextprops - the incoming props object
@@ -37,7 +51,9 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        return <div></div>;
+        return <ul>
+            {this.state.files && this.state.files.map(file => <li>{file}</li>)}
+        </ul>;
     }
 }
 
