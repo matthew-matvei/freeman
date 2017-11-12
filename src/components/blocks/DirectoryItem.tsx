@@ -3,6 +3,8 @@ import autobind from "autobind-decorator";
 
 import { IDirectoryItemProps } from "props/blocks";
 
+import "styles/blocks/directoryitem.scss";
+
 /**
  * A single directory item component.
  */
@@ -14,7 +16,10 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
      * @returns - a JSX element representing the directory item view
      */
     public render(): JSX.Element {
-        return <button onClick={this.handleClick}>{this.props.name}</button>;
+        return <div
+            className="DirectoryItem">
+            <button onClick={this.handleClick}>{this.props.name}</button>
+        </div>;
     }
 
     /**

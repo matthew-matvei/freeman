@@ -14,6 +14,11 @@ interface IDirectoryItemProps {
     name: string;
 
     /**
+     * Whether the item is selected.
+     */
+    isSelected: boolean;
+
+    /**
      * Whether the item is a directory.
      */
     isDirectory: boolean;

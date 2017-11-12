@@ -16,7 +16,7 @@ interface IDirectoryPaneState {
     /**
      * A list of files in the current directory.
      */
-    files?: string[];
+    files: string[];
 }
 
 export default IDirectoryPaneState;

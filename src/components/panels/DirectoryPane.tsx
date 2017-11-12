@@ -51,15 +51,17 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const files = this.state.files ? this.state.files.map(fileName => {
+        const files = this.state.files.map((fileName, i) => {
             const filePath = path.join(this.state.path, fileName);
+
             return <DirectoryItem
                 key={filePath}
                 path={filePath}
                 name={fileName}
                 isDirectory
-                sendPathUp={this.updatePath} />
-        }) : null;
+                isSelected={i === 0}
+                sendPathUp={this.updatePath} />;
+        });
 
         return <ul>{files}</ul>;
     }
