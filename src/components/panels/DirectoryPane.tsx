@@ -3,13 +3,19 @@ import path from "path";
 import autobind from "autobind-decorator";
 
 import { DirectoryItem } from "components/blocks";
-import { IDirectoryPaneState } from "states/panels";
+import { IDirectoryItem } from "models";
 import { DirectoryReader } from "models";
+import { IDirectoryPaneState } from "states/panels";
 
 /**
  * The component for displaying directory content.
  */
 class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
+
+    /**
+     * The items within this directory (files, folders etc.).
+     */
+    private directoryItems: IDirectoryItem[];
 
     /**
      * Instantiates the DirectoryPane component.
@@ -19,11 +25,9 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
     public constructor(props: {}) {
         super(props);
 
-        this.state = {
-            path: "/home/drumstix",
-            files: [],
-            folders: []
-        }
+        this.state = { path: "/home/drumstix" };
+
+        this.directoryItems = [];
     }
 
     /**
@@ -31,18 +35,17 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      *
      * @param nextprops - the incoming props object
      */
-    public async componentWillMount() {
-        this.setState({ files: await DirectoryReader.ListDirectory(this.state.path) });
+    public componentWillMount() {
+        this.directoryItems = DirectoryReader.ListDirectory(this.state.path);
     }
 
     /**
      * Updates the directory contents prior to updating the component.
      *
      * @param nextProps - the incoming props object
-     * @param nextState - the incoming state object
      */
-    public async componentWillUpdate(nextProps: {}, nextState: IDirectoryPaneState) {
-        this.setState({ files: await DirectoryReader.ListDirectory(nextState.path) });
+    public componentWillUpdate(nextProps: {}, nextState: IDirectoryPaneState) {
+        this.directoryItems = DirectoryReader.ListDirectory(nextState.path);
     }
 
     /**
@@ -51,14 +54,14 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const files = this.state.files.map((fileName, i) => {
-            const filePath = path.join(this.state.path, fileName);
+        const files = this.directoryItems.map((file, i) => {
+            const filePath = path.join(this.state.path, file.name);
 
             return <DirectoryItem
                 key={filePath}
                 path={filePath}
-                name={fileName}
-                isDirectory
+                name={file.name}
+                isDirectory={file.isDirectory}
                 isSelected={i === 0}
                 sendPathUp={this.updatePath} />;
         });
@@ -67,13 +70,13 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
     }
 
     /**
-     * Updates the path of the directory this DirectoryPane represents.
+     * Updates the path held in the directory pane's state
      *
-     * @param path - the path to the new directory
+     * @param path - the path to update to
      */
     @autobind
     private updatePath(path: string) {
-        this.setState({ path: path } as IDirectoryPaneState)
+        this.setState({ path: path });
     }
 }
 

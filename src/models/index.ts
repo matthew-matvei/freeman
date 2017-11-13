@@ -1,5 +1,9 @@
+import DirectorySorter from "./DirectorySorter";
 import DirectoryReader from "./DirectoryReader";
+import IDirectoryItem from "./IDirectoryItem";
 
 export {
-    DirectoryReader
+    DirectorySorter,
+    DirectoryReader,
+    IDirectoryItem
 }

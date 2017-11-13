@@ -19,12 +19,16 @@
     "build": "./node_modules/.bin/webpack --config webpack-dev.config.js",
     "build:test": "./node_modules/.bin/webpack --config webpack-test.config.js",
     "pretest": "npm run build:test",
-    "test": "./node_modules/.bin/mocha dist/outTest.js"
+    "test": "./node_modules/.bin/mocha app/outTest.js"
   },
   "homepage": "https://github.com/matthew-matvei/freeman#readme",
   "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.44",
     "@types/react": "^16.0.22",
     "@types/react-dom": "^16.0.3",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
     "react": "^16.1.0",
     "react-dom": "^16.1.0",
     "tslint": "^5.8.0",
