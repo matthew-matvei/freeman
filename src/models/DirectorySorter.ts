@@ -12,7 +12,7 @@ class DirectorySorter {
      *
      * @returns - the given directory items, sorted by type
      */
-    public static SortByType(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
+    public static sortByType(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort((a, b) => DirectorySorter.compareTypes(a, b));
     }
 
@@ -23,7 +23,7 @@ class DirectorySorter {
      *
      * @returns - the given directory items, sorted alphanumerically
      */
-    public static SortByAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
+    public static sortByAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort((a, b) => a.name.localeCompare(b.name));
     }
 
@@ -35,7 +35,7 @@ class DirectorySorter {
      *
      * @returns - the given directory items, sorted by type, then alphanumerically
      */
-    public static SortByTypeThenAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
+    public static sortByTypeThenAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort((a, b) => {
             const typeCompare = DirectorySorter.compareTypes(a, b);
             return typeCompare !== 0 ? typeCompare : a.name.localeCompare(b.name);

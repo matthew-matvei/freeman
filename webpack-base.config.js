@@ -27,7 +27,7 @@ module.exports = {
             }
         ]
     },
-    target: "node",
+    target: "electron",
     node: {
         fs: "empty"
     },

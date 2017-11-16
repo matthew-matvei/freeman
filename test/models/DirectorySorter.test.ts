@@ -15,24 +15,27 @@ describe("DirectorySorter's", () => {
         testItem1 = {
             name: "test",
             path: "path/to/",
-            isDirectory: true
+            isDirectory: true,
+            isHidden: false
         };
         testItem2 = {
             name: "test.jpg",
             path: "/path/to/",
-            isDirectory: false
+            isDirectory: false,
+            isHidden: false
         };
         testItem3 = {
             name: "another test.jpg",
             path: "/path/to/",
-            isDirectory: false
+            isDirectory: false,
+            isHidden: false
         };
     });
 
     describe("SortByType method", () => {
         it("returns an empty array when given one", () => {
             const expected: IDirectoryItem[] = [];
-            const actual = DirectorySorter.SortByType(items);
+            const actual = DirectorySorter.sortByType(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -40,7 +43,7 @@ describe("DirectorySorter's", () => {
         it("returns the same array when given an array of one", () => {
             items = [testItem1];
             const expected = [testItem1];
-            const actual = DirectorySorter.SortByType(items);
+            const actual = DirectorySorter.sortByType(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -48,7 +51,7 @@ describe("DirectorySorter's", () => {
         it("sorts two directory items by type", () => {
             items = [testItem2, testItem1];
             const expected = [testItem1, testItem2];
-            const actual = DirectorySorter.SortByType(items);
+            const actual = DirectorySorter.sortByType(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -56,7 +59,7 @@ describe("DirectorySorter's", () => {
         it("sorts three directory items by type", () => {
             items = [testItem3, testItem2, testItem1];
             const expected = [testItem1, testItem2, testItem3];
-            const actual = DirectorySorter.SortByType(items);
+            const actual = DirectorySorter.sortByType(items);
 
             expect(actual[0]).to.deep.equal(expected[0]);
         });
@@ -65,7 +68,7 @@ describe("DirectorySorter's", () => {
     describe("SortByAlphaNumery method", () => {
         it("returns an empty array when given one", () => {
             const expected: IDirectoryItem[] = [];
-            const actual = DirectorySorter.SortByAlphaNumery(items);
+            const actual = DirectorySorter.sortByAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -73,7 +76,7 @@ describe("DirectorySorter's", () => {
         it("returns the same array when given an array of one", () => {
             items = [testItem1];
             const expected = [testItem1];
-            const actual = DirectorySorter.SortByAlphaNumery(items);
+            const actual = DirectorySorter.sortByAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -81,7 +84,7 @@ describe("DirectorySorter's", () => {
         it("sorts two directory items alphabetically", () => {
             items = [testItem2, testItem1];
             const expected = [testItem1, testItem2];
-            const actual = DirectorySorter.SortByAlphaNumery(items);
+            const actual = DirectorySorter.sortByAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -89,7 +92,7 @@ describe("DirectorySorter's", () => {
         it("sorts three directory items alphabetically", () => {
             items = [testItem3, testItem2, testItem1];
             const expected = [testItem3, testItem1, testItem2];
-            const actual = DirectorySorter.SortByAlphaNumery(items);
+            const actual = DirectorySorter.sortByAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -98,7 +101,7 @@ describe("DirectorySorter's", () => {
     describe("SortByTypeThenAlphanumery method", () => {
         it("returns an empty array when given one", () => {
             const expected: IDirectoryItem[] = [];
-            const actual = DirectorySorter.SortByTypeThenAlphaNumery(items);
+            const actual = DirectorySorter.sortByTypeThenAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -106,7 +109,7 @@ describe("DirectorySorter's", () => {
         it("returns the same array when given an array of one", () => {
             items = [testItem1];
             const expected = [testItem1];
-            const actual = DirectorySorter.SortByTypeThenAlphaNumery(items);
+            const actual = DirectorySorter.sortByTypeThenAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -114,7 +117,7 @@ describe("DirectorySorter's", () => {
         it("sorts two directory items by type then alphabetically", () => {
             items = [testItem2, testItem1];
             const expected = [testItem1, testItem2];
-            const actual = DirectorySorter.SortByTypeThenAlphaNumery(items);
+            const actual = DirectorySorter.sortByTypeThenAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });
@@ -122,7 +125,7 @@ describe("DirectorySorter's", () => {
         it("sorts three directory items by type then alphabetically", () => {
             items = [testItem3, testItem2, testItem1];
             const expected = [testItem1, testItem3, testItem2];
-            const actual = DirectorySorter.SortByTypeThenAlphaNumery(items);
+            const actual = DirectorySorter.sortByTypeThenAlphaNumery(items);
 
             expect(actual).to.deep.equal(expected);
         });

@@ -1,3 +1,6 @@
+/**
+ * Describes a single directory item (directory, file etc.).
+ */
 interface IDirectoryItem {
 
     /**
@@ -14,6 +17,11 @@ interface IDirectoryItem {
      * Whether the directory item is a directory.
      */
     isDirectory: boolean;
+
+    /**
+     * Whether the directory item is hidden.
+     */
+    isHidden: boolean;
 }
 
 export default IDirectoryItem;

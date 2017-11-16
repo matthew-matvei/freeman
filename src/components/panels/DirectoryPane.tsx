@@ -1,16 +1,30 @@
 import * as React from "react";
+import os from "os";
 import path from "path";
 import autobind from "autobind-decorator";
+import { HotKeys } from "react-hotkeys";
 
 import { DirectoryItem } from "components/blocks";
+import { PathPanel } from "components/panels";
 import { IDirectoryItem } from "models";
 import { DirectoryReader } from "models";
 import { IDirectoryPaneState } from "states/panels";
+import { IDirectoryPaneProps } from 'props/panels';
+import { DirectoryDirection } from 'types';
 
 /**
  * The component for displaying directory content.
  */
-class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
+class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneState> {
+
+    /**
+     * Handler functions for the given events this component handles.
+     */
+    private handlers = {
+        moveUp: () => this.move("up"),
+        moveDown: () => this.move("down"),
+        moveBack: this.goBack,
+    }
 
     /**
      * The items within this directory (files, folders etc.).
@@ -22,10 +36,13 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      *
      * @param props - the properties for the DirectoryPane component
      */
-    public constructor(props: {}) {
+    public constructor(props: IDirectoryPaneProps) {
         super(props);
 
-        this.state = { path: "/home/drumstix" };
+        this.state = {
+            path: os.homedir(),
+            selectedItem: 0
+        };
 
         this.directoryItems = [];
     }
@@ -36,7 +53,7 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      * @param nextprops - the incoming props object
      */
     public componentWillMount() {
-        this.directoryItems = DirectoryReader.ListDirectory(this.state.path);
+        this.directoryItems = DirectoryReader.listDirectory(this.state.path);
     }
 
     /**
@@ -45,7 +62,7 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      * @param nextProps - the incoming props object
      */
     public componentWillUpdate(nextProps: {}, nextState: IDirectoryPaneState) {
-        this.directoryItems = DirectoryReader.ListDirectory(nextState.path);
+        this.directoryItems = DirectoryReader.listDirectory(nextState.path);
     }
 
     /**
@@ -54,19 +71,18 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const files = this.directoryItems.map((file, i) => {
-            const filePath = path.join(this.state.path, file.name);
+        const items = this.directoryItems.filter(item => !item.isHidden).map((item, i) => (
+            !item.isHidden ? <DirectoryItem
+                key={item.path}
+                model={item}
+                isSelected={this.props.isSelectedPane && this.state.selectedItem === i}
+                sendPathUp={this.updatePath} /> : null)
+        );
 
-            return <DirectoryItem
-                key={filePath}
-                path={filePath}
-                name={file.name}
-                isDirectory={file.isDirectory}
-                isSelected={i === 0}
-                sendPathUp={this.updatePath} />;
-        });
-
-        return <ul>{files}</ul>;
+        return <HotKeys handlers={this.handlers}>
+            <PathPanel path={this.state.path} />
+            <ul>{items}</ul>
+        </HotKeys>;
     }
 
     /**
@@ -76,7 +92,34 @@ class DirectoryPane extends React.Component<{}, IDirectoryPaneState> {
      */
     @autobind
     private updatePath(path: string) {
-        this.setState({ path: path });
+        this.setState({ path: path, selectedItem: 0 } as IDirectoryPaneState);
+    }
+
+    /**
+     * Navigates back to the parent directory.
+     */
+    @autobind
+    private goBack() {
+        const parentDirectory = path.join(this.state.path, "..");
+        this.updatePath(parentDirectory);
+    }
+
+    /**
+     * Navigates the currently-selected item in the given direction.
+     *
+     * @param direction - the direction to navigate in
+     */
+    @autobind
+    private move(direction: DirectoryDirection) {
+        if (direction === "up") {
+            if (this.state.selectedItem > 0) {
+                this.setState(prevState => ({ selectedItem: prevState.selectedItem - 1 } as IDirectoryPaneState));
+            }
+        } else {
+            if (this.state.selectedItem < this.directoryItems.length - 1) {
+                this.setState(prevState => ({ selectedItem: prevState.selectedItem + 1 } as IDirectoryPaneState));
+            }
+        }
     }
 }
 

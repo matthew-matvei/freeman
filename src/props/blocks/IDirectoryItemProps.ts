@@ -1,9 +1,14 @@
 import { IDirectoryItem } from "models";
 
 /**
- * Describes a directory item, e.g. a file or folder.
+ * Describes the properties of a directory item component.
  */
-interface IDirectoryItemProps extends IDirectoryItem {
+interface IDirectoryItemProps {
+
+    /**
+     * The underlying model for a DirectoryItem component.
+     */
+    model: IDirectoryItem;
 
     /**
      * Whether the item is selected.
