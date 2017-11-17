@@ -21,7 +21,10 @@ module.exports = merge(baseConfig, {
                             loader: "css-loader"
                         },
                         {
-                            loader: "sass-loader"
+                            loader: "sass-loader",
+                            options: {
+                                includePaths: ["node_modules/normalize-scss/sass"]
+                            }
                         }
                     ]
                 })

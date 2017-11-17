@@ -5,7 +5,7 @@ import { HotKeys } from "react-hotkeys";
 
 import { IDirectoryItemProps } from "props/blocks";
 
-import "styles/blocks/directoryitem.scss";
+import "styles/blocks/DirectoryItem.scss";
 
 /**
  * A single directory item component.
@@ -25,16 +25,15 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
      * @returns - a JSX element representing the directory item view
      */
     public render(): JSX.Element {
-        const item = <div className="DirectoryItem">
-            <button onDoubleClick={this.openDirectory}>{this.props.model.name}</button>
-        </div>;
+        const selectedClass = this.props.isSelected ? "selected" : "";
 
-        return this.props.isSelected ?
-            <HotKeys handlers={this.handlers} ref={(component) => component && this.autoFocus(component)}>
-                {item}
-            </HotKeys> : <HotKeys handlers={this.handlers}>
-                {item}
-            </HotKeys>;
+        return <HotKeys
+            handlers={this.handlers}
+            ref={component => component && this.props.isSelected && this.autoFocus(component)}>
+            <div className={`DirectoryItem ${selectedClass}`}>
+                <button onDoubleClick={this.openDirectory}>{this.props.model.name}</button>
+            </div>
+        </HotKeys>;
     }
 
     /**

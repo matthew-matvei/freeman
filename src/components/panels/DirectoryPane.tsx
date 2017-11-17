@@ -3,14 +3,17 @@ import os from "os";
 import path from "path";
 import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
+import ScrollArea from "react-scrollbar";
 
 import { DirectoryItem } from "components/blocks";
 import { PathPanel } from "components/panels";
 import { IDirectoryItem } from "models";
 import { DirectoryReader } from "models";
 import { IDirectoryPaneState } from "states/panels";
-import { IDirectoryPaneProps } from 'props/panels';
-import { DirectoryDirection } from 'types';
+import { IDirectoryPaneProps } from "props/panels";
+import { DirectoryDirection } from "types";
+
+import "styles/panels/DirectoryPane.scss";
 
 /**
  * The component for displaying directory content.
@@ -79,10 +82,16 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                 sendPathUp={this.updatePath} /> : null)
         );
 
-        return <HotKeys handlers={this.handlers}>
-            <PathPanel path={this.state.path} />
-            <ul>{items}</ul>
-        </HotKeys>;
+        return <ScrollArea
+            className="DirectoryPane"
+            horizontal={false}
+            verticalContainerStyle={{ width: "20px" }}
+            verticalScrollbarStyle={{ width: "100%" }}>
+            <HotKeys handlers={this.handlers}>
+                <PathPanel path={this.state.path} />
+                <ul>{items}</ul>
+            </HotKeys>
+        </ScrollArea>;
     }
 
     /**

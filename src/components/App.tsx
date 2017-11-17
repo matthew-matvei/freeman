@@ -46,7 +46,7 @@ class App extends React.Component<{}, IAppState> {
                 <SplitPane
                     split="vertical"
                     defaultSize="50vw"
-                    style={{ height: "95vh" }}
+                    style={{ height: "97vh" }}
                     paneStyle={{ overflowY: "auto" }}>
                     <DirectoryPane
                         id="left"

@@ -1,3 +1,6 @@
+@import "normalize/import-now";
+@import "themes/dark.scss";
+
 body {
     margin: 0;
 }
@@ -5,5 +8,16 @@ body {
 ul {
     list-style-type: none;
     margin: 0;
-    padding: 1em;
+    padding: 1em 0;
+}
+
+/* Removes default highlighting on focused elements. */
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    user-select: none;
+    cursor: default;
+}
+input, button, textarea, :focus {
+    outline: none;
 }
