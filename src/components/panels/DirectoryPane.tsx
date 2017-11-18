@@ -92,7 +92,8 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                     key={item.path}
                     model={item}
                     isSelected={this.props.isSelectedPane && this.state.selectedItem === i}
-                    sendPathUp={this.updatePath} />)
+                    sendPathUp={this.updatePath}
+                    sendSelectedItemUp={this.selectItem} />)
             );
 
         return <ScrollArea
@@ -154,6 +155,20 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             {
                 showHiddenItems: !prevState.showHiddenItems
             } as IDirectoryPaneState));
+    }
+
+    /**
+     * Handles selecting the given item in the directory pane.
+     *
+     * @param itemToSelect - the item to select
+     */
+    @autobind
+    private selectItem(itemToSelect: IDirectoryItem) {
+        const index = this.directoryItems
+            .filter(item => !item.isHidden || this.state.showHiddenItems)
+            .findIndex(item => item.name === itemToSelect.name);
+        this.setState({ selectedItem: index } as IDirectoryPaneState);
+        this.props.sendSelectedPaneUp(this.props.id);
     }
 }
 

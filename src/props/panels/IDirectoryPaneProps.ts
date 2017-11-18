@@ -14,6 +14,11 @@ interface IDirectoryPaneProps {
      * Whether this pane is currently selected.
      */
     isSelectedPane: boolean;
+
+    /**
+     * Callback function to send selected pane up to parent.
+     */
+    sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => void;
 }
 
 export default IDirectoryPaneProps;

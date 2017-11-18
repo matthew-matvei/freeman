@@ -11,6 +11,7 @@ import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
 import { SettingsManager, KeysManager, ThemesManager } from "objects";
 
 import "styles/App.scss";
+import { DirectoryPaneSide } from 'types';
 
 /**
  * The main application component.
@@ -35,6 +36,17 @@ class App extends React.Component<{}, IAppState> {
      */
     private handlers = {
         switchPane: this.switchPane
+    }
+
+    /**
+     * Gets a string representing the current status of the application
+     */
+    private get currentStatus(): string {
+        if (!this.keyMap) {
+            return "No key map files found!";
+        }
+
+        return "Ready";
     }
 
     /**
@@ -73,10 +85,12 @@ class App extends React.Component<{}, IAppState> {
                     paneStyle={{ overflowY: "auto" }}>
                     <DirectoryPane
                         id="left"
-                        isSelectedPane={this.state.selectedPane === "left"} />
+                        isSelectedPane={this.state.selectedPane === "left"}
+                        sendSelectedPaneUp={this.selectPane} />
                     <DirectoryPane
                         id="right"
-                        isSelectedPane={this.state.selectedPane === "right"} />
+                        isSelectedPane={this.state.selectedPane === "right"}
+                        sendSelectedPaneUp={this.selectPane} />
                 </SplitPane>
                 <Status message={this.currentStatus} />
             </div>
@@ -98,14 +112,15 @@ class App extends React.Component<{}, IAppState> {
     }
 
     /**
-     * Gets a string representing the current status of the application
+     * Handles selecting the given pane.
+     *
+     * @param paneToSelect - the pane to select, if not currently selected
      */
-    private get currentStatus(): string {
-        if (!this.keyMap) {
-            return "No key map files found!";
+    @autobind
+    private selectPane(paneToSelect: DirectoryPaneSide) {
+        if (paneToSelect !== this.state.selectedPane) {
+            this.setState({ selectedPane: paneToSelect } as IAppState);
         }
-
-        return "Ready";
     }
 }
 

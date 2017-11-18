@@ -19,6 +19,11 @@ interface IDirectoryItemProps {
      * Callback function to send path up to parent.
      */
     sendPathUp: (path: string) => void;
+
+    /**
+     * Callback function to send selected item up to parent.
+     */
+    sendSelectedItemUp: (itemToSelect: IDirectoryItem) => void;
 }
 
 export default IDirectoryItemProps;

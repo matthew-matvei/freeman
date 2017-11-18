@@ -50,7 +50,7 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
         return <HotKeys
             handlers={this.handlers}
             ref={component => component && isSelected && this.autoFocus(component)}>
-            <div className={`DirectoryItem ${selectedClass}`}>
+            <div onClick={this.select} className={`DirectoryItem ${selectedClass}`}>
                 <button style={style} onDoubleClick={this.openDirectory}>
                     {model.name}
                 </button>
@@ -88,6 +88,14 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
     @autobind
     private openInNativeExplorer() {
         shell.showItemInFolder(this.props.model.path);
+    }
+
+    /**
+     * Handles selecting the current directory item.
+     */
+    @autobind
+    private select() {
+        this.props.sendSelectedItemUp(this.props.model);
     }
 
     /**
