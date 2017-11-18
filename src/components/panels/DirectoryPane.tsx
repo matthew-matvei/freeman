@@ -36,6 +36,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
         moveUp: () => this.move("up"),
         moveDown: () => this.move("down"),
         moveBack: this.goBack,
+        toggleShowHidden: this.toggleShowHidden
     }
 
     /**
@@ -53,7 +54,8 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
 
         this.state = {
             path: os.homedir(),
-            selectedItem: 0
+            selectedItem: 0,
+            showHiddenItems: false
         };
 
         this.directoryItems = [];
@@ -83,13 +85,15 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const items = this.directoryItems.filter(item => !item.isHidden).map((item, i) => (
-            !item.isHidden ? <DirectoryItem
-                key={item.path}
-                model={item}
-                isSelected={this.props.isSelectedPane && this.state.selectedItem === i}
-                sendPathUp={this.updatePath} /> : null)
-        );
+        const items = this.directoryItems
+            .filter(item => !item.isHidden || this.state.showHiddenItems)
+            .map((item, i) => (
+                <DirectoryItem
+                    key={item.path}
+                    model={item}
+                    isSelected={this.props.isSelectedPane && this.state.selectedItem === i}
+                    sendPathUp={this.updatePath} />)
+            );
 
         return <ScrollArea
             className="DirectoryPane"
@@ -139,6 +143,17 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                 this.setState(prevState => ({ selectedItem: prevState.selectedItem + 1 } as IDirectoryPaneState));
             }
         }
+    }
+
+    /**
+     * Handles toggling whether hidden files should be shown.
+     */
+    @autobind
+    private toggleShowHidden() {
+        this.setState(prevState => (
+            {
+                showHiddenItems: !prevState.showHiddenItems
+            } as IDirectoryPaneState));
     }
 }
 

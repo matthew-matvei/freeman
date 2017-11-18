@@ -12,6 +12,11 @@ interface IDirectoryPaneState {
      * The index of the currently selected item.
      */
     selectedItem: number;
+
+    /**
+     * Whether the directory pane should show hidden items.
+     */
+    showHiddenItems: boolean;
 }
 
 export default IDirectoryPaneState;
