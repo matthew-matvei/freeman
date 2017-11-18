@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as PropTypes from "prop-types";
+import { shell } from "electron";
 import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
 
@@ -26,7 +27,9 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
      * Handler functions for the given events this component handles.
      */
     private handlers = {
-        openDirectory: this.openDirectory
+        openDirectory: this.openDirectory,
+        activate: this.activate,
+        openInNativeExplorer: this.openInNativeExplorer
     };
 
     /**
@@ -62,6 +65,28 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
         if (this.props.model.isDirectory) {
             this.props.sendPathUp(this.props.model.path)
         }
+    }
+
+    /**
+     * Handles activating the currently selected directory item using the system's
+     * default program.
+     */
+    @autobind
+    private activate() {
+        if (this.props.model.isDirectory) {
+            this.props.sendPathUp(this.props.model.path);
+        } else {
+            shell.openItem(this.props.model.path);
+        }
+    }
+
+    /**
+     * Handles revealing the currently selected directory item in the system's
+     * native file explorer.
+     */
+    @autobind
+    private openInNativeExplorer() {
+        shell.showItemInFolder(this.props.model.path);
     }
 
     /**
