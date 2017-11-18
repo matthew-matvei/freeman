@@ -27,6 +27,8 @@ interface ITheme {
         colour: string;
         /** The background colour of a directory item. */
         backgroundColour: string;
+        /** The background colour of the selected directory item. */
+        selectedColour: string;
     }
 }
 

@@ -38,20 +38,21 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
      * @returns - a JSX element representing the directory item view
      */
     public render(): JSX.Element {
-        const selectedClass = this.props.isSelected ? "selected" : "";
-        const { colour, backgroundColour } = this.context.theme.directoryItem;
+        const { isSelected, model } = this.props;
+        const selectedClass = isSelected ? "selected" : "";
+        const { colour, backgroundColour, selectedColour } = this.context.theme.directoryItem;
         const style: React.CSSProperties = {
             color: colour || "inherit",
-            backgroundColor: backgroundColour || "inherit",
+            backgroundColor: isSelected ? selectedColour : backgroundColour || "inherit",
             border: "none"
         };
 
         return <HotKeys
             handlers={this.handlers}
-            ref={component => component && this.props.isSelected && this.autoFocus(component)}>
+            ref={component => component && isSelected && this.autoFocus(component)}>
             <div className={`DirectoryItem ${selectedClass}`}>
                 <button style={style} onDoubleClick={this.openDirectory}>
-                    {this.props.model.name}
+                    {model.name}
                 </button>
             </div>
         </HotKeys>;
