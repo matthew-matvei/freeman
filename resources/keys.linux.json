@@ -1,0 +1,17 @@
+{
+    "moveUp": [
+        "up"
+    ],
+    "moveDown": [
+        "down"
+    ],
+    "moveBack": [
+        "left"
+    ],
+    "openDirectory": [
+        "enter"
+    ],
+    "switchPane": [
+        "tab"
+    ]
+}

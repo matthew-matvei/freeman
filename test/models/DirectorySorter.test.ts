@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { IDirectoryItem } from "models";
-import { DirectorySorter } from "models";
+import { DirectorySorter } from "objects";
 
 describe("DirectorySorter's", () => {
 

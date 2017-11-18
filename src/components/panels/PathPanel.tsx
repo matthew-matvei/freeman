@@ -1,6 +1,8 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 
 import { IPathPanelProps } from "props/panels";
+import { IAppContext } from "models";
 
 import "styles/panels/PathPanel.scss";
 
@@ -9,13 +11,22 @@ import "styles/panels/PathPanel.scss";
  */
 class PathPanel extends React.Component<IPathPanelProps, {}> {
 
+    /** Validation for context types. */
+    public static contextTypes = {
+        theme: PropTypes.object
+    }
+
+    /** The global application context. */
+    public context: IAppContext;
+
     /**
      * Defines how the path pane component is rendered
      *
      * @returns - a JSX element representing the path pane view
      */
     public render(): JSX.Element {
-        return <div className="PathPanel">{this.props.path}</div>;
+        const { backgroundColour } = this.context.theme.pathPanel;
+        return <div style={{ backgroundColor: backgroundColour }} className="PathPanel">{this.props.path}</div>;
     }
 }
 

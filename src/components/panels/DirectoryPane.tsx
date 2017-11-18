@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 import os from "os";
 import path from "path";
 import autobind from "autobind-decorator";
@@ -7,8 +8,8 @@ import ScrollArea from "react-scrollbar";
 
 import { DirectoryItem } from "components/blocks";
 import { PathPanel } from "components/panels";
-import { IDirectoryItem } from "models";
-import { DirectoryReader } from "models";
+import { IAppContext, IDirectoryItem } from "models";
+import { DirectoryReader } from "objects";
 import { IDirectoryPaneState } from "states/panels";
 import { IDirectoryPaneProps } from "props/panels";
 import { DirectoryDirection } from "types";
@@ -19,6 +20,14 @@ import "styles/panels/DirectoryPane.scss";
  * The component for displaying directory content.
  */
 class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneState> {
+
+    /** Validation for context types. */
+    public static contextTypes = {
+        theme: PropTypes.object
+    }
+
+    /** The global application context. */
+    public context: IAppContext;
 
     /**
      * Handler functions for the given events this component handles.
@@ -39,8 +48,8 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      *
      * @param props - the properties for the DirectoryPane component
      */
-    public constructor(props: IDirectoryPaneProps) {
-        super(props);
+    public constructor(props: IDirectoryPaneProps, context: IAppContext) {
+        super(props, context);
 
         this.state = {
             path: os.homedir(),
@@ -85,6 +94,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
         return <ScrollArea
             className="DirectoryPane"
             horizontal={false}
+            style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
             verticalContainerStyle={{ width: "20px" }}
             verticalScrollbarStyle={{ width: "100%" }}>
             <HotKeys handlers={this.handlers}>

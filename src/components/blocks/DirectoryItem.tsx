@@ -1,9 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as PropTypes from "prop-types";
 import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
 
 import { IDirectoryItemProps } from "props/blocks";
+import { IAppContext } from "models";
 
 import "styles/blocks/DirectoryItem.scss";
 
@@ -11,6 +13,14 @@ import "styles/blocks/DirectoryItem.scss";
  * A single directory item component.
  */
 class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
+
+    /** Validation for context types. */
+    public static contextTypes = {
+        theme: PropTypes.object
+    }
+
+    /** The global application context. */
+    public context: IAppContext;
 
     /**
      * Handler functions for the given events this component handles.
@@ -26,12 +36,20 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
      */
     public render(): JSX.Element {
         const selectedClass = this.props.isSelected ? "selected" : "";
+        const { colour, backgroundColour } = this.context.theme.directoryItem;
+        const style: React.CSSProperties = {
+            color: colour || "inherit",
+            backgroundColor: backgroundColour || "inherit",
+            border: "none"
+        };
 
         return <HotKeys
             handlers={this.handlers}
             ref={component => component && this.props.isSelected && this.autoFocus(component)}>
             <div className={`DirectoryItem ${selectedClass}`}>
-                <button onDoubleClick={this.openDirectory}>{this.props.model.name}</button>
+                <button style={style} onDoubleClick={this.openDirectory}>
+                    {this.props.model.name}
+                </button>
             </div>
         </HotKeys>;
     }

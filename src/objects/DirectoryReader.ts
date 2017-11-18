@@ -2,7 +2,8 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 
-import { IDirectoryItem, DirectorySorter } from "models";
+import { IDirectoryItem } from "models";
+import { DirectorySorter, PlatformHelper } from "objects";
 
 /**
  * Provides static methods for reading files and folders.
@@ -65,7 +66,7 @@ class DirectoryReader {
      */
     private static isHidden(itemName: string): boolean {
         const platform = os.platform();
-        if (DirectoryReader.isUnix(platform)) {
+        if (PlatformHelper.isUnix(platform)) {
             if (itemName.startsWith(".")) {
                 return true;
             } else {
@@ -75,19 +76,6 @@ class DirectoryReader {
             console.warn("isHidden functionality currently available only on Unix-like platforms");
             return false;
         }
-    }
-
-    /**
-     * Returns whether the platform given is a Unix-like OS.
-     *
-     * @param platform - the name of the platform (e.g., "linux")
-     *
-     * @returns - whether the platform given is a Unix-like OS
-     */
-    private static isUnix(platform: string): boolean {
-        const unixPlatforms = ["freebsd", "linux", "openbsd", "sunos"];
-
-        return unixPlatforms.some(p => p === platform);
     }
 }
 

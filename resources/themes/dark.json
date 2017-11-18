@@ -1,0 +1,11 @@
+{
+    "primaryColour": "rgb(234, 248, 229)",
+    "primaryBackgroundColour": "rgb(39, 40, 34)",
+    "statusBar": {
+        "backgroundColour": "rgb(65, 67, 57)"
+    },
+    "pathPanel": {
+        "backgroundColour": "rgb(30, 31, 28)"
+    },
+    "directoryItem": {}
+}
