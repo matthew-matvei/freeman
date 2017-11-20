@@ -8,7 +8,7 @@ import ScrollArea from "react-scrollbar";
 
 import { DirectoryItem } from "components/blocks";
 import { PathPanel } from "components/panels";
-import { IAppContext, IDirectoryItem } from "models";
+import { IAppContext, IDirectoryItem, INavigationNode } from "models";
 import { DirectoryReader } from "objects";
 import { IDirectoryPaneState } from "states/panels";
 import { IDirectoryPaneProps } from "props/panels";
@@ -40,9 +40,9 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     }
 
     /**
-     * The items within this directory (files, folders etc.).
+     * Stores navigation data in a simple stack structure.
      */
-    private directoryItems: IDirectoryItem[];
+    private navigationStack: INavigationNode[];
 
     /**
      * Instantiates the DirectoryPane component.
@@ -54,29 +54,47 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
 
         this.state = {
             path: os.homedir(),
+            directoryItems: [],
             selectedItem: 0,
             showHiddenItems: false
         };
 
-        this.directoryItems = [];
+        this.navigationStack = [];
     }
 
     /**
      * Updates the directory contents prior to loading the component.
-     *
-     * @param nextprops - the incoming props object
      */
-    public componentWillMount() {
-        this.directoryItems = DirectoryReader.listDirectory(this.state.path);
+    public async componentDidMount() {
+        const items = await DirectoryReader.listDirectory(this.state.path);
+
+        this.setState({ directoryItems: items } as IDirectoryPaneState);
     }
 
     /**
      * Updates the directory contents prior to updating the component.
      *
-     * @param nextProps - the incoming props object
+     * @param prevProps - the previous props object
+     * @param prevState - the previous state object
      */
-    public componentWillUpdate(nextProps: {}, nextState: IDirectoryPaneState) {
-        this.directoryItems = DirectoryReader.listDirectory(nextState.path);
+    public async componentDidUpdate(prevProps: {}, prevState: IDirectoryPaneState) {
+        if (prevState.path === this.state.path) {
+            return;
+        }
+
+        if (this.navigationStack.length > 0 &&
+            this.navigationStack[this.navigationStack.length - 1].path === this.state.path) {
+
+            this.setState(
+                {
+                    directoryItems: this.navigationStack.pop()!.directoryItems
+                } as IDirectoryPaneState);
+        } else {
+            this.setState(
+                {
+                    directoryItems: await DirectoryReader.listDirectory(this.state.path)
+                } as IDirectoryPaneState);
+        }
     }
 
     /**
@@ -85,14 +103,14 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const items = this.directoryItems
+        const items = this.state.directoryItems
             .filter(item => !item.isHidden || this.state.showHiddenItems)
             .map((item, i) => (
                 <DirectoryItem
                     key={item.path}
                     model={item}
                     isSelected={this.props.isSelectedPane && this.state.selectedItem === i}
-                    sendPathUp={this.updatePath}
+                    sendPathUp={this.goIn}
                     sendSelectedItemUp={this.selectItem} />)
             );
 
@@ -115,7 +133,13 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @param path - the path to update to
      */
     @autobind
-    private updatePath(path: string) {
+    private goIn(path: string) {
+        const navigationNode: INavigationNode = {
+            path: this.state.path,
+            selectedItem: this.state.selectedItem,
+            directoryItems: this.state.directoryItems
+        }
+        this.navigationStack.push(navigationNode);
         this.setState({ path: path, selectedItem: 0 } as IDirectoryPaneState);
     }
 
@@ -125,7 +149,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     @autobind
     private goBack() {
         const parentDirectory = path.join(this.state.path, "..");
-        this.updatePath(parentDirectory);
+        this.setState({ path: parentDirectory, selectedItem: 0 } as IDirectoryPaneState);
     }
 
     /**
@@ -140,7 +164,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                 this.setState(prevState => ({ selectedItem: prevState.selectedItem - 1 } as IDirectoryPaneState));
             }
         } else {
-            if (this.state.selectedItem < this.directoryItems.length - 1) {
+            if (this.state.selectedItem < this.state.directoryItems.length - 1) {
                 this.setState(prevState => ({ selectedItem: prevState.selectedItem + 1 } as IDirectoryPaneState));
             }
         }
@@ -164,7 +188,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      */
     @autobind
     private selectItem(itemToSelect: IDirectoryItem) {
-        const index = this.directoryItems
+        const index = this.state.directoryItems
             .filter(item => !item.isHidden || this.state.showHiddenItems)
             .findIndex(item => item.name === itemToSelect.name);
         this.setState({ selectedItem: index } as IDirectoryPaneState);

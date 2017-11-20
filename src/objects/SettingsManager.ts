@@ -11,6 +11,9 @@ class SettingsManager {
      */
     private configManager: ConfigManager;
 
+    /**
+     * Initialises an instance of the SettingsManager class.
+     */
     public constructor() {
         this.configManager = new ConfigManager();
     }

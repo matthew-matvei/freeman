@@ -19,19 +19,19 @@ class DirectoryReader {
      *
      * @returns - a list of all files in the given directory
      */
-    public static listDirectory(
+    public static async listDirectory(
         filePath: string,
         sort: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[] = DirectorySorter.sortByTypeThenAlphaNumery
-    ): IDirectoryItem[] {
+    ): Promise<IDirectoryItem[]> {
 
-        if (!(this.isDirectory(filePath))) {
+        if (await !(this.isDirectory(filePath))) {
             return [];
         }
 
-        const fileList = fs.readdirSync(filePath);
-        const files = fileList.map(fileName => {
+        const fileList = await DirectoryReader.getDirectoryPaths(filePath);
+        const filePromises = fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
-            const fileStats = fs.lstatSync(fullPath);
+            const fileStats = await DirectoryReader.getFileStats(fullPath);
 
             return {
                 name: fileName,
@@ -40,6 +40,8 @@ class DirectoryReader {
                 isHidden: DirectoryReader.isHidden(fileName)
             } as IDirectoryItem;
         });
+
+        const files = await Promise.all(filePromises);
 
         return sort(files);
     }
@@ -51,10 +53,48 @@ class DirectoryReader {
      *
      * @returns - whether the file is a directory
      */
-    public static isDirectory(path: string): boolean {
-        const fileStats = fs.lstatSync(path);
+    private static async isDirectory(path: string): Promise<boolean> {
+        const stats = await DirectoryReader.getFileStats(path);
 
-        return fileStats.isDirectory();
+        return stats.isDirectory();
+    }
+
+    /**
+     * Returns a list of directory item paths in the given filePath.
+     *
+     * @param filePath - the path to the directory to get a list of files for
+     *
+     * @returns - a list of directory item paths in the given filePath
+     */
+    private static async getDirectoryPaths(filePath: string): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
+            fs.readdir(filePath, (error, paths) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(paths);
+                }
+            });
+        });
+    }
+
+    /**
+     * Returns stats for the file at the given path.
+     *
+     * @param path - the path to the file whose stats are to be gotten
+     *
+     * @returns - stats for the file at the given path
+     */
+    private static async getFileStats(path: string): Promise<fs.Stats> {
+        return new Promise<fs.Stats>((resolve, reject) => {
+            fs.lstat(path, (error, stats) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(stats);
+                }
+            });
+        });
     }
 
     /**

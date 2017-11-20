@@ -21,7 +21,7 @@
     "build": "./node_modules/.bin/webpack --config webpack-dev.config.js",
     "build:test": "./node_modules/.bin/webpack --config webpack-test.config.js",
     "pretest": "npm run build:test",
-    "test": "./node_modules/.bin/mocha app/outTest.js"
+    "test": "./node_modules/.bin/electron-mocha --renderer app/outTest.js"
   },
   "homepage": "https://github.com/matthew-matvei/freeman#readme",
   "devDependencies": {
@@ -32,6 +32,7 @@
     "@types/react-dom": "^16.0.3",
     "@types/react-scrollbar": "^0.4.8",
     "chai": "^4.1.2",
+    "electron-mocha": "^5.0.0",
     "mocha": "^4.0.1",
     "react": "^16.1.0",
     "react-dom": "^16.1.0",

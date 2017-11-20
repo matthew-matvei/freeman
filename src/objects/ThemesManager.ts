@@ -14,16 +14,33 @@ class ThemesManager {
      */
     private configManager: ConfigManager;
 
+    /**
+     * Initialises an instance of the KeysManager class.
+     */
     public constructor() {
         this.configManager = new ConfigManager();
     }
 
-    private getThemesFile(themeName: string): string {
-        return path.join(this.configManager.applicationName, "themes", `${themeName}.json`);
-    }
-
+    /**
+     * Returns the application theme settings file.
+     *
+     * @param themeName - the name of the theme the application is using
+     *
+     * @returns - the application theme settings file
+     */
     public retrieve(themeName: string): ITheme {
         return this.parseApplicationTheme(themeName);
+    }
+
+    /**
+     * Returns the path to the theme file based on the given themeName.
+     *
+     * @param themeName - the name of the theme the application is using
+     *
+     * @returns - the path to the theme file based on the given themeName
+     */
+    private getThemesFile(themeName: string): string {
+        return path.join(this.configManager.applicationName, "themes", `${themeName}.json`);
     }
 
     /**
