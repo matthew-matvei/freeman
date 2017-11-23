@@ -6,13 +6,13 @@ import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
 import ScrollArea from "react-scrollbar";
 
-import { DirectoryItem } from "components/blocks";
+import { DirectoryItem, InputItem } from "components/blocks";
 import { PathPanel } from "components/panels";
 import { IAppContext, IDirectoryItem, INavigationNode } from "models";
-import { DirectoryReader } from "objects";
+import { DirectoryReader, DirectoryWriter } from "objects";
 import { IDirectoryPaneState } from "states/panels";
 import { IDirectoryPaneProps } from "props/panels";
-import { DirectoryDirection } from "types";
+import { DirectoryDirection, ItemType } from "types";
 
 import "styles/panels/DirectoryPane.scss";
 
@@ -36,7 +36,10 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
         moveUp: () => this.move("up"),
         moveDown: () => this.move("down"),
         moveBack: this.goBack,
-        toggleShowHidden: this.toggleShowHidden
+        toggleShowHidden: this.toggleShowHidden,
+        newFile: () => this.inputNewItem("file"),
+        newFolder: () => this.inputNewItem("folder"),
+        rename: this.inputRenameItem
     }
 
     /**
@@ -56,7 +59,9 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             path: os.homedir(),
             directoryItems: [],
             selectedItem: 0,
-            showHiddenItems: false
+            showHiddenItems: false,
+            creatingNewItem: false,
+            renamingItem: false
         };
 
         this.navigationStack = [];
@@ -78,7 +83,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @param prevState - the previous state object
      */
     public async componentDidUpdate(prevProps: {}, prevState: IDirectoryPaneState) {
-        if (prevState.path === this.state.path) {
+        if (prevState.path === this.state.path && !prevState.creatingNewItem && !prevState.renamingItem) {
             return;
         }
 
@@ -98,21 +103,32 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     }
 
     /**
-     * Defines how the directory pane component is rendered
+     * Defines how the directory pane component is rendered.
      *
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
         const items = this.state.directoryItems
             .filter(item => !item.isHidden || this.state.showHiddenItems)
-            .map((item, i) => (
-                <DirectoryItem
-                    key={item.path}
-                    model={item}
-                    isSelected={this.props.isSelectedPane && this.state.selectedItem === i}
-                    sendPathUp={this.goIn}
-                    sendSelectedItemUp={this.selectItem} />)
-            );
+            .map((item, i) => {
+                const isSelectedItem = this.props.isSelectedPane && !this.state.creatingNewItem && this.state.selectedItem === i;
+
+                if (this.state.renamingItem && isSelectedItem) {
+                    const thisItem = this.state.directoryItems.find(i => i.name === item.name);
+                    const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
+                    return <InputItem
+                        thisItem={thisItem}
+                        otherItems={otherItems}
+                        sendUpRenameItem={this.renameItem} />;
+                } else {
+                    return <DirectoryItem
+                        key={item.path}
+                        model={item}
+                        isSelected={isSelectedItem}
+                        sendPathUp={this.goIn}
+                        sendSelectedItemUp={this.selectItem} />;
+                }
+            });
 
         return <ScrollArea
             className="DirectoryPane"
@@ -122,7 +138,14 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             verticalScrollbarStyle={{ width: "100%" }}>
             <HotKeys handlers={this.handlers}>
                 <PathPanel path={this.state.path} />
-                <ul>{items}</ul>
+                <ul>
+                    {items}
+                    {this.state.creatingNewItem &&
+                        <InputItem
+                            creatingItemType={this.state.creatingNewItem}
+                            sendUpCreateItem={this.createNewItem}
+                            otherItems={this.state.directoryItems} />}
+                </ul>
             </HotKeys>
         </ScrollArea>;
     }
@@ -193,6 +216,54 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             .findIndex(item => item.name === itemToSelect.name);
         this.setState({ selectedItem: index } as IDirectoryPaneState);
         this.props.sendSelectedPaneUp(this.props.id);
+    }
+
+    /**
+     * Begins the creation of a new directory item.
+     *
+     * @param itemTypeToCreate - the type of the item to begin creating
+     */
+    @autobind
+    private inputNewItem(itemTypeToCreate: ItemType) {
+        this.setState({ creatingNewItem: itemTypeToCreate } as IDirectoryPaneState);
+    }
+
+    /**
+     * Creates a new directory item if arguments are provided.
+     *
+     * @param itemName - the name of the item to be created
+     * @param itemTypeToCreate - the type of the item to be created
+     */
+    @autobind
+    private createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
+        if (itemName && itemTypeToCreate) {
+            DirectoryWriter.createItem(itemName, this.state.path, itemTypeToCreate);
+        }
+
+        this.setState({ creatingNewItem: false } as IDirectoryPaneState);
+    }
+
+    /**
+     * Begins the renaming of a directory item.
+     */
+    @autobind
+    private inputRenameItem() {
+        this.setState({ renamingItem: true } as IDirectoryPaneState);
+    }
+
+    /**
+     * Renames a directory item if arguments are provided.
+     *
+     * @param oldName - the previous name
+     * @param newName - the new name
+     */
+    @autobind
+    private renameItem(oldName?: string, newName?: string) {
+        if (oldName && newName) {
+            DirectoryWriter.renameItem(oldName, newName, this.state.path);
+        }
+
+        this.setState({ renamingItem: false } as IDirectoryPaneState);
     }
 }
 

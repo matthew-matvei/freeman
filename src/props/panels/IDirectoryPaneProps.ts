@@ -1,4 +1,4 @@
-import { DirectoryPaneSide } from 'types';
+import { DirectoryPaneSide } from "types";
 
 /**
  * Describes the properties of a directory pane component.

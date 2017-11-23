@@ -11,7 +11,7 @@ import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
 import { SettingsManager, KeysManager, ThemesManager } from "objects";
 
 import "styles/App.scss";
-import { DirectoryPaneSide } from 'types';
+import { DirectoryPaneSide } from "types";
 
 /**
  * The main application component.

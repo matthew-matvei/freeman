@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-import { ISettings } from 'models';
-import { ConfigManager } from 'objects';
+import { ISettings } from "models";
+import { ConfigManager } from "objects";
 
 class SettingsManager {
 

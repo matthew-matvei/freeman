@@ -1,4 +1,5 @@
-import { IDirectoryItem } from 'models';
+import { IDirectoryItem } from "models";
+import { ItemType } from "types";
 
 /**
  * Describes the internal state of the DirectoryPane.
@@ -24,6 +25,16 @@ interface IDirectoryPaneState {
      * Whether the directory pane should show hidden items.
      */
     showHiddenItems: boolean;
+
+    /**
+     * The type of item being created, or false if new file not being created.
+     */
+    creatingNewItem: ItemType | false;
+
+    /**
+     * Whether the user is renaming an item.
+     */
+    renamingItem: boolean;
 }
 
 export default IDirectoryPaneState;
