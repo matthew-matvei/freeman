@@ -8,13 +8,16 @@
             "name": "Launch app",
             "type": "chrome",
             "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            },
             "runtimeArgs": [
-                "${workspaceRoot}/app/server.js",
+                "${workspaceFolder}/app/server.js",
                 "--enable-logging",
                 "--remote-debugging-port=9222"
             ],
-            "webRoot": "${workspaceRoot}",
+            "webRoot": "${workspaceFolder}",
             "sourceMaps": true,
             "preLaunchTask": "build"
         },

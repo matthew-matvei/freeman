@@ -9,7 +9,7 @@ import ScrollArea from "react-scrollbar";
 import { DirectoryItem, InputItem } from "components/blocks";
 import { PathPanel } from "components/panels";
 import { IAppContext, IDirectoryItem, INavigationNode } from "models";
-import { DirectoryReader, DirectoryWriter } from "objects";
+import { DirectoryManager } from "objects";
 import { IDirectoryPaneState } from "states/panels";
 import { IDirectoryPaneProps } from "props/panels";
 import { DirectoryDirection, ItemType } from "types";
@@ -61,7 +61,8 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             selectedItem: 0,
             showHiddenItems: false,
             creatingNewItem: false,
-            renamingItem: false
+            renamingItem: false,
+            itemDeleted: false
         };
 
         this.navigationStack = [];
@@ -71,7 +72,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * Updates the directory contents prior to loading the component.
      */
     public async componentDidMount() {
-        const items = await DirectoryReader.listDirectory(this.state.path);
+        const items = await DirectoryManager.listDirectory(this.state.path);
 
         this.setState({ directoryItems: items } as IDirectoryPaneState);
     }
@@ -83,8 +84,12 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @param prevState - the previous state object
      */
     public async componentDidUpdate(prevProps: {}, prevState: IDirectoryPaneState) {
-        if (prevState.path === this.state.path && !prevState.creatingNewItem && !prevState.renamingItem) {
+        if (prevState.path === this.state.path && !prevState.creatingNewItem && !prevState.renamingItem && !this.state.itemDeleted) {
             return;
+        }
+
+        if (prevState.itemDeleted) {
+            this.setState({ itemDeleted: false } as IDirectoryPaneState);
         }
 
         if (this.navigationStack.length > 0 &&
@@ -97,7 +102,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
         } else {
             this.setState(
                 {
-                    directoryItems: await DirectoryReader.listDirectory(this.state.path)
+                    directoryItems: await DirectoryManager.listDirectory(this.state.path)
                 } as IDirectoryPaneState);
         }
     }
@@ -126,7 +131,8 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                         model={item}
                         isSelected={isSelectedItem}
                         sendPathUp={this.goIn}
-                        sendSelectedItemUp={this.selectItem} />;
+                        sendSelectedItemUp={this.selectItem}
+                        sendDeletionUp={this.refreshAfterDelete} />;
                 }
             });
 
@@ -237,7 +243,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     @autobind
     private createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
         if (itemName && itemTypeToCreate) {
-            DirectoryWriter.createItem(itemName, this.state.path, itemTypeToCreate);
+            DirectoryManager.createItem(itemName, this.state.path, itemTypeToCreate);
         }
 
         this.setState({ creatingNewItem: false } as IDirectoryPaneState);
@@ -260,10 +266,18 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     @autobind
     private renameItem(oldName?: string, newName?: string) {
         if (oldName && newName) {
-            DirectoryWriter.renameItem(oldName, newName, this.state.path);
+            DirectoryManager.renameItem(oldName, newName, this.state.path);
         }
 
         this.setState({ renamingItem: false } as IDirectoryPaneState);
+    }
+
+    /**
+     * Handles refreshing the page after a delete.
+     */
+    @autobind
+    private refreshAfterDelete() {
+        this.setState({ itemDeleted: true } as IDirectoryPaneState);
     }
 }
 

@@ -24,6 +24,11 @@ interface IDirectoryItemProps {
      * Callback function to send selected item up to parent.
      */
     sendSelectedItemUp: (itemToSelect: IDirectoryItem) => void;
+
+    /**
+     * Callback function to send deletion request up to parent.
+     */
+    sendDeletionUp: () => void;
 }
 
 export default IDirectoryItemProps;

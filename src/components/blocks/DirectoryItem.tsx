@@ -4,9 +4,12 @@ import * as PropTypes from "prop-types";
 import { shell } from "electron";
 import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
+import { remote } from "electron";
+const dialog = remote.dialog;
 
 import { IDirectoryItemProps } from "props/blocks";
 import { IAppContext } from "models";
+import { DirectoryManager } from "objects";
 
 import "styles/blocks/DirectoryItem.scss";
 
@@ -29,7 +32,8 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
     private handlers = {
         openDirectory: this.openDirectory,
         activate: this.activate,
-        openInNativeExplorer: this.openInNativeExplorer
+        openInNativeExplorer: this.openInNativeExplorer,
+        delete: this.deleteItem
     };
 
     /**
@@ -96,6 +100,31 @@ class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
     @autobind
     private select() {
         this.props.sendSelectedItemUp(this.props.model);
+    }
+
+    /**
+     * Handles providing a dialog to the user to confirm deletion of an item.
+     */
+    @autobind
+    private deleteItem() {
+        const confirmIndex = 0;
+        const cancelIndex = 1;
+        const confirmation = dialog.showMessageBox({
+            type: "warning",
+            buttons: ["OK", "Cancel"],
+            defaultId: cancelIndex,
+            cancelId: cancelIndex,
+            title: "Confirm deletion",
+            message: "Are you sure you want to delete this item?"
+        });
+
+        if (confirmation === confirmIndex) {
+            DirectoryManager.deleteItem(
+                this.props.model.path,
+                this.props.model.isDirectory ? "folder" : "file");
+        }
+
+        this.props.sendDeletionUp();
     }
 
     /**

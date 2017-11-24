@@ -1,7 +1,6 @@
 import ConfigManager from "./ConfigManager";
-import DirectoryReader from "./DirectoryReader";
+import DirectoryManager from "./DirectoryManager";
 import DirectorySorter from "./DirectorySorter";
-import DirectoryWriter from "./DirectoryWriter";
 import KeysManager from "./KeysManager";
 import PlatformHelper from "./PlatformHelper"
 import SettingsManager from "./SettingsManager";
@@ -9,9 +8,8 @@ import ThemesManager from "./ThemesManager";
 
 export {
     ConfigManager,
-    DirectoryReader,
+    DirectoryManager,
     DirectorySorter,
-    DirectoryWriter,
     KeysManager,
     PlatformHelper,
     SettingsManager,

@@ -4,11 +4,12 @@ import path from "path";
 
 import { IDirectoryItem } from "models";
 import { DirectorySorter, PlatformHelper } from "objects";
+import { ItemType } from "types";
 
 /**
- * Provides static methods for reading files and folders.
+ * Provides static methods for reading, writing and creating files and folders.
  */
-class DirectoryReader {
+class DirectoryManager {
 
     /**
      * Returns a list of paths of all files in the directory given in path.
@@ -24,26 +25,77 @@ class DirectoryReader {
         sort: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[] = DirectorySorter.sortByTypeThenAlphaNumery
     ): Promise<IDirectoryItem[]> {
 
-        if (await !(this.isDirectory(filePath))) {
+        if (await !(DirectoryManager.isDirectory(filePath))) {
             return [];
         }
 
-        const fileList = await DirectoryReader.getDirectoryPaths(filePath);
+        const fileList = await DirectoryManager.getDirectoryPaths(filePath);
         const filePromises = fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
-            const fileStats = await DirectoryReader.getFileStats(fullPath);
+            const fileStats = await DirectoryManager.getFileStats(fullPath);
 
             return {
                 name: fileName,
                 path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: DirectoryReader.isHidden(fileName)
+                isHidden: DirectoryManager.isHidden(fileName)
             } as IDirectoryItem;
         });
 
         const files = await Promise.all(filePromises);
 
         return sort(files);
+    }
+
+    /**
+     * Creates an item with itemName of itemType at itemPath.
+     *
+     * @param itemName - the name of the item to be created
+     * @param itemPath - the path to the item to be created
+     * @param itemType - the type of the item to be created
+     */
+    public static createItem(itemName: string, itemPath: string, itemType: ItemType) {
+        const fullItemName = path.join(itemPath, itemName);
+        if (itemType === "folder") {
+            fs.mkdir(fullItemName, error => {
+                error && console.error(error);
+            });
+        } else {
+            fs.writeFile(fullItemName, "", error => {
+                error && console.error(error);
+            });
+        }
+    }
+
+    /**
+     * Renames an item with oldName to newName at itemPath.
+     *
+     * @param oldName - the previous name
+     * @param newName - the new name
+     * @param itemPath - the path to the item to be renamed
+     */
+    public static renameItem(oldName: string, newName: string, itemPath: string) {
+        fs.rename(path.join(itemPath, oldName), path.join(itemPath, newName), error => {
+            error && console.error(error);
+        })
+    }
+
+    /**
+     * Deletes the item of itemType at itemPath.
+     *
+     * @param itemPath - the full path to the item to be deleted
+     * @param itemType - the type of the item to be deleted
+     */
+    public static deleteItem(itemPath: string, itemType: ItemType) {
+        if (itemType === "folder") {
+            fs.rmdir(itemPath, error => {
+                error && console.error(error);
+            });
+        } else {
+            fs.unlink(itemPath, error => {
+                error && console.error(error);
+            });
+        }
     }
 
     /**
@@ -54,7 +106,7 @@ class DirectoryReader {
      * @returns - whether the file is a directory
      */
     private static async isDirectory(path: string): Promise<boolean> {
-        const stats = await DirectoryReader.getFileStats(path);
+        const stats = await DirectoryManager.getFileStats(path);
 
         return stats.isDirectory();
     }
@@ -119,4 +171,4 @@ class DirectoryReader {
     }
 }
 
-export default DirectoryReader;
+export default DirectoryManager;

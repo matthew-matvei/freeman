@@ -35,6 +35,11 @@ interface IDirectoryPaneState {
      * Whether the user is renaming an item.
      */
     renamingItem: boolean;
+
+    /**
+     * Whether the user has just deleted an item.
+     */
+    itemDeleted: boolean;
 }
 
 export default IDirectoryPaneState;
