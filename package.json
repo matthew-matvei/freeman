@@ -47,7 +47,7 @@
     "electron": "^1.7.9",
     "electron-debug": "^1.4.0",
     "extract-text-webpack-plugin": "^3.0.2",
-    "node-sass": "^4.6.0",
+    "node-sass": "^4.7.2",
     "normalize-scss": "^7.0.0",
     "prop-types": "^15.6.0",
     "react-hotkeys": "^0.10.0",
