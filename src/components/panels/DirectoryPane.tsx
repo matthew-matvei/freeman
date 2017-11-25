@@ -9,7 +9,7 @@ import ScrollArea from "react-scrollbar";
 import { DirectoryItem, InputItem } from "components/blocks";
 import { PathPanel } from "components/panels";
 import { IAppContext, IDirectoryItem, INavigationNode } from "models";
-import { DirectoryManager } from "objects";
+import { DirectoryManager, DirectoryTextFinder } from "objects";
 import { IDirectoryPaneState } from "states/panels";
 import { IDirectoryPaneProps } from "props/panels";
 import { DirectoryDirection, ItemType } from "types";
@@ -43,6 +43,11 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     }
 
     /**
+     * Finds directory items using simple text matching.
+     */
+    private directoryTextFinder: DirectoryTextFinder;
+
+    /**
      * Stores navigation data in a simple stack structure.
      */
     private navigationStack: INavigationNode[];
@@ -65,6 +70,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             itemDeleted: false
         };
 
+        this.directoryTextFinder = new DirectoryTextFinder();
         this.navigationStack = [];
     }
 
@@ -113,13 +119,12 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const items = this.state.directoryItems
-            .filter(item => !item.isHidden || this.state.showHiddenItems)
+        const items = this.nonHiddenDirectoryItems
             .map((item, i) => {
                 const isSelectedItem = this.props.isSelectedPane && !this.state.creatingNewItem && this.state.selectedItem === i;
 
                 if (this.state.renamingItem && isSelectedItem) {
-                    const thisItem = this.state.directoryItems.find(i => i.name === item.name);
+                    const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
                     const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
                     return <InputItem
                         thisItem={thisItem}
@@ -144,7 +149,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             verticalScrollbarStyle={{ width: "100%" }}>
             <HotKeys handlers={this.handlers}>
                 <PathPanel path={this.state.path} />
-                <ul>
+                <ul onKeyDown={this.handleKeyDown}>
                     {items}
                     {this.state.creatingNewItem &&
                         <InputItem
@@ -193,7 +198,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                 this.setState(prevState => ({ selectedItem: prevState.selectedItem - 1 } as IDirectoryPaneState));
             }
         } else {
-            if (this.state.selectedItem < this.state.directoryItems.length - 1) {
+            if (this.state.selectedItem < this.nonHiddenDirectoryItems.length - 1) {
                 this.setState(prevState => ({ selectedItem: prevState.selectedItem + 1 } as IDirectoryPaneState));
             }
         }
@@ -217,8 +222,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
      */
     @autobind
     private selectItem(itemToSelect: IDirectoryItem) {
-        const index = this.state.directoryItems
-            .filter(item => !item.isHidden || this.state.showHiddenItems)
+        const index = this.nonHiddenDirectoryItems
             .findIndex(item => item.name === itemToSelect.name);
         this.setState({ selectedItem: index } as IDirectoryPaneState);
         this.props.sendSelectedPaneUp(this.props.id);
@@ -278,6 +282,33 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     @autobind
     private refreshAfterDelete() {
         this.setState({ itemDeleted: true } as IDirectoryPaneState);
+    }
+
+    /**
+     * Handles adding single alphanumeric characters to a search term to update
+     * the currently-selected item.
+     *
+     * @param event - an event raised on key down
+     */
+    @autobind
+    private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
+        const regex = new RegExp(/[a-z0-9]/, "i");
+        if (event.key.length === 1 && regex.test(event.key)) {
+            const indexToSelect = this.directoryTextFinder.addCharAndSearch(
+                event.key, this.nonHiddenDirectoryItems);
+
+            if (indexToSelect >= 0) {
+                this.setState({ selectedItem: indexToSelect } as IDirectoryPaneState);
+            }
+        }
+    }
+
+    /**
+     * Gets the directory items that are not currently hidden.
+     */
+    private get nonHiddenDirectoryItems(): IDirectoryItem[] {
+        return this.state.directoryItems.filter(
+            item => !item.isHidden || this.state.showHiddenItems);
     }
 }
 
