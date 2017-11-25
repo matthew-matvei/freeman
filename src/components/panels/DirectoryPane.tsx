@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import * as PropTypes from "prop-types";
 import os from "os";
 import path from "path";
@@ -145,7 +146,8 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
             style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
             verticalContainerStyle={{ width: "20px" }}
             verticalScrollbarStyle={{ width: "100%" }}>
-            <HotKeys handlers={this.handlers}>
+            <HotKeys handlers={this.handlers}
+                ref={component => component && items.length === 0 && this.autoFocus(component)}>
                 <PathPanel path={this.state.path} />
                 <ul onKeyDown={this.handleKeyDown}>
                     {items}
@@ -307,6 +309,15 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
         return this.state.directoryItems.filter(
             item => !item.isHidden || this.state.showHiddenItems);
+    }
+
+    /**
+     * Handles focusing the directory pane if there are no items to display.
+     *
+     * @param component - the HotKeys wrapper component to call focus on
+     */
+    private autoFocus(component: HotKeys) {
+        (ReactDOM.findDOMNode(component) as HTMLElement).focus();
     }
 }
 
