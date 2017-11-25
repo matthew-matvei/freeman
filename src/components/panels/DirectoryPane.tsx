@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom";
 import * as PropTypes from "prop-types";
 import os from "os";
 import path from "path";
+import { shell } from "electron";
 import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
 import ScrollArea from "react-scrollbar";
@@ -38,6 +39,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
         toggleShowHidden: this.toggleShowHidden,
         newFile: () => this.inputNewItem("file"),
         newFolder: () => this.inputNewItem("folder"),
+        openInNativeExplorer: this.openInNativeExplorer,
         rename: this.inputRenameItem
     }
 
@@ -46,6 +48,14 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
 
     /** Stores navigation data in a simple stack structure. */
     private navigationStack: INavigationNode[];
+
+    /**
+     * Gets the directory items that are not currently hidden.
+     */
+    private get nonHiddenDirectoryItems(): IDirectoryItem[] {
+        return this.state.directoryItems.filter(
+            item => !item.isHidden || this.state.showHiddenItems);
+    }
 
     /**
      * Instantiates the DirectoryPane component.
@@ -304,11 +314,12 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     }
 
     /**
-     * Gets the directory items that are not currently hidden.
+     * Handles revealing the current directory in the system's native
+     * file explorer.
      */
-    private get nonHiddenDirectoryItems(): IDirectoryItem[] {
-        return this.state.directoryItems.filter(
-            item => !item.isHidden || this.state.showHiddenItems);
+    @autobind
+    private openInNativeExplorer() {
+        shell.showItemInFolder(this.state.path);
     }
 
     /**
