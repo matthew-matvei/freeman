@@ -7,5 +7,7 @@
     "pathPanel": {
         "backgroundColour": "rgb(30, 31, 28)"
     },
-    "directoryItem": {}
+    "directoryItem": {
+        "selectedColour": "rgb(62, 61, 50)"
+    }
 }

@@ -1,9 +1,8 @@
-import os from "os";
 import fs from "fs";
 import path from "path";
 
 import { IKeyMap } from "models";
-import { ConfigManager, PlatformHelper } from "objects";
+import { ConfigManager } from "objects";
 
 /**
  * Manages parsing key maps from application and user settings files.
@@ -14,18 +13,6 @@ class KeysManager {
      * A base config manager held as an instance variable.
      */
     private configManager: ConfigManager;
-
-    /**
-     * Gets the name of the key map file depending on the current platform.
-     */
-    private get keysFile(): string {
-        const platform = os.platform();
-        if (PlatformHelper.isUnix(platform)) {
-            return "keys.linux.json";
-        } else {
-            return "keys.windows.json";
-        }
-    }
 
     /**
      * Initialises an instance of the KeysManager class.
@@ -61,7 +48,7 @@ class KeysManager {
         const fileName = path.join(
             this.configManager.applicationDataDirectory,
             this.configManager.applicationName,
-            this.keysFile);
+            "keys.json");
 
         if (!fs.existsSync(fileName)) {
             return null;
@@ -81,7 +68,7 @@ class KeysManager {
         const fileName = path.join(
             this.configManager.userDataDirectory,
             this.configManager.applicationName,
-            this.keysFile);
+            "keys.json");
 
         if (!fs.existsSync(fileName)) {
             return null;

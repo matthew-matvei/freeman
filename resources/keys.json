@@ -1,0 +1,38 @@
+{
+    "moveUp": [
+        "up"
+    ],
+    "moveDown": [
+        "down"
+    ],
+    "moveBack": [
+        "left"
+    ],
+    "openDirectory": [
+        "enter"
+    ],
+    "switchPane": [
+        "tab"
+    ],
+    "activate": [
+        "enter"
+    ],
+    "openInNativeExplorer": [
+        "ctrl+o"
+    ],
+    "toggleShowHidden": [
+        "ctrl+h"
+    ],
+    "newFile": [
+        "ctrl+n"
+    ],
+    "newFolder": [
+        "ctrl+shift+n"
+    ],
+    "rename": [
+        "ctrl+r"
+    ],
+    "delete": [
+        "del"
+    ]
+}
