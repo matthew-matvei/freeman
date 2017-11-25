@@ -29,9 +29,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     /** The global application context. */
     public context: IAppContext;
 
-    /**
-     * Handler functions for the given events this component handles.
-     */
+    /** Handler functions for the given events this component handles. */
     private handlers = {
         moveUp: () => this.move("up"),
         moveDown: () => this.move("down"),
@@ -42,14 +40,10 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
         rename: this.inputRenameItem
     }
 
-    /**
-     * Finds directory items using simple text matching.
-     */
+    /** Finds directory items using simple text matching. */
     private directoryTextFinder: DirectoryTextFinder;
 
-    /**
-     * Stores navigation data in a simple stack structure.
-     */
+    /** Stores navigation data in a simple stack structure. */
     private navigationStack: INavigationNode[];
 
     /**
@@ -75,7 +69,7 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     }
 
     /**
-     * Updates the directory contents prior to loading the component.
+     * Updates the directory contents after loading the component.
      */
     public async componentDidMount() {
         const items = await DirectoryManager.listDirectory(this.state.path);
@@ -84,13 +78,17 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
     }
 
     /**
-     * Updates the directory contents prior to updating the component.
+     * Updates the directory contents after updating the component.
      *
      * @param prevProps - the previous props object
      * @param prevState - the previous state object
      */
     public async componentDidUpdate(prevProps: {}, prevState: IDirectoryPaneState) {
-        if (prevState.path === this.state.path && !prevState.creatingNewItem && !prevState.renamingItem && !this.state.itemDeleted) {
+        if (prevState.path === this.state.path &&
+            !prevState.creatingNewItem &&
+            !prevState.renamingItem &&
+            !this.state.itemDeleted) {
+
             return;
         }
 
