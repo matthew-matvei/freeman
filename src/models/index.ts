@@ -3,6 +3,7 @@ import IDirectoryItem from "./IDirectoryItem";
 import IKeyMap from "./IKeyMap";
 import INavigationNode from "./INavigationNode";
 import ISettings from "./ISettings";
+import ISocketMessage from "./ISocketMessage";
 import ITheme from "./ITheme";
 
 export {
@@ -11,5 +12,6 @@ export {
     IKeyMap,
     INavigationNode,
     ISettings,
+    ISocketMessage,
     ITheme
 }

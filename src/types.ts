@@ -6,3 +6,5 @@ export type DirectoryDirection = "up" | "down";
 
 /** The type of a directory item. */
 export type ItemType = "file" | "folder";
+
+export type MessageType = "resize";

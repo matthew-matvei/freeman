@@ -7,9 +7,10 @@ import { shell } from "electron";
 import autobind from "autobind-decorator";
 import { HotKeys } from "react-hotkeys";
 import ScrollArea from "react-scrollbar";
+import SplitPane from "react-split-pane";
 
 import { DirectoryItem, InputItem } from "components/blocks";
-import { PathPanel } from "components/panels";
+import { PathPanel, TerminalPane } from "components/panels";
 import { IAppContext, IDirectoryItem, INavigationNode } from "models";
 import { DirectoryManager, DirectoryTextFinder } from "objects";
 import { IDirectoryPaneState } from "states/panels";
@@ -150,25 +151,42 @@ class DirectoryPane extends React.Component<IDirectoryPaneProps, IDirectoryPaneS
                 }
             });
 
-        return <ScrollArea
-            className="DirectoryPane"
-            horizontal={false}
-            style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
-            verticalContainerStyle={{ width: "20px" }}
-            verticalScrollbarStyle={{ width: "100%" }}>
-            <HotKeys handlers={this.handlers}
-                ref={component => component && items.length === 0 && this.autoFocus(component)}>
-                <PathPanel path={this.state.path} />
-                <ul onKeyDown={this.handleKeyDown}>
-                    {items}
-                    {this.state.creatingNewItem &&
-                        <InputItem
-                            creatingItemType={this.state.creatingNewItem}
-                            sendUpCreateItem={this.createNewItem}
-                            otherItems={this.state.directoryItems} />}
-                </ul>
-            </HotKeys>
-        </ScrollArea>;
+        return <div className="DirectoryPane">
+            <SplitPane
+                split="horizontal"
+                defaultSize="65vh"
+                allowResize={false}>
+                <div style={{ width: "100%" }}>
+                    <PathPanel path={this.state.path} />
+                    <ScrollArea
+                        className="directoryScrollArea"
+                        horizontal={false}
+                        style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
+                        verticalContainerStyle={{ width: "20px" }}
+                        verticalScrollbarStyle={{ width: "100%" }}>
+                        <HotKeys handlers={this.handlers}
+                            ref={component => component && items.length === 0 && this.autoFocus(component)}>
+                            <ul onKeyDown={this.handleKeyDown}>
+                                {items}
+                                {this.state.creatingNewItem &&
+                                    <InputItem
+                                        creatingItemType={this.state.creatingNewItem}
+                                        sendUpCreateItem={this.createNewItem}
+                                        otherItems={this.state.directoryItems} />}
+                            </ul>
+                        </HotKeys>
+                    </ScrollArea>
+                </div>
+                <ScrollArea
+                    className="terminalScrollArea"
+                    horizontal={false}
+                    style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
+                    verticalContainerStyle={{ width: "20px" }}
+                    verticalScrollbarStyle={{ width: "100%" }}>
+                    <TerminalPane />
+                </ScrollArea>
+            </SplitPane>
+        </div>;
     }
 
     /**

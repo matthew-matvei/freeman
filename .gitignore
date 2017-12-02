@@ -1,4 +1,7 @@
 node_modules
 *.log
-app/out*
+dist/*
+!dist/index.html
+**/*.map
 .vscode/settings.json
+__tests__

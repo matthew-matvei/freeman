@@ -5,6 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Main Process",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            },
+            "runtimeArgs": [
+                "--enable-logging",
+                "--remote-debugging-port=9222"
+            ],
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/dist/main.js",
+            "timeout": 20000,
+            "sourceMaps": true,
+            "preLaunchTask": "build"
+        },
+        {
             "name": "Launch app",
             "type": "chrome",
             "request": "launch",
@@ -13,7 +31,7 @@
                 "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
             },
             "runtimeArgs": [
-                "${workspaceFolder}/app/server.js",
+                "${workspaceFolder}/dist/main.js",
                 "--enable-logging",
                 "--remote-debugging-port=9222"
             ],
@@ -32,7 +50,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceRoot}/app/outTest.js"
+                "${workspaceRoot}/__tests__/main.js"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }

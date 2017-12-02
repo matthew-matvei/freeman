@@ -82,7 +82,7 @@ class App extends React.Component<{}, IAppState> {
                     split="vertical"
                     defaultSize="50vw"
                     style={{ height: "97vh" }}
-                    paneStyle={{ overflowY: "auto" }}>
+                    paneStyle={{ overflowY: "hidden" }}>
                     <DirectoryPane
                         id="left"
                         isSelectedPane={this.state.selectedPane === "left"}
