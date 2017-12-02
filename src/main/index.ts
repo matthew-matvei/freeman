@@ -1,17 +1,18 @@
-import { app, BrowserWindow, dialog } from "electron";
+import { app, dialog, Menu } from "electron";
 import { ConfigInstaller } from "configuration";
 require("electron-debug")();
 
 import { TerminalService } from "services";
+import { FreemanWindow } from "widgets";
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: FreemanWindow | null = null;
 let terminalService: TerminalService;
 
 if (process.argv.find(arg => arg === "--installConfig")) {
     const installer = new ConfigInstaller();
-    installer.install().then(onfulfilled => {
+    installer.install().then((onfulfilled: void) => {
         app.exit(0);
-    }).catch(onrejected => {
+    }).catch((onrejected: void) => {
         app.exit(1);
     });
 } else {
@@ -19,13 +20,11 @@ if (process.argv.find(arg => arg === "--installConfig")) {
     buildWindow(mainWindow);
 }
 
-/**
- * Handles contructing the main
- */
-function buildWindow(window: BrowserWindow | null) {
+/** Handles constructing the main window. */
+function buildWindow(window: FreemanWindow | null) {
     app.on("activate", () => {
-        if (mainWindow === null) {
-            buildWindow(mainWindow);
+        if (window === null) {
+            buildWindow(window);
         }
     });
 
@@ -36,22 +35,23 @@ function buildWindow(window: BrowserWindow | null) {
     });
 
     app.on("ready", () => {
-        mainWindow = new BrowserWindow({ width: 1400, height: 800 });
-        mainWindow.loadURL(`file://${__dirname}/index.html`);
+        window = new FreemanWindow();
+        const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
+        Menu.setApplicationMenu(menu);
 
-        mainWindow.once("ready-to-show", () => {
-            mainWindow!.show()
+        window.once("ready-to-show", () => {
+            window!.show()
         });
 
-        mainWindow.on("closed", () => {
+        window.on("closed", () => {
             terminalService.close();
-            mainWindow = null;
+            window = null;
         });
 
-        mainWindow.on("unresponsive", () => {
+        window.on("unresponsive", () => {
             const killIndex = 0;
             const cancelIndex = 1;
-            const kill = dialog.showMessageBox(mainWindow!, {
+            const kill = dialog.showMessageBox(window!, {
                 type: "warning",
                 buttons: ["OK", "Wait"],
                 defaultId: killIndex,
@@ -64,15 +64,5 @@ function buildWindow(window: BrowserWindow | null) {
                 app.exit(1);
             }
         });
-
-        mainWindow.webContents.on("crashed", (event, killed) => {
-            if (killed) {
-                return;
-            }
-
-            dialog.showErrorBox("FreeMAN crashed", "FreeMAN crashed");
-        });
-
-        // mainWindow.setMenu(null);
     });
 }
