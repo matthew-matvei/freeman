@@ -8,7 +8,11 @@ const commonConfig = {
     devtool: "source-map",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"],
-        modules: [path.resolve(__dirname, "src"), "node_modules"]
+        modules: [
+            path.resolve(__dirname, "src", "renderer"),
+            path.resolve(__dirname, "src", "main"),
+            "node_modules"
+        ]
     },
     module: {
         loaders: [
@@ -48,12 +52,12 @@ module.exports = [
     Object.assign(
         {
             target: "electron-main",
-            entry: { main: "./src/main.ts" }
+            entry: { main: "./src/main/index.ts" }
         }, commonConfig),
     Object.assign(
         {
             target: "electron-renderer",
-            entry: { renderer: "./src/renderer.tsx" },
+            entry: { renderer: "./src/renderer/index.tsx" },
             plugins: [extractSass]
         }, commonConfig)
 ];

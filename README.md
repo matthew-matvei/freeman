@@ -36,13 +36,6 @@ Ideally, after cloning, you can just:
 One complex dependency is `node-pty`. If you have any problems building
 it, see its [issues page](https://github.com/Tyriar/node-pty/issues).
 
-Since `react-resize-detector` does not provide typings, you may need to
-
-    cp -r typings/react-resize-detector node_modules/@types
-
-If further development does not remove this dependency, then these typings
-will be suggested to the author.
-
 ## Can I contribute?
 
 Yes please! Work on the core application is still under way. There are

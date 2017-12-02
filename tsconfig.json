@@ -9,7 +9,17 @@
             }
         ],
         "alwaysStrict": true,
-        "baseUrl": "src",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "src/main/*",
+                "src/renderer/*"
+            ]
+        },
+        "typeRoots": [
+            "node_modules/@types",
+            "typings"
+        ],
         "downlevelIteration": true,
         "sourceMap": true,
         "strict": true,
