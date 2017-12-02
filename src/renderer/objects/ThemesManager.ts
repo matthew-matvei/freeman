@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { ITheme } from "models";
-import { ConfigManager } from "objects";
+import { ConfigManager } from "configuration";
 
 /**
  * Manages parsing themes from application settings files.

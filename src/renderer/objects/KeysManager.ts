@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { IKeyMap } from "models";
-import { ConfigManager } from "objects";
+import { ConfigManager } from "configuration";
 
 /**
  * Manages parsing key maps from application and user settings files.
@@ -10,7 +10,7 @@ import { ConfigManager } from "objects";
 class KeysManager {
 
     /**
-     * A base config manager held as an instance variable.
+     * A base configuration manager held as an instance variable.
      */
     private configManager: ConfigManager;
 

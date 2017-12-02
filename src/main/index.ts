@@ -1,11 +1,23 @@
 import { app, BrowserWindow, dialog } from "electron";
+import { ConfigInstaller } from "configuration";
 require("electron-debug")();
 
-import { TerminalService } from "api";
+import { TerminalService } from "services";
 
 let mainWindow: BrowserWindow | null = null;
-const terminalService = new TerminalService();
-buildWindow(mainWindow);
+let terminalService: TerminalService;
+
+if (process.argv.find(arg => arg === "--installConfig")) {
+    const installer = new ConfigInstaller();
+    installer.install().then(onfulfilled => {
+        app.exit(0);
+    }).catch(onrejected => {
+        app.exit(1);
+    });
+} else {
+    terminalService = new TerminalService();
+    buildWindow(mainWindow);
+}
 
 /**
  * Handles contructing the main

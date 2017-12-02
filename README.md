@@ -16,21 +16,21 @@ The application is currently only suitable for development only.
 
 ## Getting started
 
-Some settings files currently need to be manually copied, work is in the
-backlog to automate this process to help speed up development. `{userData}` and `{appData}` below refer to Electron's `app.getPath("userData")` and
-`app.getPath("appData")` locations respectively.
+During development, to install application config files, first:
 
-    $ mkdir {appData}/FreeMAN
-    $ cp -r resources/*.json {appData}/FreeMAN
+    npm install
+    npm run installconfig
 
-You can add a user-specific `keys.json` like so
+If you want, you can add a user-specific `keys.json` like so
 
     $ mkdir {userData}/FreeMAN
     $ cp keys.json {userData}/FreeMAN
 
+`{userData}` above refers to Electron's `app.getPath("userData")` location.
+
 Ideally, after cloning, you can just:
 
-    npm install
+    npm install  # if not yet done
     npm start
 
 One complex dependency is `node-pty`. If you have any problems building

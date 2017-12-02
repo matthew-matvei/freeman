@@ -1,6 +1,5 @@
-import { remote } from "electron";
-
-const app = remote.app;
+const electron = require("electron");
+const app = electron.app || electron.remote.app;
 
 /**
  * Manages parsing configuration from application and user settings files.

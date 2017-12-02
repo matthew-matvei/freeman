@@ -57,7 +57,6 @@ class Terminalpane extends React.Component<{}, {}> {
      * @returns - a JSX element representing the terminal view
      */
     public render(): JSX.Element {
-        console.log("Rendering TerminalPane");
         return <div
             className="TerminalPane"
             ref={element => this.container = element}
