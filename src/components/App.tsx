@@ -4,31 +4,30 @@ import SplitPane from "react-split-pane";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 
-import { DirectoryPane, Status } from "components/panels";
+import { DirectoryWrapper, Status } from "components/panels";
 
 import { IAppState } from "states";
 import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
 import { SettingsManager, KeysManager, ThemesManager } from "objects";
-
-import "styles/App.scss";
 import { DirectoryPaneSide } from "types";
 
-/**
- * The main application component.
- */
+import "styles/App.scss";
+
+/** The main application component. */
 class App extends React.Component<{}, IAppState> {
 
+    /** Validation for child context types. */
     public static childContextTypes = {
         theme: PropTypes.object
     }
 
+    /** Settings to use in the application. */
     private settings: ISettings;
 
-    /**
-     * The global key map to pass down to child components.
-     */
+    /** The global key map to pass down to child components. */
     private keyMap: IKeyMap | null;
 
+    /** The colour theme to use in the application. */
     private theme: ITheme;
 
     /**
@@ -66,6 +65,7 @@ class App extends React.Component<{}, IAppState> {
         }
     }
 
+    /** Returns the child context to pass down the component tree. */
     public getChildContext(): IAppContext {
         return { theme: this.theme };
     }
@@ -76,18 +76,20 @@ class App extends React.Component<{}, IAppState> {
      * @returns - a JSX element representing the main application view
      */
     public render(): JSX.Element {
+        const appStyle = { color: this.theme.primaryColour };
+        const splitPaneStyle = { height: "97vh" };
+
         return <HotKeys keyMap={this.keyMap || undefined} handlers={this.handlers}>
-            <div className="App" style={{ color: this.theme.primaryColour }}>
+            <div className="App" style={appStyle}>
                 <SplitPane
                     split="vertical"
                     defaultSize="50vw"
-                    style={{ height: "97vh" }}
-                    paneStyle={{ overflowY: "hidden" }}>
-                    <DirectoryPane
+                    style={splitPaneStyle}>
+                    <DirectoryWrapper
                         id="left"
                         isSelectedPane={this.state.selectedPane === "left"}
                         sendSelectedPaneUp={this.selectPane} />
-                    <DirectoryPane
+                    <DirectoryWrapper
                         id="right"
                         isSelectedPane={this.state.selectedPane === "right"}
                         sendSelectedPaneUp={this.selectPane} />
@@ -97,9 +99,7 @@ class App extends React.Component<{}, IAppState> {
         </HotKeys>;
     }
 
-    /**
-     * Handles switching selected pane.
-     */
+    /** Handles switching selected pane. */
     @autobind
     private switchPane() {
         const { selectedPane } = this.state;

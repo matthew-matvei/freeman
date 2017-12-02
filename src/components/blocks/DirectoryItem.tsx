@@ -16,7 +16,7 @@ import "styles/blocks/DirectoryItem.scss";
 /**
  * A single directory item component.
  */
-class DirectoryItem extends React.Component<IDirectoryItemProps, {}> {
+class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
     /** Validation for context types. */
     public static contextTypes = {

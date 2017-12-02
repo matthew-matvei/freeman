@@ -9,7 +9,7 @@ import "styles/panels/PathPanel.scss";
 /**
  * The component for displaying the current path in the directory pane.
  */
-class PathPanel extends React.Component<IPathPanelProps, {}> {
+class PathPanel extends React.PureComponent<IPathPanelProps> {
 
     /** Validation for context types. */
     public static contextTypes = {
@@ -26,7 +26,9 @@ class PathPanel extends React.Component<IPathPanelProps, {}> {
      */
     public render(): JSX.Element {
         const { backgroundColour } = this.context.theme.pathPanel;
-        return <div style={{ backgroundColor: backgroundColour }} className="PathPanel">{this.props.path}</div>;
+        const pathPanelStyle = { backgroundColor: backgroundColour };
+
+        return <div style={pathPanelStyle} className="PathPanel">{this.props.path}</div>;
     }
 }
 

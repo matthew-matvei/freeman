@@ -6,11 +6,8 @@ import { IAppContext } from "models";
 
 import "styles/panels/Status.scss";
 
-
-/**
- * The status indication component.
- */
-class Status extends React.Component<IStatusProps, {}> {
+/** The status indication component. */
+class Status extends React.PureComponent<IStatusProps> {
 
     /** Validation for context types. */
     public static contextTypes = {
@@ -27,7 +24,9 @@ class Status extends React.Component<IStatusProps, {}> {
      */
     public render(): JSX.Element {
         const { backgroundColour } = this.context.theme.statusBar;
-        return <div style={{ backgroundColor: backgroundColour }} className="Status">{this.props.message}</div>;
+        const statusBarStyle = { backgroundColor: backgroundColour };
+
+        return <div style={statusBarStyle} className="Status">{this.props.message}</div>;
     }
 }
 

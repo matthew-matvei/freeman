@@ -5,23 +5,17 @@ import { IInputItemProps } from "props/blocks";
 import { IInputItemState } from "states/blocks";
 import { HotKeys } from "react-hotkeys";
 
-/**
- * The input component to create a new directory item.
- */
+/** The input component to create a new directory item. */
 class InputItem extends React.Component<IInputItemProps, IInputItemState> {
 
-    /**
-     * Handler functions for the given events this component handles.
-     */
+    /** Handler functions for the given events this component handles. */
     private handlers = {
         moveUp: () => { },
         moveDown: () => { },
         moveBack: () => { }
     }
 
-    /**
-     * A reference to this input element.
-     */
+    /** A reference to this input element. */
     private input: HTMLInputElement | null;
 
     /**
@@ -37,17 +31,18 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
         }
     }
 
-    /**
-     * Sets the focus to this item immediately after mounting.
-     */
+    /** Sets the focus to this item immediately after mounting. */
     public componentDidMount() {
         this.input && this.input.focus();
     }
 
     /**
+     * Returns whether the component should update.
      *
-     * @param nextProps -
-     * @param nextState
+     * @param nextProps - the next props
+     * @param nextState - the next state
+     *
+     * @returns - whether the component should update
      */
     public shouldComponentUpdate(nextProps: {}, nextState: IInputItemState): boolean {
         return this.state.isInvalid !== nextState.isInvalid;
@@ -59,12 +54,17 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     * @returns - a JSX element representing the directory view
     */
     public render(): JSX.Element {
-        return <HotKeys handlers={this.handlers}>
-            <input type="text"
-                style={{ borderColor: this.state.isInvalid && "red" }}
-                ref={input => this.input = input}
-                onKeyUp={this.handleKeyUp} />
-        </HotKeys>;
+        const inputStyle: React.CSSProperties = {
+            borderColor: this.state.isInvalid && "red"
+        };
+
+        return (
+            <HotKeys handlers={this.handlers}>
+                <input type="text"
+                    style={inputStyle}
+                    ref={input => this.input = input}
+                    onKeyUp={this.handleKeyUp} />
+            </HotKeys>);
     }
 
     /**

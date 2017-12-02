@@ -1,13 +1,14 @@
-import * as React from "react";
-
-class ReactResizeDetector<ReactResizeDetectorProps, S>
-    extends React.Component<ReactResizeDetectorProps, S> { }
-
-interface ReactResizeDetectorProps {
-    handleHeight: boolean;
-    handleWeight: boolean;
-}
+/// <reference types="react" />
 
 declare module "react-resize-detector" {
-    export const reactResizeDetector: ReactResizeDetector<ReactResizeDetectorProps, {}>;
+
+    interface ReactResizeDetectorProps extends React.Props<ReactResizeDetector> {
+        handleHeight?: boolean;
+        handleWeight?: boolean;
+        onResize: (width: number, height: number) => void;
+    }
+
+    class ReactResizeDetector extends React.Component<ReactResizeDetectorProps> { }
+
+    export = ReactResizeDetector;
 }

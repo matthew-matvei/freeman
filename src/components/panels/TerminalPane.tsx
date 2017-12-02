@@ -45,12 +45,19 @@ class Terminalpane extends React.Component<{}, {}> {
         this.socket.close();
     }
 
+    /** Whether the component should update. */
+    public shouldComponentUpdate() {
+        // returns false, since the terminal DOM container should only render once
+        return false;
+    }
+
     /**
      * Defines how the terminal pane component is rendered.
      *
      * @returns - a JSX element representing the terminal view
      */
     public render(): JSX.Element {
+        console.log("Rendering TerminalPane");
         return <div
             className="TerminalPane"
             ref={element => this.container = element}
