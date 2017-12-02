@@ -22,7 +22,9 @@
     "build": "./node_modules/.bin/webpack --config webpack.config.js",
     "build:test": "./node_modules/.bin/webpack --config webpack-test.config.js",
     "pretest": "npm run build:test",
-    "test": "./node_modules/.bin/electron-mocha --renderer __tests__/main.js"
+    "test": "./node_modules/.bin/electron-mocha --renderer __tests__/main.js",
+    "prestart": "npm run build",
+    "start": "./node_modules/.bin/electron dist/main.js"
   },
   "homepage": "https://github.com/matthew-matvei/freeman#readme",
   "devDependencies": {
