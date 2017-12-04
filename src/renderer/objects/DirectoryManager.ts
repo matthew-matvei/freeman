@@ -1,10 +1,10 @@
 import fs from "fs";
-import os from "os";
 import path from "path";
 import trash from "trash";
+import hidefile from "hidefile";
 
 import { IDirectoryItem } from "models";
-import { DirectorySorter, PlatformHelper } from "objects";
+import { DirectorySorter } from "objects";
 import { ItemType } from "types";
 
 /**
@@ -39,7 +39,7 @@ class DirectoryManager {
                 name: fileName,
                 path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: DirectoryManager.isHidden(fileName)
+                isHidden: await DirectoryManager.isHiddenAsync(fullPath)
             } as IDirectoryItem;
         });
 
@@ -178,22 +178,18 @@ class DirectoryManager {
     /**
      * Returns whether the given item (directory, file etc.) is hidden.
      *
-     * @param itemName - the name of the item whose visibility is to be determined
+     * @param itemPath - the path to the item whose visibility is to be determined
      *
      * @returns - whether the given item (directory, file etc.) is hidden
      */
-    private static isHidden(itemName: string): boolean {
-        const platform = os.platform();
-        if (PlatformHelper.isUnix(platform)) {
-            if (itemName.startsWith(".")) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            console.warn("isHidden functionality currently available only on Unix-like platforms");
-            return false;
-        }
+    private static async isHiddenAsync(itemPath: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            hidefile.isHidden(itemPath, (err, result) => {
+                err && reject(err);
+
+                resolve(result);
+            });
+        });
     }
 }
 

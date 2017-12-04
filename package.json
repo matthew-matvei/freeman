@@ -61,6 +61,7 @@
     "electron": "1.7.9",
     "electron-debug": "^1.4.0",
     "extract-text-webpack-plugin": "^3.0.2",
+    "hidefile": "^2.0.0",
     "json-loader": "^0.5.7",
     "node-pty": "^0.7.3",
     "node-sass": "^4.7.2",
