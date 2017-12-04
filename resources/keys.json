@@ -30,9 +30,12 @@
         "ctrl+shift+n"
     ],
     "rename": [
-        "ctrl+r"
+        "ctrl+shift+r"
+    ],
+    "sendToTrash": [
+        "del"
     ],
     "delete": [
-        "del"
+        "ctrl+del"
     ]
 }

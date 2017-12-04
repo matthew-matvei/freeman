@@ -94,9 +94,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (this.navigationStack.length > 0 &&
             this.navigationStack[this.navigationStack.length - 1].path === this.props.path) {
 
+            const cachedNavigation = this.navigationStack.pop()!;
+
             this.setState(
                 {
-                    directoryItems: this.navigationStack.pop()!.directoryItems
+                    directoryItems: cachedNavigation.directoryItems,
+                    selectedItem: cachedNavigation.selectedItem
                 } as IDirectoryListState);
         } else {
             this.setState(
@@ -195,10 +198,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
         if (itemName && itemTypeToCreate) {
-            DirectoryManager.createItem(itemName, this.props.path, itemTypeToCreate);
+            DirectoryManager.createItem(itemName, this.props.path, itemTypeToCreate)
+                .then(onfulfilled => {
+                    this.setState({ creatingNewItem: false } as IDirectoryListState);
+                });
         }
-
-        this.setState({ creatingNewItem: false } as IDirectoryListState);
     }
 
     /**
@@ -310,10 +314,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private renameItem(oldName?: string, newName?: string) {
         if (oldName && newName) {
-            DirectoryManager.renameItem(oldName, newName, this.props.path);
+            DirectoryManager.renameItem(oldName, newName, this.props.path)
+                .then(onfulfilled => {
+                    this.setState({ renamingItem: false } as IDirectoryListState);
+                });
         }
-
-        this.setState({ renamingItem: false } as IDirectoryListState);
     }
 
     /**

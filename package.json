@@ -72,6 +72,7 @@
     "react-split-pane": "^0.1.68",
     "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.3",
+    "trash": "^4.2.1",
     "tslib": "^1.8.0",
     "typescript": "^2.6.1",
     "webpack": "^3.8.1",
