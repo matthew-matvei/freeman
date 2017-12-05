@@ -120,7 +120,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (this.state.creatingNewItem !== nextState.creatingNewItem ||
             this.state.itemDeleted !== nextState.itemDeleted ||
             this.state.renamingItem !== nextState.renamingItem ||
-            this.state.selectedItem !== nextState.selectedItem) {
+            this.state.selectedItem !== nextState.selectedItem ||
+            this.state.showHiddenItems !== nextState.showHiddenItems) {
 
             return true;
         }
