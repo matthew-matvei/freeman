@@ -39,10 +39,11 @@ class TerminalService {
      */
     private setupTerminal(webSocket: WebSocket, request: http.IncomingMessage) {
         const { cols, rows } = request.headers;
+
         const terminal = pty.spawn(process.platform === "win32" ? "cmd.exe" : "bash", [], {
             name: "xterm-color",
-            cols: parseInt(cols) || 80,
-            rows: parseInt(rows) || 24,
+            cols: parseInt(cols as string) || 80,
+            rows: parseInt(rows as string) || 24,
             cwd: process.cwd(),
             env: process.env
         });

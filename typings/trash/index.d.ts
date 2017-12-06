@@ -4,7 +4,7 @@ declare module "trash" {
         glob: boolean;
     }
 
-    function trash(iterable: Iterable<string>, opts?: TrashOptions);
+    function trash(iterable: Iterable<string>, opts?: TrashOptions): Promise<void>;
 
-    export = trash;
+    export default trash;
 }

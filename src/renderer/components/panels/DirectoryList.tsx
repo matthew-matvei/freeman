@@ -6,10 +6,10 @@ import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 
 import { DirectoryItem, InputItem } from "components/blocks";
-import { IDirectoryItem, IAppContext, INavigationNode } from "models";
+import { IDirectoryItem, IAppContext, IItemClipboard, INavigationNode } from "models";
 import { DirectoryManager, DirectoryTextFinder } from "objects";
 import { IDirectoryListState } from "states/panels";
-import { DirectoryDirection, ItemType } from "types";
+import { DirectoryDirection, ItemType, ClipboardAction } from "types";
 import { IDirectoryListProps } from "props/panels";
 
 /** The component for displaying a directory's list of items. */
@@ -24,7 +24,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         newFile: () => this.inputNewItem("file"),
         newFolder: () => this.inputNewItem("folder"),
         openInNativeExplorer: this.openInNativeExplorer,
-        rename: this.inputRenameItem
+        rename: this.inputRenameItem,
+        copy: () => this.storeItemInClipboard("copy"),
+        cut: () => this.storeItemInClipboard("cut"),
+        paste: this.pasteFromClipboard
     }
 
     /** Stores navigation data in a simple stack structure. */
@@ -33,9 +36,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /** Finds directory items using simple text matching. */
     private directoryTextFinder: DirectoryTextFinder;
 
-    /**
-     * Gets the directory items that are not currently hidden.
-     */
+    /** An internally compatible clipboard object for copying files. */
+    private itemClipboard: IItemClipboard;
+
+    /** Gets the directory items that are not currently hidden. */
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
         return this.state.directoryItems.filter(
             item => !item.isHidden || this.state.showHiddenItems);
@@ -60,12 +64,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         }
 
         this.navigationStack = [];
+        this.itemClipboard = {};
         this.directoryTextFinder = new DirectoryTextFinder();
     }
 
-    /**
-     * Updates the directory contents after loading the component.
-     */
+    /** Updates the directory contents after loading the component. */
     public async componentDidMount() {
         const items = await DirectoryManager.listDirectory(this.props.path);
 
@@ -216,17 +219,13 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.setState({ creatingNewItem: itemTypeToCreate } as IDirectoryListState);
     }
 
-    /**
-     * Begins the renaming of a directory item.
-     */
+    /** Begins the renaming of a directory item. */
     @autobind
     private inputRenameItem() {
         this.setState({ renamingItem: true } as IDirectoryListState);
     }
 
-    /**
-     * Navigates back to the parent directory.
-     */
+    /** Navigates back to the parent directory. */
     @autobind
     private goBack() {
         const parentDirectory = path.join(this.props.path, "..");
@@ -299,8 +298,41 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     }
 
     /**
-     * Handles refreshing the page after a delete.
+     * Pastes an item stored in the internal clipboard according to the
+     * ClipboardAction previously recorded.
      */
+    @autobind
+    private async pasteFromClipboard() {
+        if (!this.itemClipboard.directoryItem || !this.itemClipboard.clipboardAction) {
+            return;
+        }
+
+        if (this.state.directoryItems.find(
+            item => item.name === this.itemClipboard.directoryItem!.name)) {
+
+            return;
+        }
+
+        if (this.itemClipboard.clipboardAction === "copy") {
+            DirectoryManager.copyItem(this.itemClipboard.directoryItem.path, this.props.path)
+                .then(async onfulfilled => {
+                    this.setState(
+                        {
+                            directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                        } as IDirectoryListState);
+                });
+        } else {
+            DirectoryManager.moveItem(this.itemClipboard.directoryItem.path, this.props.path)
+                .then(async onfulfilled => {
+                    this.setState(
+                        {
+                            directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                        } as IDirectoryListState);
+                });
+        }
+    }
+
+    /** Handles refreshing the page after a delete. */
     @autobind
     private refreshAfterDelete() {
         this.setState({ itemDeleted: true } as IDirectoryListState);
@@ -336,8 +368,23 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     }
 
     /**
-     * Handles toggling whether hidden files should be shown.
+     * Stores the currently selected item within the internal clipboard.
+     *
+     * @param action - the action to take when pasting, "cut" or "copy"
      */
+    @autobind
+    private storeItemInClipboard(action: ClipboardAction) {
+        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedItem];
+
+        if (!selectedItem.isDirectory) {
+            this.itemClipboard = {
+                directoryItem: this.nonHiddenDirectoryItems[this.state.selectedItem],
+                clipboardAction: action
+            };
+        }
+    }
+
+    /** Handles toggling whether hidden files should be shown. */
     @autobind
     private toggleShowHidden() {
         this.setState(prevState => (

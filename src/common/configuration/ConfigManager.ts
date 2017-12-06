@@ -24,7 +24,7 @@ class ConfigManager {
      * Gets the name of this application.
      */
     public get applicationName() {
-        return process.env === "production" ? app.getName() : "FreeMAN";
+        return process.env.NODE_ENV === "production" ? app.getName() : "FreeMAN";
     }
 }
 

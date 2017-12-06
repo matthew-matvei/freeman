@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import trash from "trash";
 import hidefile from "hidefile";
+import ncp from "ncp";
 
 import { IDirectoryItem } from "models";
 import { DirectorySorter } from "objects";
@@ -122,6 +123,39 @@ class DirectoryManager {
      */
     public static async sendItemToTrash(itemPath: string) {
         await trash([itemPath], { glob: false });
+    }
+
+    /**
+     * Copies an item at itemPath to the destinationDirectory.
+     *
+     * @param itemPath - the full path to the source item
+     * @param destinationDirectory - the directory to copy the item to
+     */
+    public static async copyItem(itemPath: string, destinationDirectory: string) {
+        return new Promise((resolve, reject) => {
+            const fileName = path.basename(itemPath);
+            ncp.ncp(itemPath, path.join(destinationDirectory, fileName), error => {
+                error && reject(error);
+
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Moves an item at itemPath to the destinationDirectory. This involves deleting
+     * permanently the source file.
+     *
+     * @param itemPath - the full path to the source item
+     * @param destinationDirectory - the directory to move the item to
+     */
+    public static async moveItem(itemPath: string, destinationDirectory: string) {
+        await DirectoryManager.copyItem(itemPath, destinationDirectory)
+            .catch(onrejected => {
+                console.error("Failed to copy item", onrejected);
+            }).then(onfulfilled => {
+                DirectoryManager.deleteItem(itemPath, "file");
+            });
     }
 
     /**

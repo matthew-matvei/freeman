@@ -37,5 +37,14 @@
     ],
     "delete": [
         "ctrl+del"
+    ],
+    "cut": [
+        "ctrl+x"
+    ],
+    "copy": [
+        "ctrl+c"
+    ],
+    "paste": [
+        "ctrl+v"
     ]
 }
