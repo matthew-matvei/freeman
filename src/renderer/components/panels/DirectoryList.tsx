@@ -1,9 +1,9 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import path from "path";
 import { shell } from "electron";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
+import { autoFocus } from "utils";
 
 import { DirectoryItem, InputItem } from "components/blocks";
 import { IDirectoryItem, IAppContext, IItemClipboard, INavigationNode } from "models";
@@ -181,7 +181,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         return (
             <HotKeys handlers={this.handlers}
-                ref={component => component && items.length === 0 && this.autoFocus(component)}>
+                ref={component => component && items.length === 0 && autoFocus(component)}>
                 <ul onKeyDown={this.handleKeyDown}>
                     {items}
                     {this.state.creatingNewItem &&
@@ -391,15 +391,6 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             {
                 showHiddenItems: !prevState.showHiddenItems
             } as IDirectoryListState));
-    }
-
-    /**
-     * Handles focusing the directory pane if there are no items to display.
-     *
-     * @param component - the HotKeys wrapper component to call focus on
-     */
-    private autoFocus(component: HotKeys) {
-        (ReactDOM.findDOMNode(component) as HTMLElement).focus();
     }
 }
 

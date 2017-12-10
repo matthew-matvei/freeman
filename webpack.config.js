@@ -26,7 +26,7 @@ const commonConfig = {
                         { loader: "css-loader" },
                         {
                             loader: "sass-loader",
-                            options: { includePaths: ["node_modules/normalize-scss/sass"] }
+                            options: { includePaths: ["node_modules"] }
                         }
                     ]
                 })

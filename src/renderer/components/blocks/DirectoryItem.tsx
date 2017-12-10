@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import * as PropTypes from "prop-types";
 import { shell } from "electron";
 import autobind from "autobind-decorator";
@@ -10,6 +9,7 @@ const dialog = remote.dialog;
 import { IDirectoryItemProps } from "props/blocks";
 import { IAppContext } from "models";
 import { DirectoryManager } from "objects";
+import { autoFocus } from "utils";
 
 import "styles/blocks/DirectoryItem.scss";
 
@@ -34,7 +34,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     };
 
     /**
-     * Defines how the directory item component is rendered
+     * Defines how the directory item component is rendered.
      *
      * @returns - a JSX element representing the directory item view
      */
@@ -50,7 +50,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
         return <HotKeys
             handlers={this.handlers}
-            ref={component => component && isSelected && this.autoFocus(component)}>
+            ref={component => component && isSelected && autoFocus(component)}>
             <div onClick={this.select} className={`DirectoryItem ${selectedClass}`}>
                 <button style={style} onDoubleClick={this.openDirectory}>
                     {model.name}
@@ -132,14 +132,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         }
     }
 
-    /**
-     * Handles focusing the appropriate directory item automatically.
-     *
-     * @param component - the HotKeys wrapper component to call focus on
-     */
-    private autoFocus(component: HotKeys) {
-        (ReactDOM.findDOMNode(component) as HTMLElement).focus();
-    }
+
 
     /**
      * Displays a dialog and returns whether the user confirmed the action described

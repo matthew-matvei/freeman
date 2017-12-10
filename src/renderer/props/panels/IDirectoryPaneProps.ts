@@ -1,4 +1,4 @@
-import { IDirectoryCommonProps } from "props/panels";
+import { IDirectoryCommonProps } from "props/common";
 
 /**
  * Describes the properties of a directory pane component.

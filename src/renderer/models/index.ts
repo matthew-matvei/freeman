@@ -1,4 +1,5 @@
 import IAppContext from "./IAppContext";
+import IApplicationCommands from "./IApplicationCommands";
 import IDirectoryItem from "./IDirectoryItem";
 import IItemClipboard from "./IItemClipboard";
 import IKeyMap from "./IKeyMap";
@@ -9,6 +10,7 @@ import ITheme from "./ITheme";
 
 export {
     IAppContext,
+    IApplicationCommands,
     IDirectoryItem,
     IItemClipboard,
     IKeyMap,

@@ -30,6 +30,16 @@ interface ITheme {
         /** The background colour of the selected directory item. */
         selectedColour: string;
     }
+
+    /** The colours of the QuickSelect component. */
+    quickSelect: {
+        /** The foreground colour of an item in the QuickSelect component. */
+        colour: string;
+        /** The background colour of the QuickSelect component. */
+        backgroundColour: string;
+        /** The background colour of the selected item in the QuickSelect component. */
+        selectedColour: string;
+    }
 }
 
 export default ITheme;

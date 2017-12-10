@@ -4,11 +4,10 @@ import SplitPane from "react-split-pane";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 
-import { DirectoryWrapper, Status } from "components/panels";
-
+import { CommandPalette, DirectoryWrapper, Status } from "components/panels";
 import { IAppState } from "states";
 import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
-import { SettingsManager, KeysManager, ThemesManager } from "objects";
+import { ApplicationCommander, SettingsManager, KeysManager, ThemesManager } from "objects";
 import { DirectoryPaneSide } from "types";
 
 import "styles/App.scss";
@@ -30,11 +29,10 @@ class App extends React.Component<{}, IAppState> {
     /** The colour theme to use in the application. */
     private theme: ITheme;
 
-    /**
-     * Handler functions for the given events this component handles.
-     */
+    /** Handler functions for the given events this component handles. */
     private handlers = {
-        switchPane: this.switchPane
+        switchPane: this.switchPane,
+        openCommandPalette: this.openCommandPalette
     }
 
     /**
@@ -61,7 +59,8 @@ class App extends React.Component<{}, IAppState> {
         this.theme = new ThemesManager().retrieve(this.settings.themeName);
 
         this.state = {
-            selectedPane: "left"
+            selectedPane: "left",
+            isCommandPaletteOpen: false
         }
     }
 
@@ -79,24 +78,46 @@ class App extends React.Component<{}, IAppState> {
         const appStyle = { color: this.theme.primaryColour };
         const splitPaneStyle = { height: "97vh" };
 
-        return <HotKeys keyMap={this.keyMap || undefined} handlers={this.handlers}>
-            <div className="App" style={appStyle}>
-                <SplitPane
-                    split="vertical"
-                    defaultSize="50vw"
-                    style={splitPaneStyle}>
-                    <DirectoryWrapper
-                        id="left"
-                        isSelectedPane={this.state.selectedPane === "left"}
-                        sendSelectedPaneUp={this.selectPane} />
-                    <DirectoryWrapper
-                        id="right"
-                        isSelectedPane={this.state.selectedPane === "right"}
-                        sendSelectedPaneUp={this.selectPane} />
-                </SplitPane>
-                <Status message={this.currentStatus} />
-            </div>
-        </HotKeys>;
+        return <div>
+            <HotKeys keyMap={this.keyMap || undefined} handlers={this.handlers}>
+                <div className="App" style={appStyle}>
+                    <SplitPane
+                        split="vertical"
+                        defaultSize="50vw"
+                        style={splitPaneStyle}>
+                        <DirectoryWrapper
+                            id="left"
+                            isSelectedPane={this.state.selectedPane === "left"}
+                            sendSelectedPaneUp={this.selectPane} />
+                        <DirectoryWrapper
+                            id="right"
+                            isSelectedPane={this.state.selectedPane === "right"}
+                            sendSelectedPaneUp={this.selectPane} />
+                    </SplitPane>
+                    <Status message={this.currentStatus} />
+                </div>
+            </HotKeys>
+            <CommandPalette
+                isOpen={this.state.isCommandPaletteOpen}
+                onClose={this.closeCommandPalette}
+                applicationCommands={ApplicationCommander.commands} />
+        </div>;
+    }
+
+    /** Handles closing the quick select modal, if not already closed. */
+    @autobind
+    private closeCommandPalette() {
+        if (this.state.isCommandPaletteOpen) {
+            this.setState({ isCommandPaletteOpen: false } as IAppState);
+        }
+    }
+
+    /** Handles opening the quick select modal, if not already open. */
+    @autobind
+    private openCommandPalette() {
+        if (!this.state.isCommandPaletteOpen) {
+            this.setState({ isCommandPaletteOpen: true } as IAppState);
+        }
     }
 
     /** Handles switching selected pane. */

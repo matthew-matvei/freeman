@@ -9,5 +9,10 @@
     },
     "directoryItem": {
         "selectedColour": "rgb(62, 61, 50)"
+    },
+    "quickSelect": {
+        "colour": "rgb(234, 248, 229)",
+        "backgroundColour": "rgb(30, 31, 28)",
+        "selectedColour": "rgb(90, 90, 90)"
     }
 }

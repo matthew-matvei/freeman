@@ -1,4 +1,4 @@
-import { app, dialog, Menu } from "electron";
+import { app, dialog, ipcMain, Menu } from "electron";
 import { ConfigInstaller } from "configuration";
 require("electron-debug")();
 
@@ -63,6 +63,10 @@ function buildWindow(window: FreemanWindow | null) {
             if (kill === killIndex) {
                 app.exit(1);
             }
+        });
+
+        ipcMain.on("reload-request", () => {
+            window && window.reload();
         });
     });
 }

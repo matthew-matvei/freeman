@@ -8,7 +8,7 @@ export type DirectoryDirection = "up" | "down";
 export type ItemType = "file" | "folder";
 
 /** A terminal socket message type. */
-export type MessageType = "resize";
+export type SocketMessageType = "resize";
 
 /** The action type requested of the clipboard. */
 export type ClipboardAction = "copy" | "cut";
