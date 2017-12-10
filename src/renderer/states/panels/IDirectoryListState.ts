@@ -3,17 +3,16 @@ import { ItemType } from "types";
 
 interface IDirectoryListState {
 
-    selectedItem: number;
+    /** The index of the selected item. */
+    selectedIndex: number;
 
-
-    /**
-     * The items within this directory (files, folders etc.).
-     */
+    /** The items within this directory (files, folders etc.). */
     directoryItems: IDirectoryItem[];
 
-    /**
-     * Whether the directory pane should show hidden items.
-     */
+    /** The items chosen by the user for future actions. */
+    chosenItems: IDirectoryItem[];
+
+    /** Whether the directory pane should show hidden items. */
     showHiddenItems: boolean;
 
     /**
@@ -21,14 +20,10 @@ interface IDirectoryListState {
      */
     creatingNewItem: ItemType | false;
 
-    /**
-     * Whether the user is renaming an item.
-     */
+    /** Whether the user is renaming an item. */
     renamingItem: boolean;
 
-    /**
-     * Whether the user has just deleted an item.
-     */
+    /** Whether the user has just deleted an item. */
     itemDeleted: boolean;
 }
 

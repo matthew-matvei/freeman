@@ -49,5 +49,8 @@
     ],
     "openCommandPalette": [
         "f1"
+    ],
+    "chooseItem": [
+        "space"
     ]
 }

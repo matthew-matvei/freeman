@@ -9,7 +9,7 @@ interface INavigationNode {
     path: string;
 
     /** The index of the selected item. */
-    selectedItem: number;
+    selectedIndex: number;
 
     /** A list of all directory items at this level of the stack. */
     directoryItems: IDirectoryItem[];

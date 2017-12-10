@@ -93,6 +93,19 @@ class DirectoryManager {
     }
 
     /**
+     * Deletes the given itemsToDelete.
+     *
+     * @param itemsToDelete - an array of all directory items to delete
+     */
+    public static async deleteItems(itemsToDelete: IDirectoryItem[]) {
+        const itemDeletions = itemsToDelete.map(async item => {
+            await DirectoryManager.deleteItem(item.path, item.isDirectory ? "folder" : "file");
+        });
+
+        await Promise.all(itemDeletions);
+    }
+
+    /**
      * Deletes the item of itemType at itemPath.
      *
      * @param itemPath - the full path to the item to be deleted
@@ -114,6 +127,19 @@ class DirectoryManager {
                 });
             }
         });
+    }
+
+    /**
+     * Sends the given itemsToTrash to the system-dependent trash.
+     *
+     * @param itemsToTrash - the items to send to trash
+     */
+    public static async sendItemsToTrash(itemsToTrash: IDirectoryItem[]) {
+        const itemSoftDeletions = itemsToTrash.map(async item => {
+            await DirectoryManager.sendItemToTrash(item.path);
+        });
+
+        await Promise.all(itemSoftDeletions);
     }
 
     /**

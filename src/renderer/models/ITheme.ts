@@ -6,6 +6,8 @@ interface ITheme {
     /** The primary foreground colour. */
     primaryColour: string;
 
+
+
     /** The primary background colour. */
     primaryBackgroundColour: string;
 
@@ -23,6 +25,8 @@ interface ITheme {
 
     /** The colours of the DirectoryItem component. */
     directoryItem: {
+        /** The foreground colour of a chosen item. */
+        chosenColour: string;
         /** The foreground colour of a directory item. */
         colour: string;
         /** The background colour of a directory item. */

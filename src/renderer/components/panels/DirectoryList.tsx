@@ -4,10 +4,13 @@ import { shell } from "electron";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 import { autoFocus } from "utils";
+import { List } from "immutable";
+import { remote } from "electron";
+const dialog = remote.dialog;
 
 import { DirectoryItem, InputItem } from "components/blocks";
-import { IDirectoryItem, IAppContext, IItemClipboard, INavigationNode } from "models";
-import { DirectoryManager, DirectoryTextFinder } from "objects";
+import { IDirectoryItem, IAppContext } from "models";
+import { DirectoryListModel, DirectoryManager } from "objects";
 import { IDirectoryListState } from "states/panels";
 import { DirectoryDirection, ItemType, ClipboardAction } from "types";
 import { IDirectoryListProps } from "props/panels";
@@ -27,17 +30,13 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         rename: this.inputRenameItem,
         copy: () => this.storeItemInClipboard("copy"),
         cut: () => this.storeItemInClipboard("cut"),
-        paste: this.pasteFromClipboard
+        paste: this.pasteFromClipboard,
+        chooseItem: this.toggleItemChosen,
+        sendToTrash: this.sendToTrash,
+        delete: this.deleteItem
     }
 
-    /** Stores navigation data in a simple stack structure. */
-    private navigationStack: INavigationNode[];
-
-    /** Finds directory items using simple text matching. */
-    private directoryTextFinder: DirectoryTextFinder;
-
-    /** An internally compatible clipboard object for copying files. */
-    private itemClipboard: IItemClipboard;
+    private model: DirectoryListModel;
 
     /** Gets the directory items that are not currently hidden. */
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
@@ -56,16 +55,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         this.state = {
             directoryItems: [],
-            selectedItem: 0,
+            chosenItems: [],
+            selectedIndex: 0,
             showHiddenItems: false,
             creatingNewItem: false,
             renamingItem: false,
             itemDeleted: false
         }
 
-        this.navigationStack = [];
-        this.itemClipboard = {};
-        this.directoryTextFinder = new DirectoryTextFinder();
+        this.model = new DirectoryListModel();
     }
 
     /** Updates the directory contents after loading the component. */
@@ -94,15 +92,13 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             this.setState({ itemDeleted: false } as IDirectoryListState);
         }
 
-        if (this.navigationStack.length > 0 &&
-            this.navigationStack[this.navigationStack.length - 1].path === this.props.path) {
+        const cachedNavigation = this.model.popCachedNavigation(this.props.path);
 
-            const cachedNavigation = this.navigationStack.pop()!;
-
+        if (cachedNavigation) {
             this.setState(
                 {
                     directoryItems: cachedNavigation.directoryItems,
-                    selectedItem: cachedNavigation.selectedItem
+                    selectedIndex: cachedNavigation.selectedIndex
                 } as IDirectoryListState);
         } else {
             this.setState(
@@ -119,36 +115,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param nextState - the next state
      */
     public shouldComponentUpdate(nextProps: IDirectoryListProps, nextState: IDirectoryListState): boolean {
-        // various state factors are examined
-        if (this.state.creatingNewItem !== nextState.creatingNewItem ||
-            this.state.itemDeleted !== nextState.itemDeleted ||
-            this.state.renamingItem !== nextState.renamingItem ||
-            this.state.selectedItem !== nextState.selectedItem ||
-            this.state.showHiddenItems !== nextState.showHiddenItems) {
-
-            return true;
-        }
-
-        // various props factors are examined
-        if (this.props.isSelectedPane !== nextProps.isSelectedPane ||
-            this.props.path !== nextProps.path) {
-
-            return true;
-        }
-
-        // directory items are lastly examined
-        if (this.state.directoryItems.length !== nextState.directoryItems.length) {
-            return true;
-        }
-
-        for (let i = 0; i < this.state.directoryItems.length; i++) {
-            if (this.state.directoryItems[i].name !== nextState.directoryItems[i].name) {
-                return true;
-            }
-        }
-
-        // returns false, avoiding duplicated re-renders during navigation
-        return false;
+        return (this.model.stateChanged(this.state, nextState) ||
+            this.model.propsChanged(this.props, nextProps) ||
+            this.model.chosenItemsChanged(this.state.chosenItems, nextState.chosenItems) ||
+            this.model.directoryItemsChanged(this.state.directoryItems, nextState.directoryItems));
     }
 
     /**
@@ -159,7 +129,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     public render(): JSX.Element {
         const items = this.nonHiddenDirectoryItems
             .map((item, i) => {
-                const isSelectedItem = this.props.isSelectedPane && !this.state.creatingNewItem && this.state.selectedItem === i;
+                const isSelectedItem = this.props.isSelectedPane && !this.state.creatingNewItem && this.state.selectedIndex === i;
 
                 if (this.state.renamingItem && isSelectedItem) {
                     const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
@@ -173,6 +143,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                         key={item.path}
                         model={item}
                         isSelected={isSelectedItem}
+                        isChosen={this.state.chosenItems.includes(item)}
                         sendPathUp={this.goIn}
                         sendSelectedItemUp={this.selectItem}
                         sendDeletionUp={this.refreshAfterDelete} />;
@@ -210,6 +181,30 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     }
 
     /**
+     * Handles providing a dialog to the user to confirm deletion of an item.
+     */
+    @autobind
+    private deleteItem() {
+        const confirmDelete = this.confirmationDialog(
+            "Are you sure you want to permanently delete this item?");
+
+        if (confirmDelete) {
+            if (this.state.chosenItems.length > 0) {
+                DirectoryManager.deleteItems(this.state.chosenItems)
+                    .then(onfulfilled => {
+                        this.refreshAfterDelete();
+                    });
+            } else {
+                const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
+                DirectoryManager.deleteItem(selectedItem.path, selectedItem.isDirectory ? "folder" : "file")
+                    .then(onfulfilled => {
+                        this.refreshAfterDelete();
+                    });
+            }
+        }
+    }
+
+    /**
      * Begins the creation of a new directory item.
      *
      * @param itemTypeToCreate - the type of the item to begin creating
@@ -229,7 +224,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private goBack() {
         const parentDirectory = path.join(this.props.path, "..");
-        this.setState({ selectedItem: 0 } as IDirectoryListState);
+        this.setState({ selectedIndex: 0 } as IDirectoryListState);
         this.props.sendPathUp(parentDirectory);
     }
 
@@ -240,14 +235,13 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private goIn(path: string) {
-        const navigationNode: INavigationNode = {
+        this.model.cacheNavigation({
             path: this.props.path,
-            selectedItem: this.state.selectedItem,
+            selectedIndex: this.state.selectedIndex,
             directoryItems: this.state.directoryItems
-        }
-        this.navigationStack.push(navigationNode);
+        });
 
-        this.setState({ selectedItem: 0 } as IDirectoryListState);
+        this.setState({ selectedIndex: 0 } as IDirectoryListState);
         this.props.sendPathUp(path);
     }
 
@@ -261,11 +255,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
         const regex = new RegExp(/[a-z0-9]/, "i");
         if (event.key.length === 1 && regex.test(event.key)) {
-            const indexToSelect = this.directoryTextFinder.addCharAndSearch(
+            const indexToSelect = this.model.textFinder.addCharAndSearch(
                 event.key, this.nonHiddenDirectoryItems);
 
             if (indexToSelect >= 0) {
-                this.setState({ selectedItem: indexToSelect } as IDirectoryListState);
+                this.setState({ selectedIndex: indexToSelect } as IDirectoryListState);
             }
         }
     }
@@ -278,12 +272,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private move(direction: DirectoryDirection) {
         if (direction === "up") {
-            if (this.state.selectedItem > 0) {
-                this.setState(prevState => ({ selectedItem: prevState.selectedItem - 1 } as IDirectoryListState));
+            if (this.state.selectedIndex > 0) {
+                this.setState(prevState => ({ selectedIndex: prevState.selectedIndex - 1 } as IDirectoryListState));
             }
         } else {
-            if (this.state.selectedItem < this.nonHiddenDirectoryItems.length - 1) {
-                this.setState(prevState => ({ selectedItem: prevState.selectedItem + 1 } as IDirectoryListState));
+            if (this.state.selectedIndex < this.nonHiddenDirectoryItems.length - 1) {
+                this.setState(prevState => ({ selectedIndex: prevState.selectedIndex + 1 } as IDirectoryListState));
             }
         }
     }
@@ -303,26 +297,16 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async pasteFromClipboard() {
-        if (!this.itemClipboard.directoryItem || !this.itemClipboard.clipboardAction) {
-            return;
-        }
-
-        if (this.state.directoryItems.find(
-            item => item.name === this.itemClipboard.directoryItem!.name)) {
-
-            return;
-        }
-
-        if (this.itemClipboard.clipboardAction === "copy") {
-            DirectoryManager.copyItem(this.itemClipboard.directoryItem.path, this.props.path)
+        if (this.model.clipboardAction === "copy") {
+            DirectoryManager.copyItem(this.model.clipboardItemPath!, this.props.path)
                 .then(async onfulfilled => {
                     this.setState(
                         {
                             directoryItems: await DirectoryManager.listDirectory(this.props.path)
                         } as IDirectoryListState);
                 });
-        } else {
-            DirectoryManager.moveItem(this.itemClipboard.directoryItem.path, this.props.path)
+        } else if (this.model.clipboardAction === "cut") {
+            DirectoryManager.moveItem(this.model.clipboardItemPath!, this.props.path)
                 .then(async onfulfilled => {
                     this.setState(
                         {
@@ -363,8 +347,35 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     private selectItem(itemToSelect: IDirectoryItem) {
         const index = this.nonHiddenDirectoryItems
             .findIndex(item => item.name === itemToSelect.name);
-        this.setState({ selectedItem: index } as IDirectoryListState);
+        this.setState({ selectedIndex: index } as IDirectoryListState);
         this.props.sendSelectedPaneUp(this.props.id);
+    }
+
+    /**
+     * Handles providing a dialog to the user to confirm sending an item to the
+     * trash.
+     */
+    @autobind
+    private sendToTrash() {
+        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
+        if (selectedItem.isDirectory) {
+            return;
+        }
+
+        const confirmTrash = this.confirmationDialog(
+            "Are you sure you want to send this item to trash?");
+
+        if (confirmTrash) {
+            if (this.state.chosenItems.length > 0) {
+                DirectoryManager.sendItemsToTrash(this.state.chosenItems).then(onfulfilled => {
+                    this.refreshAfterDelete();
+                });
+            } else {
+                DirectoryManager.sendItemToTrash(selectedItem.path).then(onfulfilled => {
+                    this.refreshAfterDelete();
+                });
+            }
+        }
     }
 
     /**
@@ -374,13 +385,29 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private storeItemInClipboard(action: ClipboardAction) {
-        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedItem];
+        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
 
         if (!selectedItem.isDirectory) {
-            this.itemClipboard = {
-                directoryItem: this.nonHiddenDirectoryItems[this.state.selectedItem],
+            this.model.itemClipboard = {
+                directoryItem: this.nonHiddenDirectoryItems[this.state.selectedIndex],
                 clipboardAction: action
             };
+        }
+    }
+
+    /** Toggles whether the currently selected item is chosen or not. */
+    @autobind
+    private toggleItemChosen() {
+        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
+
+        if (this.state.chosenItems.includes(selectedItem)) {
+            this.setState((currentState) => (
+                {
+                    chosenItems: currentState.chosenItems.filter(item => item.name !== selectedItem.name)
+                } as IDirectoryListState))
+        } else {
+            const chosenItems = List(this.state.chosenItems).withMutations(list => list.push(selectedItem));
+            this.setState((currentState) => ({ chosenItems: chosenItems.toArray() } as IDirectoryListState))
         }
     }
 
@@ -391,6 +418,29 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             {
                 showHiddenItems: !prevState.showHiddenItems
             } as IDirectoryListState));
+    }
+
+    /**
+     * Displays a dialog and returns whether the user confirmed the action described
+     * in the given message.
+     *
+     * @param message - the message to display to the user
+     *
+     * @returns - whether the user confirmed the described action
+     */
+    private confirmationDialog(message: string): boolean {
+        const confirmIndex = 0;
+        const cancelIndex = 1;
+        const confirmation = dialog.showMessageBox({
+            type: "warning",
+            buttons: ["OK", "Cancel"],
+            defaultId: cancelIndex,
+            cancelId: cancelIndex,
+            title: "Confirm deletion",
+            message: message
+        });
+
+        return confirmation === confirmIndex;
     }
 }
 

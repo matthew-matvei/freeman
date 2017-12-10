@@ -35,12 +35,13 @@
         "noFallthroughCasesInSwitch": true,
         "removeComments": true,
         "strictNullChecks": true,
-        "target": "es2015",
+        "target": "es2017",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "lib": [
             "es6",
-            "dom"
+            "dom",
+            "es7"
         ]
     },
     "include": [

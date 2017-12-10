@@ -8,7 +8,7 @@ import { FreemanWindow } from "widgets";
 let mainWindow: FreemanWindow | null = null;
 let terminalService: TerminalService;
 
-if (process.argv.find(arg => arg === "--installConfig")) {
+if (process.argv.includes("--installConfig")) {
     const installer = new ConfigInstaller();
     installer.install().then((onfulfilled: void) => {
         app.exit(0);
