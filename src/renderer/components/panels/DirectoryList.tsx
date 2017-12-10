@@ -1,4 +1,5 @@
 import * as React from "react";
+import fs from "fs";
 import path from "path";
 import { shell } from "electron";
 import { HotKeys } from "react-hotkeys";
@@ -36,7 +37,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         delete: this.deleteItem
     }
 
+    /** The internal model of this DirectoryList. */
     private model: DirectoryListModel;
+
+    /** A watcher that monitors activity on the directory list's current directory. */
+    private watcher: fs.FSWatcher;
 
     /** Gets the directory items that are not currently hidden. */
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
@@ -68,9 +73,21 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** Updates the directory contents after loading the component. */
     public async componentDidMount() {
+        this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
+            this.setState(
+                {
+                    directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                } as IDirectoryListState);
+        });
+
         const items = await DirectoryManager.listDirectory(this.props.path);
 
         this.setState({ directoryItems: items } as IDirectoryListState);
+    }
+
+    /** Handles closing the watcher on unmounting the directory list. */
+    public async componentWillUnmount() {
+        this.watcher.close();
     }
 
     /**
@@ -90,6 +107,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         if (prevState.itemDeleted) {
             this.setState({ itemDeleted: false } as IDirectoryListState);
+        }
+
+        if (prevProps.path !== this.props.path) {
+            this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
+                this.setState(
+                    {
+                        directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                    } as IDirectoryListState);
+            });
         }
 
         const cachedNavigation = this.model.popCachedNavigation(this.props.path);
