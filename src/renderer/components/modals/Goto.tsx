@@ -3,7 +3,7 @@ import path from "path";
 import { KeyboardEvent } from 'react';
 import autobind from "autobind-decorator";
 
-import { DirectoryManager } from "objects";
+import { DirectoryManager } from "objects/managers";
 import { QuickSelect } from "components/modals";
 import { IGotoProps } from "props/modals";
 import { IGotoState } from "states/modals";

@@ -8,7 +8,8 @@ import { DirectoryWrapper, Status } from "components/panels";
 import { CommandPalette } from "components/modals";
 import { IAppState } from "states";
 import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
-import { ApplicationCommander, SettingsManager, KeysManager, ThemesManager } from "objects";
+import { ApplicationCommander } from "objects";
+import { KeysManager, SettingsManager, ThemesManager } from "objects/managers";
 import { DirectoryPaneSide } from "types";
 
 import "styles/App.scss";

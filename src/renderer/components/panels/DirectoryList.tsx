@@ -11,7 +11,8 @@ const dialog = remote.dialog;
 
 import { DirectoryItem, InputItem } from "components/blocks";
 import { IDirectoryItem, IAppContext } from "models";
-import { DirectoryListModel, DirectoryManager } from "objects";
+import { DirectoryListModel } from "objects";
+import { DirectoryManager } from "objects/managers";
 import { IDirectoryListState } from "states/panels";
 import { DirectoryDirection, ItemType, ClipboardAction } from "types";
 import { IDirectoryListProps } from "props/panels";
