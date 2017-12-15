@@ -4,7 +4,8 @@ import SplitPane from "react-split-pane";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 
-import { CommandPalette, DirectoryWrapper, Status } from "components/panels";
+import { DirectoryWrapper, Status } from "components/panels";
+import { CommandPalette } from "components/modals";
 import { IAppState } from "states";
 import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
 import { ApplicationCommander, SettingsManager, KeysManager, ThemesManager } from "objects";

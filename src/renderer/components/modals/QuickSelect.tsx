@@ -7,6 +7,7 @@ import { HotKeys } from 'react-hotkeys';
 import { IAppContext } from "models";
 import { IQuickSelectProps } from "props/panels";
 import { IQuickSelectState } from "states/panels";
+import { autoFocus } from "utils";
 
 import "styles/panels/QuickSelect.scss";
 
@@ -26,15 +27,19 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     /** A keymap for hot keys when QuickSelect focused. */
     private keyMap = {
         close: ["esc"],
-        nextItem: ["tab"],
-        selectItem: ["enter"]
+        previousItem: ["up"],
+        nextItem: ["down"],
+        selectItem: ["enter"],
+        complete: ["tab"]
     }
 
     /** Handler functions for the given events this component handles. */
     private handlers = {
         close: this.closeQuickSelect,
+        previousItem: this.selectPreviousItem,
         nextItem: this.selectNextItem,
-        selectItem: this.handleSelectItem
+        selectItem: this.handleSelectItem,
+        complete: this.completeInput
     }
 
     /** Styles for the Modal component this QuickSelect utilises. */
@@ -56,6 +61,9 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         }
     }
 
+    /** The input field for the QuickSelect. */
+    private input: HTMLInputElement | null;
+
     /**
      * Instantiates the QuickSelect component.
      *
@@ -66,6 +74,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         super(props, context);
 
         this.state = {
+            items: this.props.initialItems,
             selectedIndex: 0
         }
     }
@@ -76,18 +85,24 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
      * @returns - a JSX element representing the quick select view
      */
     public render(): JSX.Element {
-        const items = this.props.items.map((item, i) => {
+        const items = this.props.initialItems.map((item, i) => {
             return this.state.selectedIndex === i ?
                 <li key={item} style={{ backgroundColor: this.context.theme.quickSelect.selectedColour }}>{item}</li>
-                : <li style={{ backgroundColor: this.context.theme.quickSelect.backgroundColour }}>{item}</li>
+                : <li key={item} style={{ backgroundColor: this.context.theme.quickSelect.backgroundColour }}>{item}</li>
         });
 
         return <Modal
             isOpen={this.props.isOpen}
             style={this.styles}
             contentLabel="Quick Select">
-            <HotKeys keyMap={this.keyMap} handlers={this.handlers}>
-                <input autoFocus type="text" />
+            <HotKeys keyMap={this.keyMap} handlers={this.handlers} focused>
+                <input type="text"
+                    value={this.props.inputValue}
+                    onKeyUp={this.props.onKeyUp}
+                    ref={input => {
+                        this.input = input;
+                        this.input && autoFocus(this.input);
+                    }} />
                 <ul>
                     {items}
                 </ul>
@@ -101,10 +116,26 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         this.props.onClose();
     }
 
+    /**
+     * Completes the input by sending the selected item to the parent component.
+     */
+    @autobind
+    private completeInput() {
+        const selectedItem = this.props.initialItems[this.state.selectedIndex];
+
+        if (this.input) {
+            this.input.value = selectedItem;
+        }
+
+        this.setState({ selectedIndex: 0 } as IQuickSelectState);
+
+        this.props.onUpdate && this.props.onUpdate(selectedItem);
+    }
+
     /** Handles the user selecting an item. */
     @autobind
     private handleSelectItem() {
-        const selectedItem = this.props.items[this.state.selectedIndex];
+        const selectedItem = this.props.initialItems[this.state.selectedIndex];
 
         this.props.onSelect(selectedItem);
     }
@@ -115,13 +146,26 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
      */
     @autobind
     private selectNextItem() {
-        if (this.state.selectedIndex < this.props.items.length - 1) {
+        if (this.state.selectedIndex < this.props.initialItems.length - 1) {
             this.setState((currentState) => (
                 {
                     selectedIndex: currentState.selectedIndex + 1
                 } as IQuickSelectState));
         } else {
             this.setState({ selectedIndex: 0 } as IQuickSelectState);
+        }
+    }
+
+    /** Selects the previous item in the array of items. */
+    @autobind
+    private selectPreviousItem() {
+        if (this.state.selectedIndex > 0) {
+            this.setState((currentState) => (
+                {
+                    selectedIndex: currentState.selectedIndex - 1
+                } as IQuickSelectState));
+        } else {
+            this.setState({ selectedIndex: this.props.initialItems.length - 1 } as IQuickSelectState);
         }
     }
 }

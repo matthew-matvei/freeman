@@ -24,6 +24,7 @@ class DirectoryManager {
      */
     public static async listDirectory(
         filePath: string,
+        filterCondition: (item: IDirectoryItem) => boolean = (item: IDirectoryItem) => true,
         sort: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[] = DirectorySorter.sortByTypeThenAlphaNumery
     ): Promise<IDirectoryItem[]> {
 
@@ -46,7 +47,7 @@ class DirectoryManager {
 
         const files = await Promise.all(filePromises);
 
-        return sort(files);
+        return sort(files).filter(filterCondition);
     }
 
     /**

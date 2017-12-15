@@ -2,7 +2,7 @@ import * as React from "react";
 import autobind from "autobind-decorator";
 
 import { ICommandPaletteProps } from "props/panels";
-import { QuickSelect } from "components/panels";
+import { QuickSelect } from "components/modals";
 
 /** The CommandPalette component, a QuickSelect for general commands. */
 class CommandPalette extends React.Component<ICommandPaletteProps, {}> {
@@ -18,7 +18,7 @@ class CommandPalette extends React.Component<ICommandPaletteProps, {}> {
         return <QuickSelect
             isOpen={this.props.isOpen}
             onClose={this.props.onClose}
-            items={itemKeys}
+            initialItems={itemKeys}
             onSelect={this.handleSelect} />;
     }
 

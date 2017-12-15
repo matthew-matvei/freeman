@@ -4,7 +4,7 @@ import path from "path";
 import { shell } from "electron";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
-import { autoFocus } from "utils";
+import { autoFocus, isAlphanumeric } from "utils";
 import { List } from "immutable";
 import { remote } from "electron";
 const dialog = remote.dialog;
@@ -15,6 +15,7 @@ import { DirectoryListModel, DirectoryManager } from "objects";
 import { IDirectoryListState } from "states/panels";
 import { DirectoryDirection, ItemType, ClipboardAction } from "types";
 import { IDirectoryListProps } from "props/panels";
+import { Goto } from "components/modals";
 
 /** The component for displaying a directory's list of items. */
 class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListState> {
@@ -34,7 +35,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         paste: this.pasteFromClipboard,
         chooseItem: this.toggleItemChosen,
         sendToTrash: this.sendToTrash,
-        delete: this.deleteItem
+        delete: this.deleteItem,
+        openGoto: this.openGoto
     }
 
     /** The internal model of this DirectoryList. */
@@ -65,7 +67,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             showHiddenItems: false,
             creatingNewItem: false,
             renamingItem: false,
-            itemDeleted: false
+            itemDeleted: false,
+            isGotoOpen: false
         }
 
         this.model = new DirectoryListModel();
@@ -177,17 +180,31 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             });
 
         return (
-            <HotKeys handlers={this.handlers}
-                ref={component => component && items.length === 0 && autoFocus(component)}>
-                <ul onKeyDown={this.handleKeyDown}>
-                    {items}
-                    {this.state.creatingNewItem &&
-                        <InputItem
-                            creatingItemType={this.state.creatingNewItem}
-                            sendUpCreateItem={this.createNewItem}
-                            otherItems={this.state.directoryItems} />}
-                </ul>
-            </HotKeys>);
+            <div>
+                <HotKeys handlers={this.handlers}
+                    ref={component => component && items.length === 0 && autoFocus(component)}>
+                    <ul onKeyDown={this.handleKeyDown}>
+                        {items}
+                        {this.state.creatingNewItem &&
+                            <InputItem
+                                creatingItemType={this.state.creatingNewItem}
+                                sendUpCreateItem={this.createNewItem}
+                                otherItems={this.state.directoryItems} />}
+                    </ul>
+                </HotKeys>
+                <Goto
+                    initialPath={this.props.path}
+                    isOpen={this.state.isGotoOpen}
+                    onClose={this.closeGoto}
+                    navigateTo={this.navigateToPath} />
+            </div>);
+    }
+
+    @autobind
+    private closeGoto() {
+        if (this.state.isGotoOpen) {
+            this.setState({ isGotoOpen: false } as IDirectoryListState);
+        }
     }
 
     /**
@@ -279,8 +296,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
-        const regex = new RegExp(/[a-z0-9]/, "i");
-        if (event.key.length === 1 && regex.test(event.key)) {
+        if (event.key.length === 1 && isAlphanumeric(event.key)) {
             const indexToSelect = this.model.textFinder.addCharAndSearch(
                 event.key, this.nonHiddenDirectoryItems);
 
@@ -305,6 +321,27 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             if (this.state.selectedIndex < this.nonHiddenDirectoryItems.length - 1) {
                 this.setState(prevState => ({ selectedIndex: prevState.selectedIndex + 1 } as IDirectoryListState));
             }
+        }
+    }
+
+    /**
+     * Handles navigating the user to the given path by sending it up to the
+     * parent component.
+     *
+     * @param filePath - the path to navigate to
+     */
+    @autobind
+    private navigateToPath(filePath: string) {
+        if (filePath !== this.props.path) {
+            this.props.sendPathUp(filePath);
+        }
+    }
+
+    /** Handles opening the Goto modal window. */
+    @autobind
+    private openGoto() {
+        if (!this.state.isGotoOpen) {
+            this.setState({ isGotoOpen: true } as IDirectoryListState);
         }
     }
 

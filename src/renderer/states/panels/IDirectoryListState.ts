@@ -25,6 +25,9 @@ interface IDirectoryListState {
 
     /** Whether the user has just deleted an item. */
     itemDeleted: boolean;
+
+    /** Whether the Goto modal window is open. */
+    isGotoOpen: boolean;
 }
 
 export default IDirectoryListState;

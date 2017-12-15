@@ -52,5 +52,8 @@
     ],
     "chooseItem": [
         "space"
+    ],
+    "openGoto": [
+        "ctrl+e"
     ]
 }

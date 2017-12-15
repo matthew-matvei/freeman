@@ -59,7 +59,8 @@ class DirectoryListModel {
             prevState.itemDeleted !== nextState.itemDeleted ||
             prevState.renamingItem !== nextState.renamingItem ||
             prevState.selectedIndex !== nextState.selectedIndex ||
-            prevState.showHiddenItems !== nextState.showHiddenItems;
+            prevState.showHiddenItems !== nextState.showHiddenItems ||
+            prevState.isGotoOpen !== nextState.isGotoOpen;
     }
 
     /**
