@@ -36,9 +36,20 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     public render(): JSX.Element {
         const { isSelected, model } = this.props;
         const selectedClass = isSelected ? "selected" : "";
-        const { colour, backgroundColour, chosenColour, selectedColour } = this.context.theme.directoryItem;
+        const {
+            colour,
+            fileColour,
+            directoryColour,
+            backgroundColour,
+            chosenColour,
+            selectedColour
+        } = this.context.theme.directoryItem;
         const style: React.CSSProperties = {
-            color: (this.props.isChosen ? chosenColour : colour) || "inherit",
+            color: (this.props.isChosen ? chosenColour :
+                (!model.isDirectory && fileColour) ||
+                (model.isDirectory && directoryColour) ||
+                colour) ||
+                "inherit",
             backgroundColor: isSelected ? selectedColour : backgroundColour || "inherit",
             border: "none"
         };

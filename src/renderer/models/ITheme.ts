@@ -25,6 +25,10 @@ interface ITheme {
 
     /** The colours of the DirectoryItem component. */
     directoryItem: {
+        /** The colour of a file-type directory item. */
+        fileColour: string;
+        /** The colour of a folder-type directory item. */
+        directoryColour: string;
         /** The foreground colour of a chosen item. */
         chosenColour: string;
         /** The foreground colour of a directory item. */
