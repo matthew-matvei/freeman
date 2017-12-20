@@ -1,7 +1,7 @@
 {
   "name": "freeman",
   "productName": "FreeMAN",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "A free, extensible, cross-platform file manager for power users",
   "repository": {
     "type": "git",
