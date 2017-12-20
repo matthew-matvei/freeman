@@ -1,15 +1,20 @@
+import "reflect-metadata";
 import { app, dialog, ipcMain, Menu } from "electron";
 import { ConfigInstaller } from "configuration";
 require("electron-debug")();
 
+import TYPES from "ioc/types";
+import container from "ioc/container";
 import { TerminalService } from "services";
 import { FreemanWindow } from "widgets";
+import { IConfigManager } from "configuration";
 
 let mainWindow: FreemanWindow | null = null;
 let terminalService: TerminalService;
 
 if (process.argv.includes("--installConfig")) {
-    const installer = new ConfigInstaller();
+    const configManager = container.get<IConfigManager>(TYPES.IConfigManager);
+    const installer = new ConfigInstaller(configManager);
     installer.install().then((onfulfilled: void) => {
         app.exit(0);
     }).catch((onrejected: void) => {

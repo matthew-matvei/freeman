@@ -1,29 +1,28 @@
+import { injectable } from "inversify";
+
+import { IConfigManager } from "configuration";
+
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
 /**
  * Manages parsing configuration from application and user settings files.
  */
-class ConfigManager {
+@injectable()
+class ConfigManager implements IConfigManager {
 
-    /**
-     * Gets the path to the application data directory.
-     */
-    public get applicationDataDirectory() {
+    /** Gets the path to the application data directory. */
+    public get applicationDataDirectory(): string {
         return app.getPath("appData");
     }
 
-    /**
-     * Gets the path to the user-specific data directory.
-     */
-    public get userDataDirectory() {
+    /** Gets the path to the user-specific data directory. */
+    public get userDataDirectory(): string {
         return app.getPath("userData");
     }
 
-    /**
-     * Gets the name of this application.
-     */
-    public get applicationName() {
+    /** Gets the name of this application. */
+    public get applicationName(): string {
         return process.env.NODE_ENV === "production" ? app.getName() : "FreeMAN";
     }
 }

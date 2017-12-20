@@ -1,13 +1,16 @@
-import { ConfigManager } from "configuration";
+import { inject } from "inversify";
 import mkdirp from "mkdirp";
 import ncp from "ncp";
 import path from "path";
+
+import { IConfigManager } from "configuration";
+import TYPES from "ioc/types";
 
 /** Provides an install method for installing config files during development. */
 class ConfigInstaller {
 
     /** The underlying config manager providing application paths. */
-    private configManager: ConfigManager;
+    private configManager: IConfigManager;
 
     /** The name of the local resource folder. */
     private static readonly resourceFolder = "resources";
@@ -15,9 +18,19 @@ class ConfigInstaller {
     /** The name of the local and destination themes folder. */
     private static readonly themesFolder = "themes";
 
-    /** Initialises a new instance of the ConfigInstaller class. */
-    public constructor() {
-        this.configManager = new ConfigManager();
+    /**
+     * Initialises a new instance of the ConfigInstaller class.
+     *
+     * @param configManager - the configuration manager providing helper properties
+     */
+    public constructor(
+        @inject(TYPES.IConfigManager) configManager: IConfigManager) {
+
+        if (!configManager) {
+            throw Error("Config manager must be defined");
+        }
+
+        this.configManager = configManager;
     }
 
     /** Installs all configuration files. */

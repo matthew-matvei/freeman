@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { IKeyMap } from "models";
-import { ConfigManager } from "configuration";
+import { IConfigManager } from "configuration";
 
 /**
  * Manages parsing key maps from application and user settings files.
@@ -12,13 +12,21 @@ class KeysManager {
     /**
      * A base configuration manager held as an instance variable.
      */
-    private configManager: ConfigManager;
+    private configManager: IConfigManager;
 
     /**
      * Initialises an instance of the KeysManager class.
+     *
+     * @param configManager - the configuration manager providing helper properties
      */
-    public constructor() {
-        this.configManager = new ConfigManager();
+    public constructor(configManager: IConfigManager
+    ) {
+
+        if (!configManager) {
+            throw Error("Config manager must be defined");
+        }
+
+        this.configManager = configManager;
     }
 
     /**

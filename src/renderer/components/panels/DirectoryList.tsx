@@ -12,7 +12,6 @@ const dialog = remote.dialog;
 import { DirectoryItem, InputItem } from "components/blocks";
 import { IDirectoryItem, IAppContext } from "models";
 import { DirectoryListModel } from "objects";
-import { DirectoryManager } from "objects/managers";
 import { IDirectoryListState } from "states/panels";
 import { DirectoryDirection, ItemType, ClipboardAction } from "types";
 import { IDirectoryListProps } from "props/panels";
@@ -77,14 +76,16 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** Updates the directory contents after loading the component. */
     public async componentDidMount() {
-        this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
+        const { path, directoryManager } = this.props;
+
+        this.watcher = fs.watch(path, async (eventType, filename) => {
             this.setState(
                 {
-                    directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                    directoryItems: await directoryManager.listDirectory(path)
                 } as IDirectoryListState);
         });
 
-        const items = await DirectoryManager.listDirectory(this.props.path);
+        const items = await directoryManager.listDirectory(path);
 
         this.setState({ directoryItems: items } as IDirectoryListState);
     }
@@ -117,7 +118,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
                 this.setState(
                     {
-                        directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                        directoryItems: await this.props.directoryManager.listDirectory(this.props.path)
                     } as IDirectoryListState);
             });
         }
@@ -133,7 +134,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         } else {
             this.setState(
                 {
-                    directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                    directoryItems: await this.props.directoryManager.listDirectory(this.props.path)
                 } as IDirectoryListState);
         }
     }
@@ -197,7 +198,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     initialPath={this.props.path}
                     isOpen={this.state.isGotoOpen}
                     onClose={this.closeGoto}
-                    navigateTo={this.navigateToPath} />
+                    navigateTo={this.navigateToPath}
+                    directoryManager={this.props.directoryManager} />
             </div>);
     }
 
@@ -217,7 +219,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
         if (itemName && itemTypeToCreate) {
-            DirectoryManager.createItem(itemName, this.props.path, itemTypeToCreate)
+            this.props.directoryManager.createItem(itemName, this.props.path, itemTypeToCreate)
                 .then(onfulfilled => {
                     this.setState({ creatingNewItem: false } as IDirectoryListState);
                 });
@@ -234,13 +236,13 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         if (confirmDelete) {
             if (this.state.chosenItems.length > 0) {
-                DirectoryManager.deleteItems(this.state.chosenItems)
+                this.props.directoryManager.deleteItems(this.state.chosenItems)
                     .then(onfulfilled => {
                         this.refreshAfterDelete();
                     });
             } else {
                 const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
-                DirectoryManager.deleteItem(selectedItem.path, selectedItem.isDirectory ? "folder" : "file")
+                this.props.directoryManager.deleteItem(selectedItem.path, selectedItem.isDirectory ? "folder" : "file")
                     .then(onfulfilled => {
                         this.refreshAfterDelete();
                     });
@@ -361,20 +363,22 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async pasteFromClipboard() {
+        const { path, directoryManager } = this.props;
+
         if (this.model.clipboardAction === "copy") {
-            DirectoryManager.copyItem(this.model.clipboardItemPath!, this.props.path)
+            directoryManager.copyItem(this.model.clipboardItemPath!, path)
                 .then(async onfulfilled => {
                     this.setState(
                         {
-                            directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                            directoryItems: await directoryManager.listDirectory(path)
                         } as IDirectoryListState);
                 });
         } else if (this.model.clipboardAction === "cut") {
-            DirectoryManager.moveItem(this.model.clipboardItemPath!, this.props.path)
+            directoryManager.moveItem(this.model.clipboardItemPath!, path)
                 .then(async onfulfilled => {
                     this.setState(
                         {
-                            directoryItems: await DirectoryManager.listDirectory(this.props.path)
+                            directoryItems: await directoryManager.listDirectory(path)
                         } as IDirectoryListState);
                 });
         }
@@ -395,7 +399,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private renameItem(oldName?: string, newName?: string) {
         if (oldName && newName) {
-            DirectoryManager.renameItem(oldName, newName, this.props.path)
+            this.props.directoryManager.renameItem(oldName, newName, this.props.path)
                 .then(onfulfilled => {
                     this.setState({ renamingItem: false } as IDirectoryListState);
                 });
@@ -431,11 +435,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         if (confirmTrash) {
             if (this.state.chosenItems.length > 0) {
-                DirectoryManager.sendItemsToTrash(this.state.chosenItems).then(onfulfilled => {
+                this.props.directoryManager.sendItemsToTrash(this.state.chosenItems).then(onfulfilled => {
                     this.refreshAfterDelete();
                 });
             } else {
-                DirectoryManager.sendItemToTrash(selectedItem.path).then(onfulfilled => {
+                this.props.directoryManager.sendItemToTrash(selectedItem.path).then(onfulfilled => {
                     this.refreshAfterDelete();
                 });
             }

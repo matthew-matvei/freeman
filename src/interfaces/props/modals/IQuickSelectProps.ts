@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent } from "react";
 
 import { ICloseableProps, IOpenableProps } from "props/common";
 

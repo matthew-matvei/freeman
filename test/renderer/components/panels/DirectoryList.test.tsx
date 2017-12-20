@@ -1,24 +1,29 @@
+import "reflect-metadata";
 import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import sinon, { SinonSpy } from "sinon";
+import sinon, { SinonSandbox } from "sinon";
 import mockfs from "mock-fs";
 
 import { DirectoryList } from "components/panels";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
-import { DirectoryManager } from "objects/managers";
-import { DirectoryManagerFake } from "fakes";
+import { IDirectoryManager } from "objects/managers";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("<DirectoryList />", () => {
     let props: IDirectoryListProps;
     let component: React.ReactElement<IDirectoryListProps>;
-    let closeWatchSpy: SinonSpy;
+
+    let sandbox: SinonSandbox;
+
+    let directoryManager: IDirectoryManager;
 
     before(() => {
+        sandbox = sinon.createSandbox();
+
         mockfs({
             "path/to": {
                 "fakeFolder": {},
@@ -26,15 +31,16 @@ describe("<DirectoryList />", () => {
             }
         });
 
-        sinon.stub(DirectoryManager, "listDirectory")
-            .callsFake(DirectoryManagerFake.listDirectory);
+        directoryManager = {} as IDirectoryManager;
+        directoryManager.listDirectory = sandbox.stub().resolves();
 
         props = {
             id: "left",
             isSelectedPane: true,
             path: "/path/to",
             sendPathUp: (path: string) => { },
-            sendSelectedPaneUp: () => { }
+            sendSelectedPaneUp: () => { },
+            directoryManager
         };
     });
 
@@ -42,8 +48,8 @@ describe("<DirectoryList />", () => {
         component = <DirectoryList {...props} />;
     });
 
-    afterEach(() => {
-        closeWatchSpy && closeWatchSpy.restore();
+    after(() => {
+        sandbox.restore();
     });
 
     it("begins with no 'directoryItems'", () => {
@@ -104,7 +110,7 @@ describe("<DirectoryList />", () => {
 
     it("updates 'directoryItems' after mounting", () => {
         const wrapper = shallow(component);
-        DirectoryManager.listDirectory("/path/to")
+        directoryManager.listDirectory("/path/to")
             .then(() => {
                 const state = wrapper.state() as IDirectoryListState;
 

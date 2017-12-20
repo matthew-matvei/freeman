@@ -12,6 +12,7 @@ const commonConfig = {
             path.resolve(__dirname, "src", "renderer"),
             path.resolve(__dirname, "src", "main"),
             path.resolve(__dirname, "src", "common"),
+            path.resolve(__dirname, "src", "interfaces"),
             path.resolve(__dirname, "test"),
             "node_modules"
         ]

@@ -1,8 +1,9 @@
+import "reflect-metadata";
 import { expect } from "chai";
 import sinon from "sinon";
 
 import { DirectoryTextFinder } from "objects";
-import { IDirectoryItem } from 'models';
+import { IDirectoryItem } from "models";
 
 describe("DirectoryTextFinder's", () => {
     let clock: sinon.SinonFakeTimers;

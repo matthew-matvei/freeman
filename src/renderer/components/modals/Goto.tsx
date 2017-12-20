@@ -3,7 +3,6 @@ import path from "path";
 import { KeyboardEvent } from 'react';
 import autobind from "autobind-decorator";
 
-import { DirectoryManager } from "objects/managers";
 import { QuickSelect } from "components/modals";
 import { IGotoProps } from "props/modals";
 import { IGotoState } from "states/modals";
@@ -32,7 +31,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * mounts.
      */
     public async componentDidMount() {
-        const nonHiddenDirectoryFolders = await DirectoryManager.listDirectory(
+        const nonHiddenDirectoryFolders = await this.props.directoryManager.listDirectory(
             this.state.currentDirectory,
             item => item.isDirectory && !item.isHidden);
 
@@ -87,7 +86,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
          */
         if (event.key === "Backspace" && this.state.searchTerm.endsWith(path.sep)) {
             const basePath = path.dirname(this.state.searchTerm);
-            const nonHiddenDirectoryItems = await DirectoryManager.listDirectory(
+            const nonHiddenDirectoryItems = await this.props.directoryManager.listDirectory(
                 basePath,
                 item => item.isDirectory && !item.isHidden);
 
@@ -102,7 +101,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
              * directory.
              */
         } else if (event.key === path.sep) {
-            const nonHiddenDirectoryItems = await DirectoryManager.listDirectory(
+            const nonHiddenDirectoryItems = await this.props.directoryManager.listDirectory(
                 newPath,
                 item => item.isDirectory && !item.isHidden);
 
@@ -136,7 +135,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      */
     @autobind
     private async handleUpdate(selectedItem: string) {
-        const newDirectoryItems = await DirectoryManager.listDirectory(selectedItem,
+        const newDirectoryItems = await this.props.directoryManager.listDirectory(selectedItem,
             item => item.isDirectory && !item.isHidden);
 
         this.setState(

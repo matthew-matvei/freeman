@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";

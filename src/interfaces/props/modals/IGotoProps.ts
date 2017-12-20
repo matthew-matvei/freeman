@@ -1,7 +1,7 @@
-import { ICloseableProps, IOpenableProps } from "props/common";
+import { ICloseableProps, IOpenableProps, IDirectoryManageableProps } from "props/common";
 
 /** Describes the properties for the Goto component. */
-interface IGotoProps extends ICloseableProps, IOpenableProps {
+interface IGotoProps extends ICloseableProps, IOpenableProps, IDirectoryManageableProps {
 
     /** The initial path the Goto modal is set to. */
     initialPath: string;

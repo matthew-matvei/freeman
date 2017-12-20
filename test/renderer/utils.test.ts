@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { expect } from "chai";
 
 import { fuzzySearchItems, isAlphanumeric } from "utils";

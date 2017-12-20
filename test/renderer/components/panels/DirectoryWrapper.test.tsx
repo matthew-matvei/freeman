@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
@@ -7,7 +8,7 @@ import sinon, { SinonSpy } from "sinon";
 import { DirectoryWrapper } from "components/panels";
 import { IDirectoryWrapperProps } from "props/panels";
 import { IAppContext } from 'models';
-import { ThemesManager } from "objects/managers";
+import { IDirectoryManager, ThemesManager } from "objects/managers";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -16,6 +17,8 @@ describe("<DirectoryPane />", () => {
     let props: IDirectoryWrapperProps;
     let component: React.ReactElement<IDirectoryWrapperProps>;
     let renderSpy: SinonSpy;
+
+    let directoryManager: IDirectoryManager;
 
     before(() => {
         context = {
@@ -26,7 +29,8 @@ describe("<DirectoryPane />", () => {
             id: "left",
             initialPath: "path/to/initial",
             isSelectedPane: true,
-            sendSelectedPaneUp: () => { }
+            sendSelectedPaneUp: () => { },
+            directoryManager
         };
     });
 

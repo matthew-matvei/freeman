@@ -5,13 +5,16 @@ import SplitPane from "react-split-pane";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 
+import TYPES from "ioc/types";
+import container from "ioc/container";
 import { DirectoryWrapper, Status } from "components/panels";
 import { CommandPalette } from "components/modals";
 import { IAppState } from "states";
 import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
 import { ApplicationCommander } from "objects";
-import { KeysManager, SettingsManager, ThemesManager } from "objects/managers";
+import { IDirectoryManager, KeysManager, SettingsManager, ThemesManager } from "objects/managers";
 import { DirectoryPaneSide } from "types";
+import { IConfigManager } from "configuration";
 
 import "styles/App.scss";
 
@@ -57,9 +60,10 @@ class App extends React.Component<{}, IAppState> {
     constructor(props: {}) {
         super(props);
 
-        this.settings = new SettingsManager().retrieve();
-        this.keyMap = new KeysManager().retrieve();
-        this.theme = new ThemesManager().retrieve(this.settings.themeName);
+        const configManager = container.get<IConfigManager>(TYPES.IConfigManager);
+        this.settings = new SettingsManager(configManager).retrieve();
+        this.keyMap = new KeysManager(configManager).retrieve();
+        this.theme = new ThemesManager(configManager).retrieve(this.settings.themeName);
 
         this.state = {
             selectedPane: "left",
@@ -81,6 +85,8 @@ class App extends React.Component<{}, IAppState> {
         const appStyle = { color: this.theme.primaryColour };
         const splitPaneStyle = { height: "97vh" };
 
+        const directoryManager = container.get<IDirectoryManager>(TYPES.IDirectoryManager);
+
         return <div>
             <HotKeys keyMap={this.keyMap || undefined} handlers={this.handlers}>
                 <div className="App" style={appStyle}>
@@ -92,12 +98,14 @@ class App extends React.Component<{}, IAppState> {
                             id="left"
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "left"}
-                            sendSelectedPaneUp={this.selectPane} />
+                            sendSelectedPaneUp={this.selectPane}
+                            directoryManager={directoryManager} />
                         <DirectoryWrapper
                             id="right"
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "right"}
-                            sendSelectedPaneUp={this.selectPane} />
+                            sendSelectedPaneUp={this.selectPane}
+                            directoryManager={directoryManager} />
                     </SplitPane>
                     <Status message={this.currentStatus} />
                 </div>

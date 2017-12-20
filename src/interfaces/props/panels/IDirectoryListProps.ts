@@ -1,7 +1,7 @@
-import { IDirectoryCommonProps } from "props/common";
+import { IDirectoryCommonProps, IDirectoryManageableProps } from "props/common";
 
 /** Describes the properties for a DirectoryList component. */
-interface IDirectoryListProps extends IDirectoryCommonProps {
+interface IDirectoryListProps extends IDirectoryCommonProps, IDirectoryManageableProps {
 
     /** The path to the directory the pane displays. */
     path: string;

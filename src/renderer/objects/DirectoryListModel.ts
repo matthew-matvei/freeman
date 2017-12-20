@@ -1,8 +1,8 @@
-import { IDirectoryListState } from 'states/panels';
-import { IDirectoryListProps } from 'props/panels';
-import { IDirectoryItem, IItemClipboard, INavigationNode } from 'models';
-import { ClipboardAction } from 'types';
-import { DirectoryTextFinder } from 'objects';
+import { IDirectoryListState } from "states/panels";
+import { IDirectoryListProps } from "props/panels";
+import { IDirectoryItem, IItemClipboard, INavigationNode } from "models";
+import { ClipboardAction } from "types";
+import { DirectoryTextFinder } from "objects";
 
 /** Provides a model that handles non-view DirectoryList functionality. */
 class DirectoryListModel {

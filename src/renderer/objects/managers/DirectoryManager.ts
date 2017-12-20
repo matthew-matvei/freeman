@@ -3,15 +3,18 @@ import path from "path";
 import trash from "trash";
 import hidefile from "hidefile";
 import ncp from "ncp";
+import { injectable } from "inversify";
 
 import { IDirectoryItem } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
+import { IDirectoryManager } from "objects/managers";
 
 /**
  * Provides static methods for reading, writing and creating files and folders.
  */
-class DirectoryManager {
+@injectable()
+class DirectoryManager implements IDirectoryManager {
 
     /**
      * Returns a list of paths of all files in the directory given in path.
@@ -22,7 +25,7 @@ class DirectoryManager {
      *
      * @returns - a list of all files in the given directory
      */
-    public static async listDirectory(
+    public async listDirectory(
         filePath: string,
         filterCondition: (item: IDirectoryItem) => boolean = (item: IDirectoryItem) => true,
         sort: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[] = DirectorySorter.sortByTypeThenAlphaNumery
@@ -57,7 +60,7 @@ class DirectoryManager {
      * @param itemPath - the path to the item to be created
      * @param itemType - the type of the item to be created
      */
-    public static async createItem(itemName: string, itemPath: string, itemType: ItemType) {
+    public async createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<{}> {
         return new Promise((resolve, reject) => {
             const fullItemName = path.join(itemPath, itemName);
             if (itemType === "folder") {
@@ -83,7 +86,7 @@ class DirectoryManager {
      * @param newName - the new name
      * @param itemPath - the path to the item to be renamed
      */
-    public static async renameItem(oldName: string, newName: string, itemPath: string) {
+    public async renameItem(oldName: string, newName: string, itemPath: string): Promise<{}> {
         return new Promise((resolve, reject) => {
             oldName === newName && resolve();
 
@@ -100,9 +103,9 @@ class DirectoryManager {
      *
      * @param itemsToDelete - an array of all directory items to delete
      */
-    public static async deleteItems(itemsToDelete: IDirectoryItem[]) {
+    public async deleteItems(itemsToDelete: IDirectoryItem[]): Promise<void> {
         const itemDeletions = itemsToDelete.map(async item => {
-            await DirectoryManager.deleteItem(item.path, item.isDirectory ? "folder" : "file");
+            await this.deleteItem(item.path, item.isDirectory ? "folder" : "file");
         });
 
         await Promise.all(itemDeletions);
@@ -114,7 +117,7 @@ class DirectoryManager {
      * @param itemPath - the full path to the item to be deleted
      * @param itemType - the type of the item to be deleted
      */
-    public static async deleteItem(itemPath: string, itemType: ItemType) {
+    public async deleteItem(itemPath: string, itemType: ItemType): Promise<{}> {
         return new Promise((resolve, reject) => {
             if (itemType === "folder") {
                 fs.rmdir(itemPath, error => {
@@ -137,9 +140,9 @@ class DirectoryManager {
      *
      * @param itemsToTrash - the items to send to trash
      */
-    public static async sendItemsToTrash(itemsToTrash: IDirectoryItem[]) {
+    public async sendItemsToTrash(itemsToTrash: IDirectoryItem[]): Promise<void> {
         const itemSoftDeletions = itemsToTrash.map(async item => {
-            await DirectoryManager.sendItemToTrash(item.path);
+            await this.sendItemToTrash(item.path);
         });
 
         await Promise.all(itemSoftDeletions);
@@ -150,7 +153,7 @@ class DirectoryManager {
      *
      * @param itemPath - the path to the file
      */
-    public static async sendItemToTrash(itemPath: string) {
+    public async sendItemToTrash(itemPath: string): Promise<void> {
         await trash([itemPath], { glob: false });
     }
 
@@ -160,7 +163,7 @@ class DirectoryManager {
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to copy the item to
      */
-    public static async copyItem(itemPath: string, destinationDirectory: string) {
+    public async copyItem(itemPath: string, destinationDirectory: string): Promise<{}> {
         return new Promise((resolve, reject) => {
             const fileName = path.basename(itemPath);
             ncp.ncp(itemPath, path.join(destinationDirectory, fileName), error => {
@@ -178,12 +181,12 @@ class DirectoryManager {
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to move the item to
      */
-    public static async moveItem(itemPath: string, destinationDirectory: string) {
-        await DirectoryManager.copyItem(itemPath, destinationDirectory)
+    public async moveItem(itemPath: string, destinationDirectory: string): Promise<void> {
+        await this.copyItem(itemPath, destinationDirectory)
             .catch(onrejected => {
                 console.error("Failed to copy item", onrejected);
             }).then(onfulfilled => {
-                DirectoryManager.deleteItem(itemPath, "file");
+                this.deleteItem(itemPath, "file");
             });
     }
 

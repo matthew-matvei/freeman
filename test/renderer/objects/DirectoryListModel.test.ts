@@ -1,14 +1,18 @@
+import "reflect-metadata";
 import { expect } from "chai";
 
 import { DirectoryListModel } from "objects";
-import { IDirectoryListState } from 'states/panels';
-import { IDirectoryListProps } from 'props/panels';
-import { DirectoryPaneSide } from 'types';
-import { IDirectoryItem, INavigationNode } from 'models';
+import { IDirectoryListState } from "states/panels";
+import { IDirectoryListProps } from "props/panels";
+import { DirectoryPaneSide } from "types";
+import { IDirectoryItem, INavigationNode } from "models";
+import { IDirectoryManager } from "objects/managers";
 
 describe("DirectoryListModel's", () => {
     let directoryListModel: DirectoryListModel;
     let directoryItem1: IDirectoryItem;
+
+    let directoryManager: IDirectoryManager;
 
     before(() => {
         directoryListModel = new DirectoryListModel();
@@ -101,7 +105,8 @@ describe("DirectoryListModel's", () => {
                 isSelectedPane: false,
                 path: "/path/to/directory",
                 sendPathUp: (path: string) => { },
-                sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => { }
+                sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => { },
+                directoryManager
             }
 
             prevProps = { ...commonProps };

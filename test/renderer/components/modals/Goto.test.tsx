@@ -1,16 +1,16 @@
+import "reflect-metadata";
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import sinon, { SinonSpy } from "sinon";
+import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
 import { Goto } from "components/modals";
 import { IGotoProps, IQuickSelectProps } from "props/modals";
 import { IGotoState } from "states/modals";
 import { IDirectoryItem, IAppContext } from "models";
-import { DirectoryManager, ThemesManager } from 'objects/managers';
-import { DirectoryManagerFake } from "fakes";
+import { IDirectoryManager, ThemesManager } from 'objects/managers';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -18,12 +18,18 @@ describe("<Goto />", () => {
     let context: IAppContext;
     let props: IGotoProps;
     let component: React.ReactElement<IGotoProps>;
+
     let renderSpy: SinonSpy;
+    let sandbox: SinonSandbox;
 
     let item1: IDirectoryItem;
     let item2: IDirectoryItem;
 
+    let directoryManager: IDirectoryManager;
+
     before(() => {
+        sandbox = sinon.createSandbox();
+
         context = {
             theme: ThemesManager.fake()
         }
@@ -41,15 +47,15 @@ describe("<Goto />", () => {
             isHidden: false
         };
 
-        sinon.stub(DirectoryManager, "listDirectory")
-            .callsFake(DirectoryManagerFake.listDirectory)
-            .withArgs([item1, item2]);
+        directoryManager = {} as IDirectoryManager;
+        directoryManager.listDirectory = sandbox.stub().resolves([item1, item2]);
 
         props = {
             isOpen: false,
             onClose: () => { },
             initialPath: "/path/to/initial",
-            navigateTo: () => { }
+            navigateTo: () => { },
+            directoryManager
         };
     });
 
@@ -59,6 +65,10 @@ describe("<Goto />", () => {
 
     afterEach(() => {
         renderSpy && renderSpy.restore();
+    });
+
+    after(() => {
+        sandbox.restore();
     });
 
     it("begins with 'searchTerm' equal to 'initialPath'", () => {
@@ -84,7 +94,7 @@ describe("<Goto />", () => {
 
     it("updates 'items' in state after mounting", () => {
         const wrapper = shallow(component);
-        DirectoryManager.listDirectory("/path/to")
+        directoryManager.listDirectory("/path/to")
             .then(() => {
                 const state = wrapper.state() as IGotoState;
 
@@ -108,7 +118,7 @@ describe("<Goto />", () => {
     it("updating 'items' re-renders the component once", () => {
         shallow(component);
         renderSpy = sinon.spy(Goto.prototype, "render");
-        DirectoryManager.listDirectory("/path/to")
+        directoryManager.listDirectory("/path/to")
             .then(() => {
                 expect(renderSpy.callCount).to.equal(1);
             });
