@@ -1,21 +1,20 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import os from "os";
 import autobind from "autobind-decorator";
 import ScrollArea from "react-scrollbar";
 import SplitPane from "react-split-pane";
 
 import { DirectoryList, PathPanel, TerminalPane } from "components/panels";
 import { IAppContext } from "models";
-import { IDirectoryPaneState } from "states/panels";
-import { IDirectoryPaneProps } from "props/panels";
+import { IDirectoryWrapperState } from "states/panels";
+import { IDirectoryWrapperProps } from "props/panels";
 
-import "styles/panels/DirectoryPane.scss";
+import "styles/panels/DirectoryWrapper.scss";
 
 /**
  * The wrapper component for displaying directory content and terminal.
  */
-class DirectoryWrapper extends React.Component<IDirectoryPaneProps, IDirectoryPaneState> {
+class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirectoryWrapperState> {
 
     /** Validation for context types. */
     public static contextTypes = {
@@ -30,10 +29,10 @@ class DirectoryWrapper extends React.Component<IDirectoryPaneProps, IDirectoryPa
      *
      * @param props - the properties for the DirectoryPane component
      */
-    public constructor(props: IDirectoryPaneProps, context: IAppContext) {
+    public constructor(props: IDirectoryWrapperProps, context: IAppContext) {
         super(props, context);
 
-        this.state = { path: os.homedir() };
+        this.state = { path: this.props.initialPath };
     }
 
     /**
@@ -85,7 +84,7 @@ class DirectoryWrapper extends React.Component<IDirectoryPaneProps, IDirectoryPa
      */
     @autobind
     private updatePath(path: string) {
-        this.setState({ path: path, selectedItem: 0 } as IDirectoryPaneState);
+        this.setState({ path: path } as IDirectoryWrapperState);
     }
 }
 

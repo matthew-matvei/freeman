@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
+import os from "os";
 import SplitPane from "react-split-pane";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
@@ -89,10 +90,12 @@ class App extends React.Component<{}, IAppState> {
                         style={splitPaneStyle}>
                         <DirectoryWrapper
                             id="left"
+                            initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "left"}
                             sendSelectedPaneUp={this.selectPane} />
                         <DirectoryWrapper
                             id="right"
+                            initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "right"}
                             sendSelectedPaneUp={this.selectPane} />
                     </SplitPane>

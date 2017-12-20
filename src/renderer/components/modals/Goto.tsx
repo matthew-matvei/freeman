@@ -41,12 +41,9 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
 
     /**
      * Clears the quickSelectDefaultValue in state if it was not undefined.
-     *
-     * @param prevProps - the previous properties
-     * @param prevState - the previous state
      */
-    public componentDidUpdate(prevProps: {}, prevState: IGotoState) {
-        if (prevState.quickSelectValue) {
+    public componentDidUpdate() {
+        if (this.state.quickSelectValue) {
             this.setState({ quickSelectValue: undefined } as IGotoState);
         }
     }

@@ -1,9 +1,7 @@
 import IDirectoryListState from "./IDirectoryListState"
-import IDirectoryPaneState from "./IDirectoryPaneState";
-import IQuickSelectState from "./IQuickSelectState";
+import IDirectoryWrapperState from "./IDirectoryWrapperState";
 
 export {
     IDirectoryListState,
-    IDirectoryPaneState,
-    IQuickSelectState
+    IDirectoryWrapperState
 }

@@ -6,19 +6,13 @@ import { IDirectoryItem } from "models";
  */
 class DirectoryTextFinder {
 
-    /**
-     * The search text to use to find the desired directory item.
-     */
+    /** The search text to use to find the desired directory item. */
     private searchText: string;
 
-    /**
-     * The last time a character was added to the search text.
-     */
+    /** The last time a character was added to the search text. */
     private lastAdditionTime: Date;
 
-    /**
-     * Initialises an instance of the DirectoryTextFinder class.
-     */
+    /** Initialises an instance of the DirectoryTextFinder class. */
     public constructor() {
         this.searchText = "";
         this.lastAdditionTime = new Date();

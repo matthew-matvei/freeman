@@ -28,7 +28,7 @@ class DirectoryManager {
         sort: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[] = DirectorySorter.sortByTypeThenAlphaNumery
     ): Promise<IDirectoryItem[]> {
 
-        if (await !(DirectoryManager.isDirectory(filePath))) {
+        if (!(await DirectoryManager.isDirectory(filePath))) {
             return [];
         }
 
@@ -85,6 +85,8 @@ class DirectoryManager {
      */
     public static async renameItem(oldName: string, newName: string, itemPath: string) {
         return new Promise((resolve, reject) => {
+            oldName === newName && resolve();
+
             fs.rename(path.join(itemPath, oldName), path.join(itemPath, newName), error => {
                 error && reject(error);
 

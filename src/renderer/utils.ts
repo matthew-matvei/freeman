@@ -41,6 +41,6 @@ export const fuzzySearchItems = (pathToFind: string, items: string[]): string[] 
         const searchTermSuffix = path.basename(pathToFind.toLocaleLowerCase());
         const itemSuffix = path.basename(item.toLocaleLowerCase());
 
-        return searchTermSuffix && fuzzysearch(searchTermSuffix, itemSuffix);
+        return fuzzysearch(searchTermSuffix, itemSuffix);
     })
 }

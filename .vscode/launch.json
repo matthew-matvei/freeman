@@ -43,16 +43,18 @@
             "type": "node",
             "request": "launch",
             "name": "Mocha Tests",
-            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "program": "${workspaceRoot}/node_modules/.bin/electron-mocha",
             "args": [
-                "-u",
+                "--renderer",
+                "--debug",
+                "--ui",
                 "tdd",
                 "--timeout",
                 "999999",
-                "--colors",
-                "${workspaceRoot}/__tests__/main.js"
+                "${workspaceRoot}/__tests__"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnSessionStart",
+            "preLaunchTask": "build:test"
         }
     ]
 }

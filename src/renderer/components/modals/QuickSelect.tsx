@@ -4,9 +4,9 @@ import Modal from "react-modal";
 import autobind from "autobind-decorator";
 import { HotKeys } from 'react-hotkeys';
 
-import { IAppContext } from "models";
-import { IQuickSelectProps } from "props/panels";
-import { IQuickSelectState } from "states/panels";
+import { IAppContext, IKeyMap } from "models";
+import { IQuickSelectProps } from "props/modals";
+import { IQuickSelectState } from "states/modals";
 import { autoFocus } from "utils";
 
 import "styles/panels/QuickSelect.scss";
@@ -25,7 +25,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     public context: IAppContext;
 
     /** A keymap for hot keys when QuickSelect focused. */
-    private keyMap = {
+    private keyMap: IKeyMap = {
         close: ["esc"],
         previousItem: ["up"],
         nextItem: ["down"],
@@ -74,7 +74,6 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         super(props, context);
 
         this.state = {
-            items: this.props.initialItems,
             selectedIndex: 0
         }
     }
@@ -85,10 +84,12 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
      * @returns - a JSX element representing the quick select view
      */
     public render(): JSX.Element {
+        const { selectedColour, backgroundColour } = this.context.theme.quickSelect;
+
         const items = this.props.initialItems.map((item, i) => {
             return this.state.selectedIndex === i ?
-                <li key={item} style={{ backgroundColor: this.context.theme.quickSelect.selectedColour }}>{item}</li>
-                : <li key={item} style={{ backgroundColor: this.context.theme.quickSelect.backgroundColour }}>{item}</li>
+                <li key={item} style={{ backgroundColor: selectedColour }}>{item}</li>
+                : <li key={item} style={{ backgroundColor: backgroundColour }}>{item}</li>
         });
 
         return <Modal

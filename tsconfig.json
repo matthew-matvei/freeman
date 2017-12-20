@@ -14,7 +14,8 @@
             "*": [
                 "src/renderer/*",
                 "src/main/*",
-                "src/common/*"
+                "src/common/*",
+                "test/*"
             ]
         },
         "typeRoots": [

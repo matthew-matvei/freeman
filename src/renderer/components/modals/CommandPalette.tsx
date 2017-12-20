@@ -1,7 +1,7 @@
 import * as React from "react";
 import autobind from "autobind-decorator";
 
-import { ICommandPaletteProps } from "props/panels";
+import { ICommandPaletteProps } from "props/modals";
 import { QuickSelect } from "components/modals";
 
 /** The CommandPalette component, a QuickSelect for general commands. */

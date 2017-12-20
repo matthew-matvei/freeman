@@ -32,6 +32,33 @@ class ThemesManager {
         return this.parseApplicationTheme(themeName);
     }
 
+    /** Useful for creating a populated ITheme object for testing purposes. */
+    public static fake(): ITheme {
+        return {
+            directoryItem: {
+                backgroundColour: "black",
+                chosenColour: "black",
+                colour: "black",
+                directoryColour: "black",
+                fileColour: "black",
+                selectedColour: "black"
+            },
+            pathPanel: {
+                backgroundColour: "black"
+            },
+            primaryBackgroundColour: "black",
+            primaryColour: "black",
+            quickSelect: {
+                backgroundColour: "black",
+                colour: "black",
+                selectedColour: "black"
+            },
+            statusBar: {
+                backgroundColour: "black"
+            }
+        }
+    }
+
     /**
      * Returns the path to the theme file based on the given themeName.
      *

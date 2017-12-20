@@ -6,8 +6,6 @@ interface ITheme {
     /** The primary foreground colour. */
     primaryColour: string;
 
-
-
     /** The primary background colour. */
     primaryBackgroundColour: string;
 

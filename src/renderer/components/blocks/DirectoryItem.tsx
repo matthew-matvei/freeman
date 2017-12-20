@@ -100,8 +100,6 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     private select() {
         this.props.sendSelectedItemUp(this.props.model);
     }
-
-
 }
 
 export default DirectoryItem;
