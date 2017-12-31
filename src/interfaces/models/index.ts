@@ -6,6 +6,8 @@ import IKeyMap from "./IKeyMap";
 import INavigationNode from "./INavigationNode";
 import ISettings from "./ISettings";
 import ISocketMessage from "./ISocketMessage";
+import IStatus from "./IStatus";
+import IStatusNotifier from "./IStatusNotifier";
 import ITheme from "./ITheme";
 
 export {
@@ -17,5 +19,7 @@ export {
     INavigationNode,
     ISettings,
     ISocketMessage,
+    IStatus,
+    IStatusNotifier,
     ITheme
 }

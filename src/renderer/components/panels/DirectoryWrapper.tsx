@@ -63,7 +63,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                                 isSelectedPane={this.props.isSelectedPane}
                                 sendSelectedPaneUp={this.props.sendSelectedPaneUp}
                                 sendPathUp={this.updatePath}
-                                directoryManager={this.props.directoryManager} />
+                                directoryManager={this.props.directoryManager}
+                                statusNotifier={this.props.statusNotifier} />
                         </ScrollArea>
                     </div>
                     <div className="terminalPaneWrapper">

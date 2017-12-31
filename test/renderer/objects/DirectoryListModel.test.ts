@@ -5,7 +5,7 @@ import { DirectoryListModel } from "objects";
 import { IDirectoryListState } from "states/panels";
 import { IDirectoryListProps } from "props/panels";
 import { DirectoryPaneSide } from "types";
-import { IDirectoryItem, INavigationNode } from "models";
+import { IDirectoryItem, INavigationNode, IStatusNotifier } from "models";
 import { IDirectoryManager } from "objects/managers";
 
 describe("DirectoryListModel's", () => {
@@ -100,6 +100,8 @@ describe("DirectoryListModel's", () => {
         let prevProps: IDirectoryListProps;
         let nextProps: IDirectoryListProps;
 
+        const statusNotifier = {} as IStatusNotifier;
+
         beforeEach(() => {
             const commonProps: IDirectoryListProps = {
                 id: "left",
@@ -107,7 +109,8 @@ describe("DirectoryListModel's", () => {
                 path: "/path/to/directory",
                 sendPathUp: (path: string) => { },
                 sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => { },
-                directoryManager
+                directoryManager,
+                statusNotifier
             }
 
             prevProps = { ...commonProps };

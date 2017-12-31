@@ -2,6 +2,15 @@
     position: relative;
     top: 97vh;
     height: 3vh;
-    padding-top: 0.2em;
-    padding-left: 1em;
+    padding: 0.2em 1em 0 1em;
+    display: flex;
+    justify-content: space-between;
+
+    .leftGroup, .rightGroup {
+        display: flex;
+
+        span {
+            padding: 0 0.5em;
+        }
+    }
 }

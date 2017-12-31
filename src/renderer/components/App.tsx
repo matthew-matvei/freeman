@@ -10,10 +10,10 @@ import container from "ioc/container";
 import { DirectoryWrapper, Status } from "components/panels";
 import { CommandPalette } from "components/modals";
 import { IAppState } from "states";
-import { IKeyMap, ISettings, ITheme, IAppContext } from "models";
+import { IKeyMap, ISettings, ITheme, IAppContext, IStatusNotifier } from "models";
 import { ApplicationCommander } from "objects";
 import { IDirectoryManager, KeysManager, SettingsManager, ThemesManager } from "objects/managers";
-import { DirectoryPaneSide } from "types";
+import { DirectoryPaneSide, StatusUpdate } from "types";
 import { IConfigManager } from "configuration";
 
 import "styles/App.scss";
@@ -41,16 +41,10 @@ class App extends React.Component<{}, IAppState> {
         openCommandPalette: this.openCommandPalette
     }
 
-    /**
-     * Gets a string representing the current status of the application
-     */
-    private get currentStatus(): string {
-        if (!this.keyMap) {
-            return "No key map files found!";
-        }
+    private statusNotifier: IStatusNotifier;
 
-        return "Ready";
-    }
+    /** A timer used for the status message. */
+    private statusMessageTimeout: NodeJS.Timer;
 
     /**
      * Defines how the main app component is rendered.
@@ -65,9 +59,20 @@ class App extends React.Component<{}, IAppState> {
         this.keyMap = new KeysManager(configManager).retrieve();
         this.theme = new ThemesManager(configManager).retrieve(this.settings.themeName);
 
+        this.statusNotifier = {
+            notify: (payload: string) => this.updateStatus("notification", payload),
+            setItemCount: (payload: number) => this.updateStatus("itemCount", payload),
+            setChosenCount: (payload: number) => this.updateStatus("chosenCount", payload)
+        }
+
         this.state = {
             selectedPane: "left",
-            isCommandPaletteOpen: false
+            isCommandPaletteOpen: false,
+            status: {
+                message: "",
+                itemCount: 0,
+                chosenCount: 0
+            }
         }
     }
 
@@ -99,15 +104,17 @@ class App extends React.Component<{}, IAppState> {
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "left"}
                             sendSelectedPaneUp={this.selectPane}
-                            directoryManager={directoryManager} />
+                            directoryManager={directoryManager}
+                            statusNotifier={this.statusNotifier} />
                         <DirectoryWrapper
                             id="right"
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "right"}
                             sendSelectedPaneUp={this.selectPane}
-                            directoryManager={directoryManager} />
+                            directoryManager={directoryManager}
+                            statusNotifier={this.statusNotifier} />
                     </SplitPane>
-                    <Status message={this.currentStatus} />
+                    <Status {...this.state.status} />
                 </div>
             </HotKeys>
             <CommandPalette
@@ -131,6 +138,27 @@ class App extends React.Component<{}, IAppState> {
         if (!this.state.isCommandPaletteOpen) {
             this.setState({ isCommandPaletteOpen: true } as IAppState);
         }
+    }
+
+    /** Handles updating the status component's message. */
+    @autobind
+    private updateStatus(updateType: StatusUpdate, payload: string | number) {
+        const status = this.state.status;
+
+        if (updateType === "itemCount") {
+            status.itemCount = payload as number;
+        } else if (updateType === "chosenCount") {
+            status.chosenCount = payload as number;
+        } else {
+            status.message = payload as string;
+            clearTimeout(this.statusMessageTimeout);
+            this.statusMessageTimeout = setTimeout(() => {
+                status.message = "";
+                this.setState({ status } as IAppState);
+            }, 2000);
+        }
+
+        this.setState({ status } as IAppState);
     }
 
     /** Handles switching selected pane. */

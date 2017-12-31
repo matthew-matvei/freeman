@@ -12,3 +12,6 @@ export type SocketMessageType = "resize";
 
 /** The action type requested of the clipboard. */
 export type ClipboardAction = "copy" | "cut";
+
+/** The status update type given when updating the status component. */
+export type StatusUpdate = "notification" | "itemCount" | "chosenCount";

@@ -1,12 +1,6 @@
-/**
- * Describes the properties of a status bar component.
- */
-interface IStatusProps {
+import { IStatus } from "models";
 
-    /**
-     * The message to display in the status bar.
-     */
-    message: string;
-}
+/** Describes the properties of a status bar component. */
+interface IStatusProps extends IStatus { }
 
 export default IStatusProps;

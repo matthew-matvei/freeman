@@ -7,7 +7,7 @@ import sinon, { SinonSpy } from "sinon";
 
 import { DirectoryWrapper } from "components/panels";
 import { IDirectoryWrapperProps } from "props/panels";
-import { IAppContext } from 'models';
+import { IAppContext, IStatusNotifier } from "models";
 import { IDirectoryManager, ThemesManager } from "objects/managers";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -25,12 +25,15 @@ describe("<DirectoryWrapper />", () => {
             theme: ThemesManager.fake()
         }
 
+        const statusNotifier = {} as IStatusNotifier;
+
         props = {
             id: "left",
             initialPath: "path/to/initial",
             isSelectedPane: true,
             sendSelectedPaneUp: () => { },
-            directoryManager
+            directoryManager,
+            statusNotifier
         };
     });
 

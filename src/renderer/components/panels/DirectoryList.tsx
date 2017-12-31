@@ -124,6 +124,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param prevState - the previous state object
      */
     public async componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
+        this.props.statusNotifier.setItemCount(this.nonHiddenDirectoryItems.length);
+        this.props.statusNotifier.setChosenCount(this.state.chosenItems.length);
+
         if (prevProps.path === this.props.path &&
             !prevState.creatingNewItem &&
             !prevState.renamingItem &&
@@ -275,6 +278,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             this.props.directoryManager.deleteItems(selectedItems)
                 .then(onfulfilled => {
                     this.refreshAfterDelete();
+
+                    this.props.statusNotifier.notify("Deleted items");
                 });
         }
     }
@@ -402,6 +407,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                         {
                             directoryItems: await directoryManager.listDirectory(path)
                         } as IDirectoryListState);
+
+                    this.props.statusNotifier.notify("Copied item");
                 });
         } else if (this.model.clipboardAction === "cut") {
             directoryManager.moveItem(this.model.clipboardItemPath!, path)
@@ -410,6 +417,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                         {
                             directoryItems: await directoryManager.listDirectory(path)
                         } as IDirectoryListState);
+
+                    this.props.statusNotifier.notify("Cut item");
                 });
         }
     }
@@ -417,7 +426,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /** Handles refreshing the page after a delete. */
     @autobind
     private refreshAfterDelete() {
-        this.setState({ itemDeleted: true } as IDirectoryListState);
+        this.setState({ itemDeleted: true, selectedIndex: 0 } as IDirectoryListState);
     }
 
     /**
@@ -467,6 +476,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (confirmTrash) {
             this.props.directoryManager.sendItemsToTrash(selectedItems).then(onfulfilled => {
                 this.refreshAfterDelete();
+
+                this.props.statusNotifier.notify("Sent items to trash");
             });
         }
     }
@@ -495,6 +506,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                 directoryItem: this.nonHiddenDirectoryItems[this.state.selectedIndex],
                 clipboardAction: action
             };
+
+            if (action === "copy") {
+                this.props.statusNotifier.notify("Copying item(s)");
+            } else {
+                this.props.statusNotifier.notify("Cutting item(s)");
+            }
         }
     }
 
@@ -517,6 +534,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /** Handles toggling whether hidden files should be shown. */
     @autobind
     private toggleShowHidden() {
+        if (this.state.showHiddenItems) {
+            this.props.statusNotifier.notify("Hiding hidden items");
+        } else {
+            this.props.statusNotifier.notify("Showing hidden items");
+        }
+
         this.setState(prevState => (
             {
                 showHiddenItems: !prevState.showHiddenItems

@@ -10,6 +10,7 @@ import { DirectoryList } from "components/panels";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
 import { IDirectoryManager } from "objects/managers";
+import { IStatusNotifier } from "models";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -34,13 +35,16 @@ describe("<DirectoryList />", () => {
         directoryManager = {} as IDirectoryManager;
         directoryManager.listDirectory = sandbox.stub().resolves();
 
+        const statusNotifier = {} as IStatusNotifier;
+
         props = {
             id: "left",
             isSelectedPane: true,
             path: "/path/to",
             sendPathUp: (path: string) => { },
             sendSelectedPaneUp: () => { },
-            directoryManager
+            directoryManager,
+            statusNotifier
         };
     });
 

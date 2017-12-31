@@ -25,12 +25,14 @@ describe("<Status />", () => {
         }
 
         props = {
-            message: "test message"
+            message: "test message",
+            itemCount: 0,
+            chosenCount: 0
         }
     });
 
     beforeEach(() => {
-        component = <Status message={props.message} />;
+        component = <Status {...props} />;
     });
 
     afterEach(() => {
