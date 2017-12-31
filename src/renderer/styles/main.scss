@@ -6,6 +6,10 @@ ul {
     padding: 1em 0;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 /* Removes default highlighting on focused elements. */
 :not(input):not(textarea),
 :not(input):not(textarea)::after,

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 import fs from "fs";
 import path from "path";
 import { shell } from "electron";
@@ -20,6 +21,14 @@ import { Goto } from "components/modals";
 /** The component for displaying a directory's list of items. */
 class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListState> {
 
+    /** Validation for context types. */
+    public static contextTypes = {
+        scrollArea: PropTypes.object
+    }
+
+    /** Context available within a ScrollArea. */
+    public context: { scrollArea: any };
+
     /** Handler functions for the given events this component handles. */
     private handlers = {
         moveUp: () => this.move("up"),
@@ -35,7 +44,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         paste: this.pasteFromClipboard,
         chooseItem: this.toggleItemChosen,
         sendToTrash: this.sendToTrash,
-        delete: this.deleteItem,
+        delete: this.delete,
         openGoto: this.openGoto
     }
 
@@ -44,6 +53,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** A watcher that monitors activity on the directory list's current directory. */
     private watcher: fs.FSWatcher;
+
+    /**
+     * A trapper that can be given focus in cases where focus on directory items
+     * is lost.
+     */
+    private keysTrapper: HotKeys | null;
 
     /** Gets the directory items that are not currently hidden. */
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
@@ -68,7 +83,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             creatingNewItem: false,
             renamingItem: false,
             itemDeleted: false,
-            isGotoOpen: false
+            isGotoOpen: false,
+            isFocused: this.props.isSelectedPane
         }
 
         this.model = new DirectoryListModel();
@@ -91,8 +107,14 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     }
 
     /** Handles closing the watcher on unmounting the directory list. */
-    public async componentWillUnmount() {
+    public componentWillUnmount() {
         this.watcher.close();
+    }
+
+    public componentWillReceiveProps(nextProps: IDirectoryListProps) {
+        if (!this.props.isSelectedPane && nextProps.isSelectedPane) {
+            this.setState({ isFocused: true } as IDirectoryListState);
+        }
     }
 
     /**
@@ -132,9 +154,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     selectedIndex: cachedNavigation.selectedIndex
                 } as IDirectoryListState);
         } else {
+            const directoryItems = await this.props.directoryManager.listDirectory(this.props.path);
+            const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
             this.setState(
                 {
-                    directoryItems: await this.props.directoryManager.listDirectory(this.props.path)
+                    directoryItems: directoryItems,
+                    chosenItems: remainingChosenItems
                 } as IDirectoryListState);
         }
     }
@@ -173,7 +198,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     return <DirectoryItem
                         key={item.path}
                         model={item}
-                        isSelected={isSelectedItem}
+                        isSelected={this.state.isFocused && isSelectedItem}
                         isChosen={this.state.chosenItems.includes(item)}
                         sendPathUp={this.goIn}
                         sendSelectedItemUp={this.selectItem}
@@ -183,8 +208,14 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         return (
             <div>
-                <HotKeys handlers={this.handlers}
-                    ref={component => component && items.length === 0 && autoFocus(component)}>
+                <HotKeys
+                    handlers={this.handlers}
+                    ref={component => {
+                        this.keysTrapper = component;
+                        this.keysTrapper && items.length === 0 && autoFocus(this.keysTrapper)
+                    }}
+                    onFocus={this.setFocused}
+                    onBlur={this.setUnFocused}>
                     <ul onKeyDown={this.handleKeyDown}>
                         {items}
                         {this.state.creatingNewItem &&
@@ -230,23 +261,21 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * Handles providing a dialog to the user to confirm deletion of an item.
      */
     @autobind
-    private deleteItem() {
+    private delete() {
+        const selectedItems = this.state.chosenItems.length > 0 ?
+            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
+
+        const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
         const confirmDelete = this.confirmationDialog(
-            "Are you sure you want to permanently delete this item?");
+            `Are you sure you want to permanently delete ${chosenItems}?`);
+
+        this.keysTrapper && autoFocus(this.keysTrapper);
 
         if (confirmDelete) {
-            if (this.state.chosenItems.length > 0) {
-                this.props.directoryManager.deleteItems(this.state.chosenItems)
-                    .then(onfulfilled => {
-                        this.refreshAfterDelete();
-                    });
-            } else {
-                const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
-                this.props.directoryManager.deleteItem(selectedItem.path, selectedItem.isDirectory ? "folder" : "file")
-                    .then(onfulfilled => {
-                        this.refreshAfterDelete();
-                    });
-            }
+            this.props.directoryManager.deleteItems(selectedItems)
+                .then(onfulfilled => {
+                    this.refreshAfterDelete();
+                });
         }
     }
 
@@ -269,6 +298,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /** Navigates back to the parent directory. */
     @autobind
     private goBack() {
+        this.context.scrollArea.scrollTop();
         const parentDirectory = path.join(this.props.path, "..");
         this.setState({ selectedIndex: 0 } as IDirectoryListState);
         this.props.sendPathUp(parentDirectory);
@@ -425,25 +455,30 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private sendToTrash() {
-        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
-        if (selectedItem.isDirectory) {
-            return;
-        }
+        const selectedItems = this.state.chosenItems.length > 0 ?
+            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
 
+        const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
         const confirmTrash = this.confirmationDialog(
-            "Are you sure you want to send this item to trash?");
+            `Are you sure you want to send ${chosenItems} to the trash?`);
+
+        this.keysTrapper && autoFocus(this.keysTrapper);
 
         if (confirmTrash) {
-            if (this.state.chosenItems.length > 0) {
-                this.props.directoryManager.sendItemsToTrash(this.state.chosenItems).then(onfulfilled => {
-                    this.refreshAfterDelete();
-                });
-            } else {
-                this.props.directoryManager.sendItemToTrash(selectedItem.path).then(onfulfilled => {
-                    this.refreshAfterDelete();
-                });
-            }
+            this.props.directoryManager.sendItemsToTrash(selectedItems).then(onfulfilled => {
+                this.refreshAfterDelete();
+            });
         }
+    }
+
+    @autobind
+    private setFocused() {
+        this.setState({ isFocused: true } as IDirectoryListState);
+    }
+
+    @autobind
+    private setUnFocused() {
+        this.setState({ isFocused: false } as IDirectoryListState);
     }
 
     /**

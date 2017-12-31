@@ -43,6 +43,7 @@
     "@types/react-modal": "^3.1.0",
     "@types/react-scrollbar": "^0.4.8",
     "@types/sinon": "^4.1.2",
+    "@types/trash": "^4.2.0",
     "@types/ws": "^3.2.0",
     "@types/xterm": "^2.0.3",
     "chai": "^4.1.2",

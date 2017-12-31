@@ -57,8 +57,12 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         return <HotKeys
             handlers={this.handlers}
             ref={component => component && isSelected && autoFocus(component)}>
-            <div onClick={this.select} className={`DirectoryItem ${selectedClass}`}>
-                <button style={style} onDoubleClick={this.openDirectory}>
+            <div
+                className={`DirectoryItem ${selectedClass}`}>
+                <button
+                    style={style}
+                    onClick={this.select}
+                    onDoubleClick={this.activate}>
                     {model.name}
                 </button>
             </div>

@@ -12,7 +12,7 @@ import { IDirectoryManager, ThemesManager } from "objects/managers";
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe("<DirectoryPane />", () => {
+describe("<DirectoryWrapper />", () => {
     let context: IAppContext;
     let props: IDirectoryWrapperProps;
     let component: React.ReactElement<IDirectoryWrapperProps>;
@@ -42,10 +42,10 @@ describe("<DirectoryPane />", () => {
         renderSpy && renderSpy.restore();
     });
 
-    it("contains a <div /> with the className 'DirectoryPane'", () => {
+    it("contains a <div /> with the className 'DirectoryWrapper'", () => {
         const wrapper = shallow(component, { context });
 
-        expect(wrapper.findWhere(n => n.hasClass("DirectoryPane")))
+        expect(wrapper.findWhere(n => n.hasClass("DirectoryWrapper")))
             .to.have.length(1);
     });
 
@@ -53,13 +53,6 @@ describe("<DirectoryPane />", () => {
         const wrapper = shallow(component, { context });
 
         expect(wrapper.findWhere(n => n.hasClass("directoryScrollArea")))
-            .to.have.length(1);
-    });
-
-    it("contains a container with the className 'terminalScrollArea'", () => {
-        const wrapper = shallow(component, { context });
-
-        expect(wrapper.findWhere(n => n.hasClass("terminalScrollArea")))
             .to.have.length(1);
     });
 

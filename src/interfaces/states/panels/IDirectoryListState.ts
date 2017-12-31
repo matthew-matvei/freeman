@@ -28,6 +28,9 @@ interface IDirectoryListState {
 
     /** Whether the Goto modal window is open. */
     isGotoOpen: boolean;
+
+    /** Whether the directory list has focus. */
+    isFocused: boolean;
 }
 
 export default IDirectoryListState;

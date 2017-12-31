@@ -41,40 +41,36 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const wrappingDivStyle = { width: "100%" };
         const scrollAreaVertContainerStyle = { width: "20px" };
         const scrollAreaVertBarStyle = { width: "100%" };
-        return <div className="DirectoryPane">
-            <SplitPane
-                split="horizontal"
-                defaultSize="65vh"
-                allowResize={false}>
-                <div style={wrappingDivStyle}>
-                    <PathPanel path={this.state.path} />
-                    <ScrollArea
-                        className="directoryScrollArea"
-                        horizontal={false}
-                        style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
-                        verticalContainerStyle={scrollAreaVertContainerStyle}
-                        verticalScrollbarStyle={scrollAreaVertBarStyle}>
-                        <DirectoryList
-                            id={this.props.id}
-                            path={this.state.path}
-                            isSelectedPane={this.props.isSelectedPane}
-                            sendSelectedPaneUp={this.props.sendSelectedPaneUp}
-                            sendPathUp={this.updatePath}
-                            directoryManager={this.props.directoryManager} />
-                    </ScrollArea>
-                </div>
-                <ScrollArea
-                    className="terminalScrollArea"
-                    horizontal={false}
-                    style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
-                    verticalContainerStyle={scrollAreaVertContainerStyle}
-                    verticalScrollbarStyle={scrollAreaVertBarStyle}>
-                    <TerminalPane />
-                </ScrollArea>
-            </SplitPane>
+        return <div className="DirectoryWrapper">
+            <PathPanel path={this.state.path} />
+            <div className="splitPaneWrapper">
+                <SplitPane
+                    split="horizontal"
+                    defaultSize="65vh"
+                    allowResize={false}>
+                    <div className="scrollAreaWrapper">
+                        <ScrollArea
+                            className="directoryScrollArea"
+                            horizontal={false}
+                            style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
+                            verticalContainerStyle={scrollAreaVertContainerStyle}
+                            verticalScrollbarStyle={scrollAreaVertBarStyle}>
+                            <DirectoryList
+                                id={this.props.id}
+                                path={this.state.path}
+                                isSelectedPane={this.props.isSelectedPane}
+                                sendSelectedPaneUp={this.props.sendSelectedPaneUp}
+                                sendPathUp={this.updatePath}
+                                directoryManager={this.props.directoryManager} />
+                        </ScrollArea>
+                    </div>
+                    <div className="terminalPaneWrapper">
+                        <TerminalPane />
+                    </div>
+                </SplitPane>
+            </div>
         </div>;
     }
 

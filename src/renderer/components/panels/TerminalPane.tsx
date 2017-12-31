@@ -8,7 +8,7 @@ import { ISocketMessage } from "models";
 import "styles/panels/TerminalPane.scss";
 
 /** The component for displaying a terminal frontend. */
-class Terminalpane extends React.Component<{}, {}> {
+class Terminalpane extends React.PureComponent {
 
     /** The containing div element of the terminal. */
     private container: HTMLDivElement | null;
@@ -57,11 +57,12 @@ class Terminalpane extends React.Component<{}, {}> {
      * @returns - a JSX element representing the terminal view
      */
     public render(): JSX.Element {
-        return <div
-            className="TerminalPane"
-            ref={element => this.container = element}
-            onClick={this.handleResize}>
-            <ReactResizeDetector handleHeight onResize={this.handleResize} />
+        return <div className="TerminalPane">
+            <div
+                className="terminalContainer"
+                ref={element => this.container = element}>
+                <ReactResizeDetector handleHeight onResize={this.handleResize} />
+            </div>
         </div>;
     }
 
@@ -71,10 +72,13 @@ class Terminalpane extends React.Component<{}, {}> {
      */
     @autobind
     private handleResize() {
-        this.xterm && this.xterm.fit && this.xterm.fit() && this.socket.send({
-            messageType: "resize",
-            payload: { cols: this.xterm.cols, rows: this.xterm.rows }
-        } as ISocketMessage);
+        if (this.xterm && this.xterm.fit) {
+            this.xterm.fit();
+            this.socket.send(JSON.stringify({
+                messageType: "resize",
+                payload: { cols: this.xterm.cols, rows: this.xterm.rows }
+            } as ISocketMessage));
+        }
     }
 }
 

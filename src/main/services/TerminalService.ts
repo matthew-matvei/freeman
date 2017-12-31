@@ -4,6 +4,8 @@ import * as pty from "node-pty";
 import { ITerminal } from "node-pty/lib/interfaces";
 
 import { ISocketMessage } from "models";
+import { isISocketMessage } from "typeGuards";
+import { tryParseJSON } from "utils";
 
 /** Provides access to a terminal backend as a service. */
 class TerminalService {
@@ -52,7 +54,7 @@ class TerminalService {
             webSocket.send(data);
         });
 
-        webSocket.on("message", (message: string | ISocketMessage) => {
+        webSocket.on("message", (message: string) => {
             this.handleMessage(message, terminal);
         });
 
@@ -68,14 +70,17 @@ class TerminalService {
      *      char input or an ISocketMessage containing a request
      * @param terminal - the terminal that reacts to incoming messages
      */
-    private handleMessage(message: string | ISocketMessage, terminal: ITerminal) {
-        if (typeof message === "string") {
-            return terminal.write(message);
+    private handleMessage(message: string, terminal: ITerminal): void {
+        const parsedMessage = tryParseJSON(message);
+
+        if (parsedMessage && isISocketMessage(parsedMessage)) {
+            const socketMessage = parsedMessage as any as ISocketMessage;
+            if (socketMessage.messageType === "resize") {
+                return terminal.resize(socketMessage.payload.cols, socketMessage.payload.rows)
+            }
         }
 
-        if (message.messageType === "resize") {
-            terminal.resize(message.payload.cols, message.payload.rows)
-        }
+        return terminal.write(message);
     }
 }
 

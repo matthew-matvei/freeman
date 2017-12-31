@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import * as React from "react";
 import { expect } from "chai";
+import { shell } from "electron";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import sinon, { SinonSpy } from "sinon";
+import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
 import { DirectoryItem } from "components/blocks";
 import { IDirectoryItemProps } from "props/blocks";
@@ -19,22 +20,23 @@ describe("<DirectoryItem />", () => {
 
     let directoryModel: IDirectoryItem;
 
+    let sandbox: SinonSandbox;
     let renderSpy: SinonSpy;
 
     before(() => {
         context = {
             theme: ThemesManager.fake()
         };
+    });
 
+    beforeEach(() => {
         directoryModel = {
             name: "item.txt",
             path: "/path/to/",
             isDirectory: false,
             isHidden: false
         }
-    });
 
-    beforeEach(() => {
         props = {
             model: directoryModel,
             isSelected: false,
@@ -43,10 +45,12 @@ describe("<DirectoryItem />", () => {
             sendSelectedItemUp: (selectedItem: IDirectoryItem) => { },
             sendDeletionUp: () => { }
         }
+
+        sandbox = sinon.createSandbox();
     });
 
     afterEach(() => {
-        renderSpy && renderSpy.restore();
+        sandbox && sandbox.restore();
     });
 
     it("has the className 'DirectoryItem'", () => {
@@ -76,7 +80,7 @@ describe("<DirectoryItem />", () => {
 
     it("renders only once when mounted", () => {
         component = <DirectoryItem {...props} />;
-        renderSpy = sinon.spy(DirectoryItem.prototype, "render");
+        renderSpy = sandbox.spy(DirectoryItem.prototype, "render");
         shallow(component, { context });
 
         expect(renderSpy.callCount).to.equal(1);
@@ -85,9 +89,29 @@ describe("<DirectoryItem />", () => {
     it("renders only once when updated", () => {
         component = <DirectoryItem {...props} />;
         const wrapper = shallow(component, { context });
-        renderSpy = sinon.spy(DirectoryItem.prototype, "render");
+        renderSpy = sandbox.spy(DirectoryItem.prototype, "render");
         wrapper.instance().forceUpdate();
 
         expect(renderSpy.callCount).to.equal(1);
+    });
+
+    it("requests path update when directory activated", () => {
+        const sendPathUp = sandbox.stub();
+        props.model.isDirectory = true;
+        props.sendPathUp = sendPathUp;
+        component = <DirectoryItem {...props} />;
+        const wrapper = shallow(component, { context }).find("button");
+        wrapper.simulate("doubleClick");
+
+        expect(sendPathUp.calledOnce).to.be.true;
+    });
+
+    it("opens item using Electron shell when file activated", () => {
+        const openItem = sandbox.stub(shell, "openItem");
+        component = <DirectoryItem {...props} />;
+        const wrapper = shallow(component, { context }).find("button");
+        wrapper.simulate("doubleClick");
+
+        expect(openItem.calledOnce).to.be.true;
     });
 });

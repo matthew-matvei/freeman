@@ -44,3 +44,25 @@ export const fuzzySearchItems = (pathToFind: string, items: string[]): string[] 
         return fuzzysearch(searchTermSuffix, itemSuffix);
     })
 }
+
+/**
+ * Tries to JSON parse a given string. Method returns the object if successful,
+ * or false if not.
+ *
+ * @param JSONString - the string to attempt to parse
+ *
+ * @returns - the parsed object if successful, or false if not
+ */
+export const tryParseJSON = (JSONString: string): any | false => {
+    try {
+        const obj = JSON.parse(JSONString);
+
+        if (obj && typeof obj === "object") {
+            return obj;
+        }
+    } catch {
+        // Silently ignore JSON parsing errors
+    }
+
+    return false;
+}

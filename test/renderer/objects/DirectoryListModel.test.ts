@@ -40,7 +40,8 @@ describe("DirectoryListModel's", () => {
                 showHiddenItems: false,
                 isGotoOpen: false,
                 directoryItems: [],
-                chosenItems: []
+                chosenItems: [],
+                isFocused: false
             };
 
             prevState = { ...commonState };
