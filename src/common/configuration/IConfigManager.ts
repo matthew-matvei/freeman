@@ -1,9 +1,6 @@
 /** The interface describing a ConfigManager. */
 interface IConfigManager {
 
-    /** Gets the path to the application data directory. */
-    readonly applicationDataDirectory: string;
-
     /** Gets the path to the user-specific data directory. */
     readonly userDataDirectory: string;
 

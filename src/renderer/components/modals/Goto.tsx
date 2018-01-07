@@ -6,7 +6,7 @@ import autobind from "autobind-decorator";
 import { QuickSelect } from "components/modals";
 import { IGotoProps } from "props/modals";
 import { IGotoState } from "states/modals";
-import { fuzzySearchItems } from 'utils';
+import Utils from "Utils";
 
 /** A Goto component for quickly searching the file system. */
 class Goto extends React.Component<IGotoProps, IGotoState> {
@@ -54,7 +54,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      */
     public render(): JSX.Element {
         const items = this.state.directoryItems.map(item => item.path);
-        const shownItems = fuzzySearchItems(this.state.searchTerm, items);
+        const shownItems = Utils.fuzzySearchItems(this.state.searchTerm, items);
         shownItems.unshift(this.state.currentDirectory);
 
         return <QuickSelect

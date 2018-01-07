@@ -1,10 +1,16 @@
 import "reflect-metadata";
 import fs from "fs";
 import path from "path";
-import { expect } from "chai";
+import chai, { expect } from "chai";
+import chaiAsPromised from "chai-as-promised";
 import mockfs from "mock-fs";
+import sinon, { SinonSandbox } from "sinon";
 
 import { DirectoryManager, IDirectoryManager } from "objects/managers";
+import DirectoryError from "errors/DirectoryError";
+import Utils from "Utils";
+
+chai.use(chaiAsPromised);
 
 describe("directoryManager's", () => {
     let fakeDirPath: string;
@@ -16,7 +22,7 @@ describe("directoryManager's", () => {
     let directoryManager: IDirectoryManager;
 
     before(() => {
-        fakeDirPath = "path/to/fake/dir";
+        fakeDirPath = "/path/to/fake/dir";
         fakeFolder = "fakeFolder";
         fakeFile = "fakeFile.txt";
         newFileName = "newItem.txt";
@@ -27,23 +33,33 @@ describe("directoryManager's", () => {
 
     beforeEach(() => {
         mockfs({
-            "path/to/fake/dir": {
+            "/path/to/fake/dir": {
                 "fakeFolder": {},
+                "anotherFakeFolder": {},
                 "fakeFile.txt": "With fake news"
             }
         });
     });
 
-    afterEach(() => {
-        mockfs.restore();
-    })
+    afterEach(mockfs.restore);
 
     describe("listDirectory method", () => {
-        it("returns an empty array if given path is not a directory", async () => {
-            const nonDirectory = path.join(fakeDirPath, "fakeFile.txt");
-            const result = await directoryManager.listDirectory(nonDirectory);
+        let sandbox: SinonSandbox;
 
-            expect(result).to.be.empty;
+        before(() => {
+            sandbox = sinon.createSandbox();
+
+            sandbox.stub(Utils, "getAsync").resolves(false);
+        });
+
+        after(() => {
+            sandbox.restore();
+        });
+
+        it("throws a DirectoryError if given path is not a directory", async () => {
+            const nonDirectory = path.join(fakeDirPath, "fakeFile.txt");
+
+            expect(directoryManager.listDirectory(nonDirectory)).to.eventually.be.rejectedWith(DirectoryError);
         });
 
         it("returns an empty list when pointed to empty folder", async () => {
@@ -69,69 +85,61 @@ describe("directoryManager's", () => {
     });
 
     describe("createItem method", () => {
-        it("can create a file with given name at given path", async () => {
-            await directoryManager.createItem(newFileName, fakeDirPath, "file");
+        it("can create a file with given name at given path", () => {
+            return directoryManager.createItem(newFileName, fakeDirPath, "file").then(resolved => {
+                const newFile = fs.lstatSync(path.resolve(fakeDirPath, newFileName));
 
-            const newFile = fs.lstatSync(path.resolve(fakeDirPath, newFileName));
-
-            expect(newFile.isFile()).to.be.true;
+                expect(newFile.isFile()).to.be.true;
+            });
         });
 
-        it("can create a folder with given name at given path", async () => {
-            await directoryManager.createItem(newFolderName, fakeDirPath, "folder");
+        it("can create a folder with given name at given path", () => {
+            return directoryManager.createItem(newFolderName, fakeDirPath, "folder").then(resolved => {
+                const newFolder = fs.lstatSync(path.resolve(fakeDirPath, newFolderName));
 
-            const newFolder = fs.lstatSync(path.resolve(fakeDirPath, newFolderName));
-
-            expect(newFolder.isDirectory()).to.be.true;
+                expect(newFolder.isDirectory()).to.be.true;
+            });
         });
 
-        it("rejects if given an invalid path", async () => {
-            try {
-                await directoryManager.createItem(newFolderName, "/invalid/path", "file");
-            }
-            catch (error) {
-                expect(error).to.not.be.null;
-            };
+        it("rejects if given an invalid path", () => {
+            expect(directoryManager.createItem(newFolderName, "/invalid/path", "file"))
+                .to.eventually.be.rejectedWith(DirectoryError);
         });
     });
 
     describe("renameItem method", () => {
-        it("can rename a file", async () => {
+        it("can rename a file", () => {
             const newName = "renamedFakeFile.txt";
-            await directoryManager.renameItem(fakeFile, newName, fakeDirPath);
+            return directoryManager.renameItem(fakeFile, newName, fakeDirPath).then(resolved => {
+                const renamedFile = fs.lstatSync(path.join(fakeDirPath, newName));
 
-            const renamedFile = fs.lstatSync(path.join(fakeDirPath, newName));
-
-            expect(renamedFile).to.not.be.undefined;
+                expect(renamedFile).to.not.be.undefined;
+            });
         });
 
-        it("can rename a folder", async () => {
+        it("can rename a folder", () => {
             const newName = "renamedFakeFolder";
 
-            await directoryManager.renameItem(fakeFolder, newName, fakeDirPath);
+            return directoryManager.renameItem(fakeFolder, newName, fakeDirPath).then(resolved => {
+                const renamedFolder = fs.lstatSync(path.join(fakeDirPath, newName));
 
-            const renamedFolder = fs.lstatSync(path.join(fakeDirPath, newName));
-
-            expect(renamedFolder).to.not.be.undefined;
+                expect(renamedFolder).to.not.be.undefined;
+            });
         });
 
         it("handles renaming to same name", () => {
-            directoryManager.renameItem(fakeFile, fakeFile, fakeDirPath)
+            return directoryManager.renameItem(fakeFile, fakeFile, fakeDirPath)
                 .then(() => {
                     const oldNamedFile = fs.lstatSync(path.join(fakeDirPath, fakeFile));
                     const newNamedFile = fs.lstatSync(path.join(fakeDirPath, fakeFile));
 
-                    expect(newNamedFile).to.not.deep.equal(oldNamedFile);
+                    expect(newNamedFile).to.deep.equal(oldNamedFile);
                 });
         });
 
-        it("rejects if given an invalid path", async () => {
-            try {
-                await directoryManager.renameItem("invalidFileName.txt", "anyName.txt", fakeDirPath);
-            }
-            catch (error) {
-                expect(error).to.not.be.null;
-            }
+        it("rejects if given an invalid path", () => {
+            expect(directoryManager.renameItem("invalidFileName.txt", "anyName.txt", fakeDirPath))
+                .to.eventually.be.rejectedWith(DirectoryError);
         });
     });
 
@@ -145,30 +153,30 @@ describe("directoryManager's", () => {
         });
 
         it("can delete a file", () => {
-            directoryManager.deleteItem(fileToDelete, "file").then(() => {
-                const deletedFile = fs.lstatSync(fileToDelete);
-
-                expect(deletedFile).to.be.undefined;
+            return directoryManager.deleteItem(fileToDelete, "file").then(() => {
+                try {
+                    fs.accessSync(fileToDelete);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
             });
         });
 
         it("can delete a folder", () => {
-            directoryManager.deleteItem(folderToDelete, "folder").then(() => {
-                const deletedFolder = fs.lstatSync(folderToDelete);
-
-                expect(deletedFolder).to.be.undefined;
+            return directoryManager.deleteItem(folderToDelete, "folder").then(() => {
+                try {
+                    fs.accessSync(folderToDelete);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
             });
         });
 
-        it("rejects when given an invalid path", async () => {
+        it("rejects when given an invalid path", () => {
             fileToDelete = path.join(fakeDirPath, "invalidFileName.txt");
 
-            try {
-                await directoryManager.deleteItem(fileToDelete, "file");
-            }
-            catch (error) {
-                expect(error).to.not.be.null;
-            }
+            expect(directoryManager.deleteItem(fileToDelete, "file"))
+                .to.eventually.be.rejectedWith(DirectoryError);
         });
     });
 
@@ -182,55 +190,72 @@ describe("directoryManager's", () => {
         });
 
         it("moves a file to the given destination", () => {
-            directoryManager.moveItem(fileToMove, path.resolve("fakeDirectory")).then(() => {
-                const sourceFile = fs.lstatSync(fileToMove);
-                const destinationFileName = path.join(fakeDirPath, "fakeDirectory", "fakeFile.txt");
-                const destinationFile = fs.lstatSync(destinationFileName);
+            const destinationFolder = path.join(fakeDirPath, "fakeFolder");
+            return directoryManager.moveItem(fileToMove, destinationFolder, "file").then(() => {
+                try {
+                    fs.accessSync(fileToMove);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
 
-                expect(sourceFile).to.be.undefined;
-                expect(destinationFile).to.not.be.undefined;
+                const destinationFileName = path.join(destinationFolder, "fakeFile.txt");
+
+                try {
+                    fs.accessSync(destinationFileName);
+                } catch (error) {
+                    expect(error).to.be.null;
+                }
             });
         });
 
         it("moves a directory to the given destination", () => {
-            directoryManager.moveItem(folderToMove, path.resolve("fakeDirectory")).then(() => {
-                const sourceFolder = fs.lstatSync(folderToMove);
-                const destinationFolderName = path.join(fakeDirPath, "fakeDirectory", fakeFolder);
-                const destinationFolder = fs.lstatSync(destinationFolderName);
+            const destinationFolder = path.join(fakeDirPath, "anotherFakeFolder");
+            return directoryManager.moveItem(folderToMove, destinationFolder, "folder").then(() => {
+                try {
+                    fs.accessSync(folderToMove);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
 
-                expect(sourceFolder).to.be.undefined;
-                expect(destinationFolder).to.not.be.undefined;
+                const destinationFolderName = path.join(destinationFolder, fakeFolder);
+                try {
+                    fs.accessSync(destinationFolderName);
+                } catch (error) {
+                    expect(error).to.be.null;
+                }
             });
         });
 
         it("handles moving to the same directory", () => {
-            directoryManager.moveItem(fileToMove, path.resolve(fakeDirPath)).then(() => {
-                const sourceFile = fs.lstatSync(fileToMove);
-                const destinationFileName = path.join(fakeDirPath, fakeFile);
-                const destinationFile = fs.lstatSync(destinationFileName);
+            return directoryManager.moveItem(fileToMove, fakeDirPath, "file").then(() => {
+                try {
+                    fs.accessSync(fileToMove);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
 
-                expect(sourceFile).to.deep.equal(destinationFile);
+                const destinationFileName = path.join(fakeDirPath, fakeFile);
+
+                try {
+                    fs.accessSync(destinationFileName);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
             });
         });
 
-        it("rejects when given an invalid itemPath", async () => {
+        it("rejects when given an invalid itemPath", () => {
             const fileToMove = path.join(fakeDirPath, "invalidFileName.txt");
 
-            try {
-                await directoryManager.moveItem(fileToMove, path.resolve(fakeDirPath))
-            } catch (error) {
-                expect(error).to.not.be.null;
-            }
+            expect(directoryManager.moveItem(fileToMove, fakeDirPath, "file"))
+                .to.eventually.be.rejectedWith(DirectoryError);
         });
 
-        it("rejects when given an invalid destination", async () => {
+        it("rejects when given an invalid destination", () => {
             const fileToMove = path.join(fakeDirPath, fakeFile);
 
-            try {
-                await directoryManager.moveItem(fileToMove, path.resolve("invalidDirectory"));
-            } catch (error) {
-                expect(error).to.not.be.null;
-            }
+            expect(directoryManager.moveItem(fileToMove, path.resolve("invalidDirectory"), "file"))
+                .to.eventually.be.rejectedWith(DirectoryError);
         });
     });
 });

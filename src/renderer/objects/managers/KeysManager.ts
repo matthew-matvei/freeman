@@ -1,17 +1,15 @@
 import fs from "fs";
 import path from "path";
 
+import applicationKeys from "configuration/internal/keys";
 import { IKeyMap } from "models";
 import { IConfigManager } from "configuration";
+import Utils from "Utils";
 
-/**
- * Manages parsing key maps from application and user settings files.
- */
+/** Manages parsing key maps from application and user settings files. */
 class KeysManager {
 
-    /**
-     * A base configuration manager held as an instance variable.
-     */
+    /** A base configuration manager held as an instance variable. */
     private configManager: IConfigManager;
 
     /**
@@ -19,11 +17,9 @@ class KeysManager {
      *
      * @param configManager - the configuration manager providing helper properties
      */
-    public constructor(configManager: IConfigManager
-    ) {
-
+    public constructor(configManager: IConfigManager) {
         if (!configManager) {
-            throw Error("Config manager must be defined");
+            throw new Error("Config manager must be defined");
         }
 
         this.configManager = configManager;
@@ -35,35 +31,10 @@ class KeysManager {
      * @returns - a fully-formed key map object, or null if no settings could
      *      be read
      */
-    public retrieve(): IKeyMap | null {
-        const applicationKeys = this.parseApplicationKeys();
+    public retrieve(): IKeyMap {
         const userKeys = this.parseUserKeys();
 
-        if (applicationKeys && userKeys) {
-            return { ...applicationKeys, ...userKeys };
-        }
-
-        return applicationKeys || userKeys || null;
-    }
-
-    /**
-     * Parses application key map settings file.
-     *
-     * @returns - a fully-formed key map object, or null if no settings could
-     *      be read
-     */
-    private parseApplicationKeys(): IKeyMap | null {
-        const fileName = path.join(
-            this.configManager.applicationDataDirectory,
-            this.configManager.applicationName,
-            "keys.json");
-
-        if (!fs.existsSync(fileName)) {
-            return null;
-        }
-
-        const applicationKeys = fs.readFileSync(fileName, "utf-8");
-        return JSON.parse(applicationKeys);
+        return userKeys ? { ...applicationKeys, ...userKeys } : applicationKeys;
     }
 
     /**
@@ -75,12 +46,14 @@ class KeysManager {
     private parseUserKeys(): IKeyMap | null {
         const fileName = path.join(
             this.configManager.userDataDirectory,
-            this.configManager.applicationName,
-            "keys.json");
+            "freeman.keys.json");
 
         if (!fs.existsSync(fileName)) {
+            Utils.trace(`Cannot parse key map from non-existent file ${fileName}`);
             return null;
         }
+
+        Utils.trace(`Retrieving user keys from ${fileName}`);
 
         const userKeys = fs.readFileSync(fileName, "utf-8");
         return JSON.parse(userKeys);

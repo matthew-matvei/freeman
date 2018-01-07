@@ -6,7 +6,7 @@ import { HotKeys } from "react-hotkeys";
 
 import { IDirectoryItemProps } from "props/blocks";
 import { IAppContext } from "models";
-import { autoFocus } from "utils";
+import Utils from "Utils";
 
 import "styles/blocks/DirectoryItem.scss";
 
@@ -37,7 +37,6 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         const { isSelected, model } = this.props;
         const selectedClass = isSelected ? "selected" : "";
         const {
-            colour,
             fileColour,
             directoryColour,
             backgroundColour,
@@ -47,8 +46,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         const style: React.CSSProperties = {
             color: (this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour) ||
-                colour) ||
+                (model.isDirectory && directoryColour)) ||
                 "inherit",
             backgroundColor: isSelected ? selectedColour : backgroundColour || "inherit",
             border: "none"
@@ -56,7 +54,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
         return <HotKeys
             handlers={this.handlers}
-            ref={component => component && isSelected && autoFocus(component)}>
+            ref={component => component && isSelected && Utils.autoFocus(component)}>
             <div
                 className={`DirectoryItem ${selectedClass}`}>
                 <button
@@ -86,6 +84,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         if (this.props.model.isDirectory) {
             this.props.sendPathUp(this.props.model.path);
         } else {
+            Utils.trace("Opening item using shell");
             shell.openItem(this.props.model.path);
         }
     }
@@ -96,6 +95,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
      */
     @autobind
     private openInNativeExplorer() {
+        Utils.trace("Showing item in folder using shell");
         shell.showItemInFolder(this.props.model.path);
     }
 

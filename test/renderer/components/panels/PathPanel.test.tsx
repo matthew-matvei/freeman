@@ -5,9 +5,9 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import { SinonSpy } from "sinon";
 
+import applicationTheme from "configuration/internal/themes/dark";
 import { PathPanel } from "components/panels";
 import { IPathPanelProps } from "props/panels";
-import { ThemesManager } from "objects/managers";
 import { IAppContext } from 'models';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -22,7 +22,7 @@ describe("<PathPanel />", () => {
 
     before(() => {
         context = {
-            theme: ThemesManager.fake()
+            theme: applicationTheme
         };
 
         props = {

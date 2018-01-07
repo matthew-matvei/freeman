@@ -1,40 +1,33 @@
-import "reflect-metadata";
 import { app, dialog, ipcMain, Menu } from "electron";
-import { ConfigInstaller } from "configuration";
-require("electron-debug")();
+require("electron-debug")({ enabled: true });
 
-import TYPES from "ioc/types";
-import container from "ioc/container";
 import { TerminalService } from "services";
 import { FreemanWindow } from "widgets";
-import { IConfigManager } from "configuration";
+import Utils from "Utils";
 
 let mainWindow: FreemanWindow | null = null;
 let terminalService: TerminalService;
 
-if (process.argv.includes("--installConfig")) {
-    const configManager = container.get<IConfigManager>(TYPES.IConfigManager);
-    const installer = new ConfigInstaller(configManager);
-    installer.install().then((onfulfilled: void) => {
-        app.exit(0);
-    }).catch((onrejected: void) => {
-        app.exit(1);
-    });
-} else {
-    terminalService = new TerminalService();
-    buildWindow(mainWindow);
+if (process.argv.includes("--verbose")) {
+    process.env.VERBOSE = 1;
+    Utils.trace("Running application in verbose mode");
 }
+
+terminalService = new TerminalService();
+buildWindow(mainWindow);
 
 /** Handles constructing the main window. */
 function buildWindow(window: FreemanWindow | null) {
     app.on("activate", () => {
         if (window === null) {
+            Utils.trace("Building window");
             buildWindow(window);
         }
     });
 
     app.on("window-all-closed", () => {
         if (process.platform !== "darwin") {
+            Utils.trace("Shutting application down");
             app.quit();
         }
     });
@@ -44,16 +37,14 @@ function buildWindow(window: FreemanWindow | null) {
         const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
         Menu.setApplicationMenu(menu);
 
-        window.once("ready-to-show", () => {
-            window!.show()
-        });
-
         window.on("closed", () => {
             terminalService.close();
+            Utils.trace("Main window closing");
             window = null;
         });
 
         window.on("unresponsive", () => {
+            Utils.trace("Main window unresponsive");
             const killIndex = 0;
             const cancelIndex = 1;
             const kill = dialog.showMessageBox(window!, {

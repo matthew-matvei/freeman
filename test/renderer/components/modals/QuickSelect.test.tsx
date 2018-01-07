@@ -5,10 +5,10 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSpy } from "sinon";
 
+import applicationTheme from "configuration/internal/themes/dark";
 import { IQuickSelectProps } from "props/modals";
 import { IQuickSelectState } from "states/modals";
 import { IAppContext } from "models";
-import { ThemesManager } from "objects/managers";
 import { QuickSelect } from 'components/modals';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -22,7 +22,7 @@ describe("<QuickSelect />", () => {
 
     before(() => {
         context = {
-            theme: ThemesManager.fake()
+            theme: applicationTheme
         };
     });
 

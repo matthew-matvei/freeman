@@ -1,5 +1,8 @@
 import { BrowserWindow, dialog } from "electron";
 import path from "path";
+import log from "electron-log";
+
+import Utils from "Utils";
 
 /** The main BrowserWindow used in the FreeMAN application. */
 class FreemanWindow extends BrowserWindow {
@@ -26,12 +29,9 @@ class FreemanWindow extends BrowserWindow {
     /** Gets the template for the window's menu. */
     public static get menuTemplate(): Electron.MenuItemConstructorOptions[] {
         return [
-            {
-                label: "File",
-                submenu: [{ role: "quit" }]
-            },
+            { label: "File", submenu: [{ role: "quit" }] },
             { role: "windowMenu" }
-        ]
+        ];
     }
 
     /**
@@ -44,7 +44,13 @@ class FreemanWindow extends BrowserWindow {
                 return;
             }
 
+            log.error("FreeMAN crashed");
             dialog.showErrorBox("FreeMAN crashed", "FreeMAN crashed");
+        });
+
+        this.once("ready-to-show", () => {
+            Utils.trace("Displaying main window");
+            this.show()
         });
     }
 }

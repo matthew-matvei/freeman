@@ -2,8 +2,10 @@ import * as React from "react";
 import Terminal from "xterm";
 import autobind from "autobind-decorator";
 import ReactResizeDetector from "react-resize-detector";
+import log from "electron-log";
 
 import { ISocketMessage } from "models";
+import Utils from "Utils";
 
 import "styles/panels/TerminalPane.scss";
 
@@ -34,7 +36,11 @@ class Terminalpane extends React.PureComponent {
 
         this.socket = new WebSocket("ws://127.0.0.1:8080");
         this.socket.addEventListener("open", event => {
+            Utils.trace("Opened socket with terminal service");
             (this.xterm as any).attach(this.socket);
+        });
+        this.socket.addEventListener("error", event => {
+            log.error("Error on terminal socket", event);
         });
     }
 
@@ -43,12 +49,6 @@ class Terminalpane extends React.PureComponent {
      */
     public componentWillUnmount() {
         this.socket.close();
-    }
-
-    /** Whether the component should update. */
-    public shouldComponentUpdate() {
-        // returns false, since the terminal DOM container should only render once
-        return false;
     }
 
     /**
@@ -74,10 +74,13 @@ class Terminalpane extends React.PureComponent {
     private handleResize() {
         if (this.xterm && this.xterm.fit) {
             this.xterm.fit();
-            this.socket.send(JSON.stringify({
-                messageType: "resize",
-                payload: { cols: this.xterm.cols, rows: this.xterm.rows }
-            } as ISocketMessage));
+            if (this.socket.readyState === WebSocket.OPEN) {
+                Utils.trace("Sending terminal resize request");
+                this.socket.send(JSON.stringify({
+                    messageType: "resize",
+                    payload: { cols: this.xterm.cols, rows: this.xterm.rows }
+                } as ISocketMessage));
+            }
         }
     }
 }

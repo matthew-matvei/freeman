@@ -2,10 +2,8 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import fs from "fs";
 import path from "path";
-import { shell } from "electron";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
-import { autoFocus, isAlphanumeric } from "utils";
 import { List } from "immutable";
 import { remote } from "electron";
 const dialog = remote.dialog;
@@ -17,6 +15,9 @@ import { IDirectoryListState } from "states/panels";
 import { DirectoryDirection, ItemType, ClipboardAction } from "types";
 import { IDirectoryListProps } from "props/panels";
 import { Goto } from "components/modals";
+import DirectoryError from "errors/DirectoryError";
+import LoggedError from "errors/LoggedError";
+import Utils from "Utils";
 
 /** The component for displaying a directory's list of items. */
 class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListState> {
@@ -37,7 +38,6 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         toggleShowHidden: this.toggleShowHidden,
         newFile: () => this.inputNewItem("file"),
         newFolder: () => this.inputNewItem("folder"),
-        openInNativeExplorer: this.openInNativeExplorer,
         rename: this.inputRenameItem,
         copy: () => this.storeItemInClipboard("copy"),
         cut: () => this.storeItemInClipboard("cut"),
@@ -94,12 +94,16 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     public async componentDidMount() {
         const { path, directoryManager } = this.props;
 
-        this.watcher = fs.watch(path, async (eventType, filename) => {
-            this.setState(
-                {
-                    directoryItems: await directoryManager.listDirectory(path)
-                } as IDirectoryListState);
-        });
+        try {
+            this.watcher = fs.watch(path, async (eventType, filename) => {
+                this.setState(
+                    {
+                        directoryItems: await directoryManager.listDirectory(path)
+                    } as IDirectoryListState);
+            });
+        } catch {
+            throw new DirectoryError("Could not set watcher", path);
+        }
 
         const items = await directoryManager.listDirectory(path);
 
@@ -111,6 +115,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.watcher.close();
     }
 
+    /**
+     * Handles setting the component to be focused on receiving new props.
+     *
+     * @param nextProps - the next props object
+     */
     public componentWillReceiveProps(nextProps: IDirectoryListProps) {
         if (!this.props.isSelectedPane && nextProps.isSelectedPane) {
             this.setState({ isFocused: true } as IDirectoryListState);
@@ -140,12 +149,16 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         }
 
         if (prevProps.path !== this.props.path) {
-            this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
-                this.setState(
-                    {
-                        directoryItems: await this.props.directoryManager.listDirectory(this.props.path)
-                    } as IDirectoryListState);
-            });
+            try {
+                this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
+                    this.setState(
+                        {
+                            directoryItems: await this.props.directoryManager.listDirectory(this.props.path)
+                        } as IDirectoryListState);
+                });
+            } catch {
+                throw new DirectoryError("Could not set watcher", this.props.path);
+            }
         }
 
         const cachedNavigation = this.model.popCachedNavigation(this.props.path);
@@ -215,7 +228,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     handlers={this.handlers}
                     ref={component => {
                         this.keysTrapper = component;
-                        this.keysTrapper && items.length === 0 && autoFocus(this.keysTrapper)
+                        this.keysTrapper && items.length === 0 && Utils.autoFocus(this.keysTrapper)
                     }}
                     onFocus={this.setFocused}
                     onBlur={this.setUnFocused}>
@@ -237,6 +250,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             </div>);
     }
 
+    /** Handles closing the GoTo modal. */
     @autobind
     private closeGoto() {
         if (this.state.isGotoOpen) {
@@ -251,12 +265,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param itemTypeToCreate - the type of the item to be created
      */
     @autobind
-    private createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
+    private async createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
         if (itemName && itemTypeToCreate) {
-            this.props.directoryManager.createItem(itemName, this.props.path, itemTypeToCreate)
-                .then(onfulfilled => {
-                    this.setState({ creatingNewItem: false } as IDirectoryListState);
-                });
+            Utils.trace(`Requesting to create ${itemTypeToCreate} called ${itemName} at ${this.props.path}`);
+            await this.props.directoryManager.createItem(itemName, this.props.path, itemTypeToCreate);
+
+            this.setState({ creatingNewItem: false } as IDirectoryListState);
         }
     }
 
@@ -264,7 +278,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * Handles providing a dialog to the user to confirm deletion of an item.
      */
     @autobind
-    private delete() {
+    private async delete() {
         const selectedItems = this.state.chosenItems.length > 0 ?
             this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
 
@@ -272,15 +286,14 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         const confirmDelete = this.confirmationDialog(
             `Are you sure you want to permanently delete ${chosenItems}?`);
 
-        this.keysTrapper && autoFocus(this.keysTrapper);
+        this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmDelete) {
-            this.props.directoryManager.deleteItems(selectedItems)
-                .then(onfulfilled => {
-                    this.refreshAfterDelete();
+            Utils.trace(`Requesting to delete ${selectedItems.map(item => item.path).join(", ")}`);
+            await this.props.directoryManager.deleteItems(selectedItems);
 
-                    this.props.statusNotifier.notify("Deleted items");
-                });
+            this.refreshAfterDelete();
+            this.props.statusNotifier.notify("Deleted items");
         }
     }
 
@@ -316,6 +329,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private goIn(path: string) {
+        this.context.scrollArea.scrollTop();
+
         this.model.cacheNavigation({
             path: this.props.path,
             selectedIndex: this.state.selectedIndex,
@@ -334,7 +349,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
-        if (event.key.length === 1 && isAlphanumeric(event.key)) {
+        if (event.key.length === 1 && Utils.isAlphanumeric(event.key)) {
             const indexToSelect = this.model.textFinder.addCharAndSearch(
                 event.key, this.nonHiddenDirectoryItems);
 
@@ -384,42 +399,46 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     }
 
     /**
-     * Handles revealing the current directory in the system's native
-     * file explorer.
-     */
-    @autobind
-    private openInNativeExplorer() {
-        shell.showItemInFolder(this.props.path);
-    }
-
-    /**
      * Pastes an item stored in the internal clipboard according to the
      * ClipboardAction previously recorded.
      */
     @autobind
     private async pasteFromClipboard() {
         const { path, directoryManager } = this.props;
+        const { clipboardAction, clipboardItem } = this.model;
 
-        if (this.model.clipboardAction === "copy") {
-            directoryManager.copyItem(this.model.clipboardItemPath!, path)
-                .then(async onfulfilled => {
-                    this.setState(
-                        {
-                            directoryItems: await directoryManager.listDirectory(path)
-                        } as IDirectoryListState);
+        if (clipboardAction === "copy") {
+            if (!clipboardItem) {
+                throw new LoggedError("Clipboard item is undefined");
+            }
 
-                    this.props.statusNotifier.notify("Copied item");
-                });
-        } else if (this.model.clipboardAction === "cut") {
-            directoryManager.moveItem(this.model.clipboardItemPath!, path)
-                .then(async onfulfilled => {
-                    this.setState(
-                        {
-                            directoryItems: await directoryManager.listDirectory(path)
-                        } as IDirectoryListState);
+            Utils.trace(`Requesting to copy an item from ${clipboardItem.path} to ${path}`);
+            await directoryManager.copyItem(clipboardItem.path, path);
 
-                    this.props.statusNotifier.notify("Cut item");
-                });
+            this.setState(
+                {
+                    directoryItems: await directoryManager.listDirectory(path)
+                } as IDirectoryListState);
+
+            this.props.statusNotifier.notify("Copied item");
+        } else if (clipboardAction === "cut") {
+            if (!clipboardItem) {
+                throw new LoggedError("Clipboard item is undefined");
+            }
+
+            const itemType = Utils.parseItemType(clipboardItem);
+            Utils.trace(`Requesting to move ${itemType} from ${clipboardItem.path} to ${path}`)
+            await directoryManager.moveItem(
+                clipboardItem.path,
+                path,
+                itemType);
+
+            this.setState(
+                {
+                    directoryItems: await directoryManager.listDirectory(path)
+                } as IDirectoryListState);
+
+            this.props.statusNotifier.notify("Cut item");
         }
     }
 
@@ -436,12 +455,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param newName - the new name
      */
     @autobind
-    private renameItem(oldName?: string, newName?: string) {
+    private async renameItem(oldName?: string, newName?: string) {
         if (oldName && newName) {
-            this.props.directoryManager.renameItem(oldName, newName, this.props.path)
-                .then(onfulfilled => {
-                    this.setState({ renamingItem: false } as IDirectoryListState);
-                });
+            Utils.trace(`Requesting to rename item from ${oldName} to ${newName}`)
+            await this.props.directoryManager.renameItem(oldName, newName, this.props.path);
+
+            this.setState({ renamingItem: false } as IDirectoryListState);
         }
     }
 
@@ -463,7 +482,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * trash.
      */
     @autobind
-    private sendToTrash() {
+    private async sendToTrash() {
         const selectedItems = this.state.chosenItems.length > 0 ?
             this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
 
@@ -471,22 +490,23 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         const confirmTrash = this.confirmationDialog(
             `Are you sure you want to send ${chosenItems} to the trash?`);
 
-        this.keysTrapper && autoFocus(this.keysTrapper);
+        this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmTrash) {
-            this.props.directoryManager.sendItemsToTrash(selectedItems).then(onfulfilled => {
-                this.refreshAfterDelete();
-
-                this.props.statusNotifier.notify("Sent items to trash");
-            });
+            Utils.trace(`Requesting to trash ${selectedItems.map(item => item.path).join(", ")}`);
+            await this.props.directoryManager.sendItemsToTrash(selectedItems);
+            this.refreshAfterDelete();
+            this.props.statusNotifier.notify("Sent items to trash");
         }
     }
 
+    /** Handles setting the focus of the directory list. */
     @autobind
     private setFocused() {
         this.setState({ isFocused: true } as IDirectoryListState);
     }
 
+    /** Handles clearing the focus of the directory list. */
     @autobind
     private setUnFocused() {
         this.setState({ isFocused: false } as IDirectoryListState);
@@ -501,17 +521,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     private storeItemInClipboard(action: ClipboardAction) {
         const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
 
-        if (!selectedItem.isDirectory) {
-            this.model.itemClipboard = {
-                directoryItem: this.nonHiddenDirectoryItems[this.state.selectedIndex],
-                clipboardAction: action
-            };
+        this.model.itemClipboard = {
+            directoryItem: selectedItem,
+            clipboardAction: action
+        };
 
-            if (action === "copy") {
-                this.props.statusNotifier.notify("Copying item(s)");
-            } else {
-                this.props.statusNotifier.notify("Cutting item(s)");
-            }
+        if (action === "copy") {
+            this.props.statusNotifier.notify("Copying item(s)");
+        } else {
+            this.props.statusNotifier.notify("Cutting item(s)");
         }
     }
 

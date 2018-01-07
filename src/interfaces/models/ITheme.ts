@@ -29,8 +29,6 @@ interface ITheme {
         directoryColour: string;
         /** The foreground colour of a chosen item. */
         chosenColour: string;
-        /** The foreground colour of a directory item. */
-        colour: string;
         /** The background colour of a directory item. */
         backgroundColour: string;
         /** The background colour of the selected directory item. */

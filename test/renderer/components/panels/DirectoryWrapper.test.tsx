@@ -5,10 +5,11 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSpy } from "sinon";
 
+import applicationTheme from "configuration/internal/themes/dark";
 import { DirectoryWrapper } from "components/panels";
 import { IDirectoryWrapperProps } from "props/panels";
 import { IAppContext, IStatusNotifier } from "models";
-import { IDirectoryManager, ThemesManager } from "objects/managers";
+import { IDirectoryManager } from "objects/managers";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -22,7 +23,7 @@ describe("<DirectoryWrapper />", () => {
 
     before(() => {
         context = {
-            theme: ThemesManager.fake()
+            theme: applicationTheme
         }
 
         const statusNotifier = {} as IStatusNotifier;

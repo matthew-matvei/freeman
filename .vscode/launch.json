@@ -17,7 +17,7 @@
                 "--remote-debugging-port=9222"
             ],
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/dist/main.js",
+            "program": "${workspaceFolder}/app/main.js",
             "timeout": 20000,
             "sourceMaps": true,
             "preLaunchTask": "build"
@@ -31,7 +31,7 @@
                 "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
             },
             "runtimeArgs": [
-                "${workspaceFolder}/dist/main.js",
+                "${workspaceFolder}/app/main.js",
                 "--enable-logging",
                 "--remote-debugging-port=9222"
             ],

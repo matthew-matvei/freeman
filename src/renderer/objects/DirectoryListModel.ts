@@ -30,9 +30,9 @@ class DirectoryListModel {
         return this._itemClipboard.clipboardAction;
     }
 
-    /** Gets the current clipboard item's path, if any. */
-    public get clipboardItemPath(): string | undefined {
-        return this._itemClipboard.directoryItem && this._itemClipboard.directoryItem.path;
+    /** Gets the current clipboard item, if any. */
+    public get clipboardItem(): IDirectoryItem | undefined {
+        return this._itemClipboard.directoryItem;
     }
 
     /** Gets the directory text finder. */

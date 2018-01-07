@@ -1,14 +1,24 @@
 import fs from "fs";
 import path from "path";
 import trash from "trash";
-import hidefile from "hidefile";
 import ncp from "ncp";
 import { injectable } from "inversify";
+import { promisify, Promise } from "bluebird";
 
 import { IDirectoryItem } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
 import { IDirectoryManager } from "objects/managers";
+import DirectoryError from "errors/DirectoryError";
+import Utils from "Utils";
+
+const lstatAsync = promisify(fs.lstat);
+const ncpAsync = promisify(ncp.ncp);
+const rmdirAsync = promisify(fs.rmdir);
+const unlinkAsync = promisify(fs.unlink);
+const renameAsync = promisify(fs.rename);
+const mkdirAsync = promisify(fs.mkdir);
+const writeFileAsync = promisify(fs.writeFile);
 
 /**
  * Provides static methods for reading, writing and creating files and folders.
@@ -20,6 +30,7 @@ class DirectoryManager implements IDirectoryManager {
      * Returns a list of paths of all files in the directory given in path.
      *
      * @param filePath - the path to the directory to list
+     * @param filterCondition - a condition with which to filter the items
      * @param sort - a compare function that determines how the items
      *      are sorted
      *
@@ -32,19 +43,26 @@ class DirectoryManager implements IDirectoryManager {
     ): Promise<IDirectoryItem[]> {
 
         if (!(await DirectoryManager.isDirectory(filePath))) {
-            return [];
+            throw new DirectoryError("Cannot call listDirectory on a non-directory item", filePath);
         }
 
-        const fileList = await DirectoryManager.getDirectoryPaths(filePath);
+        let fileList;
+
+        try {
+            fileList = await DirectoryManager.getDirectoryPaths(filePath);
+        } catch {
+            throw new DirectoryError("Could not list items in directory", filePath);
+        }
+
         const filePromises = fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
-            const fileStats = await DirectoryManager.getFileStats(fullPath);
+            const fileStats = await lstatAsync(fullPath);
 
             return {
                 name: fileName,
                 path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: await DirectoryManager.isHiddenAsync(fullPath)
+                isHidden: await Utils.isHidden(fullPath)
             } as IDirectoryItem;
         });
 
@@ -60,23 +78,22 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath - the path to the item to be created
      * @param itemType - the type of the item to be created
      */
-    public async createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<{}> {
-        return new Promise((resolve, reject) => {
-            const fullItemName = path.join(itemPath, itemName);
-            if (itemType === "folder") {
-                fs.mkdir(fullItemName, error => {
-                    error && reject(error);
+    public async createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<void> {
+        const fullItemName = path.join(itemPath, itemName);
 
-                    resolve();
-                });
-            } else {
-                fs.writeFile(fullItemName, "", error => {
-                    error && reject(error);
-
-                    resolve();
-                });
+        if (itemType === "folder") {
+            try {
+                await mkdirAsync(fullItemName);
+            } catch {
+                throw new DirectoryError("Could not create directory", fullItemName);
             }
-        });
+        } else {
+            try {
+                writeFileAsync(fullItemName);
+            } catch {
+                throw new DirectoryError("Could not create file", fullItemName);
+            }
+        }
     }
 
     /**
@@ -86,16 +103,19 @@ class DirectoryManager implements IDirectoryManager {
      * @param newName - the new name
      * @param itemPath - the path to the item to be renamed
      */
-    public async renameItem(oldName: string, newName: string, itemPath: string): Promise<{}> {
-        return new Promise((resolve, reject) => {
-            oldName === newName && resolve();
+    public async renameItem(oldName: string, newName: string, itemPath: string): Promise<void> {
+        if (oldName === newName) {
+            return;
+        }
 
-            fs.rename(path.join(itemPath, oldName), path.join(itemPath, newName), error => {
-                error && reject(error);
+        const oldNameFull = path.join(itemPath, oldName);
+        const newNameFull = path.join(itemPath, newName);
 
-                resolve();
-            });
-        });
+        try {
+            await renameAsync(oldNameFull, newNameFull);
+        } catch {
+            throw new DirectoryError("Could not rename item", oldNameFull, newNameFull);
+        }
     }
 
     /**
@@ -105,7 +125,7 @@ class DirectoryManager implements IDirectoryManager {
      */
     public async deleteItems(itemsToDelete: IDirectoryItem[]): Promise<void> {
         const itemDeletions = itemsToDelete.map(async item => {
-            await this.deleteItem(item.path, item.isDirectory ? "folder" : "file");
+            await this.deleteItem(item.path, Utils.parseItemType(item));
         });
 
         await Promise.all(itemDeletions);
@@ -117,22 +137,20 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath - the full path to the item to be deleted
      * @param itemType - the type of the item to be deleted
      */
-    public async deleteItem(itemPath: string, itemType: ItemType): Promise<{}> {
-        return new Promise((resolve, reject) => {
-            if (itemType === "folder") {
-                fs.rmdir(itemPath, error => {
-                    error && reject(error);
-
-                    resolve();
-                });
-            } else {
-                fs.unlink(itemPath, error => {
-                    error && reject(error);
-
-                    resolve();
-                });
+    public async deleteItem(itemPath: string, itemType: ItemType): Promise<void> {
+        if (itemType === "folder") {
+            try {
+                await rmdirAsync(itemPath);
+            } catch {
+                throw new DirectoryError("Cannot remove folder", itemPath);
             }
-        });
+        } else {
+            try {
+                await unlinkAsync(itemPath);
+            } catch {
+                throw new DirectoryError("Cannot remove file", itemPath);
+            }
+        }
     }
 
     /**
@@ -154,7 +172,11 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath - the path to the file
      */
     public async sendItemToTrash(itemPath: string): Promise<void> {
-        await trash([itemPath], { glob: false });
+        try {
+            await trash([itemPath], { glob: false });
+        } catch {
+            throw new DirectoryError("Could not send item to trash", itemPath);
+        }
     }
 
     /**
@@ -163,15 +185,15 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to copy the item to
      */
-    public async copyItem(itemPath: string, destinationDirectory: string): Promise<{}> {
-        return new Promise((resolve, reject) => {
-            const fileName = path.basename(itemPath);
-            ncp.ncp(itemPath, path.join(destinationDirectory, fileName), error => {
-                error && reject(error);
+    public async copyItem(itemPath: string, destinationDirectory: string): Promise<void> {
+        const fileName = path.basename(itemPath);
+        const destinationFileName = path.join(destinationDirectory, fileName);
 
-                resolve();
-            });
-        });
+        try {
+            await ncpAsync(itemPath, destinationFileName);
+        } catch {
+            throw new DirectoryError("Failed to copy item", itemPath, destinationFileName);
+        }
     }
 
     /**
@@ -180,14 +202,15 @@ class DirectoryManager implements IDirectoryManager {
      *
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to move the item to
+     * @param itemType - the type of the source item
      */
-    public async moveItem(itemPath: string, destinationDirectory: string): Promise<void> {
-        await this.copyItem(itemPath, destinationDirectory)
-            .catch(onrejected => {
-                console.error("Failed to copy item", onrejected);
-            }).then(onfulfilled => {
-                this.deleteItem(itemPath, "file");
-            });
+    public async moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void> {
+        try {
+            await this.copyItem(itemPath, destinationDirectory);
+            await this.deleteItem(itemPath, itemType);
+        } catch {
+            throw new DirectoryError("Failed to copy item", itemPath, destinationDirectory);
+        }
     }
 
     /**
@@ -198,7 +221,7 @@ class DirectoryManager implements IDirectoryManager {
      * @returns - whether the file is a directory
      */
     private static async isDirectory(path: string): Promise<boolean> {
-        const stats = await DirectoryManager.getFileStats(path);
+        const stats = await lstatAsync(path);
 
         return stats.isDirectory();
     }
@@ -218,42 +241,6 @@ class DirectoryManager implements IDirectoryManager {
                 } else {
                     resolve(paths);
                 }
-            });
-        });
-    }
-
-    /**
-     * Returns stats for the file at the given path.
-     *
-     * @param path - the path to the file whose stats are to be gotten
-     *
-     * @returns - stats for the file at the given path
-     */
-    private static async getFileStats(path: string): Promise<fs.Stats> {
-        return new Promise<fs.Stats>((resolve, reject) => {
-            fs.lstat(path, (error, stats) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(stats);
-                }
-            });
-        });
-    }
-
-    /**
-     * Returns whether the given item (directory, file etc.) is hidden.
-     *
-     * @param itemPath - the path to the item whose visibility is to be determined
-     *
-     * @returns - whether the given item (directory, file etc.) is hidden
-     */
-    private static async isHiddenAsync(itemPath: string): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            hidefile.isHidden(itemPath, (err, result) => {
-                err && reject(err);
-
-                resolve(result);
             });
         });
     }

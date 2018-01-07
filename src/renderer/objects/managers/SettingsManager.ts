@@ -1,12 +1,12 @@
 import fs from "fs";
 import path from "path";
 
+import applicationSettings from "configuration/internal/settings";
 import { ISettings } from "models";
 import { IConfigManager } from "configuration";
+import Utils from "Utils";
 
-/**
- * Manages parsing settings from application settings files.
- */
+/** Manages parsing settings from application settings files. */
 class SettingsManager {
 
     /** A base config manager held as an instance variable. */
@@ -17,11 +17,10 @@ class SettingsManager {
      *
      * @param configManager - the configuration manager providing helper properties
      */
-    public constructor(configManager: IConfigManager
-    ) {
+    public constructor(configManager: IConfigManager) {
 
         if (!configManager) {
-            throw Error("Config manager must be defined");
+            throw new Error("Config manager must be defined");
         }
 
         this.configManager = configManager;
@@ -33,33 +32,9 @@ class SettingsManager {
      * @returns - a fully-formed settings object
      */
     public retrieve(): ISettings {
-        const applicationSettings = this.parseApplicationSettings();
         const userSettings = this.parseUserSettings();
-        if (userSettings) {
-            return { ...applicationSettings, ...userSettings };
-        }
 
-        return applicationSettings;
-    }
-
-    /**
-     * Parses application settings file.
-     *
-     * @returns - a fully-formed settings object
-     * @throws { Error } - when no application settings file is found
-     */
-    private parseApplicationSettings(): ISettings {
-        const fileName = path.join(
-            this.configManager.applicationDataDirectory,
-            this.configManager.applicationName,
-            "settings.json");
-
-        if (!fs.existsSync(fileName)) {
-            Error("No application settings file found!");
-        }
-
-        const applicationSettings = fs.readFileSync(fileName, "utf-8");
-        return JSON.parse(applicationSettings);
+        return userSettings ? { ...applicationSettings, ...userSettings } : applicationSettings;
     }
 
     /**
@@ -71,12 +46,14 @@ class SettingsManager {
     private parseUserSettings(): ISettings | null {
         const fileName = path.join(
             this.configManager.userDataDirectory,
-            this.configManager.applicationName,
-            "settings.json");
+            "freeman.settings.json");
 
         if (!fs.existsSync(fileName)) {
+            Utils.trace(`Cannot parse settings from non-existent file ${fileName}`);
             return null;
         }
+
+        Utils.trace(`Retrieving user settings from ${fileName}`);
 
         const userSettings = fs.readFileSync(fileName, "utf-8");
         return JSON.parse(userSettings);

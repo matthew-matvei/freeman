@@ -7,7 +7,7 @@ import { HotKeys } from 'react-hotkeys';
 import { IAppContext, IKeyMap } from "models";
 import { IQuickSelectProps } from "props/modals";
 import { IQuickSelectState } from "states/modals";
-import { autoFocus } from "utils";
+import Utils from "Utils";
 
 import "styles/panels/QuickSelect.scss";
 
@@ -102,7 +102,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
                     onKeyUp={this.props.onKeyUp}
                     ref={input => {
                         this.input = input;
-                        this.input && autoFocus(this.input);
+                        this.input && Utils.autoFocus(this.input);
                     }} />
                 <ul>
                     {items}
@@ -148,7 +148,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     @autobind
     private selectNextItem() {
         if (this.state.selectedIndex < this.props.initialItems.length - 1) {
-            this.setState((currentState) => (
+            this.setState(currentState => (
                 {
                     selectedIndex: currentState.selectedIndex + 1
                 } as IQuickSelectState));

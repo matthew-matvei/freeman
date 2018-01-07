@@ -1,17 +1,15 @@
 import fs from "fs";
 import path from "path";
 
+import applicationTheme from "configuration/internal/themes/dark";
 import { ITheme } from "models";
 import { IConfigManager } from "configuration";
+import Utils from "Utils";
 
-/**
- * Manages parsing themes from application settings files.
- */
+/** Manages parsing themes from application settings files. */
 class ThemesManager {
 
-    /**
-     * A base config manager held as an instance variable.
-     */
+    /** A base config manager held as an instance variable. */
     private configManager: IConfigManager;
 
     /**
@@ -22,80 +20,47 @@ class ThemesManager {
     public constructor(configManager: IConfigManager) {
 
         if (!configManager) {
-            throw Error("Config manager must be defined");
+            throw new Error("Config manager must be defined");
         }
 
         this.configManager = configManager;
     }
 
     /**
-     * Returns the application theme settings file.
+     * Retrieves application and user-specific theme settings files.
      *
      * @param themeName - the name of the theme the application is using
      *
      * @returns - the application theme settings file
      */
     public retrieve(themeName: string): ITheme {
-        return this.parseApplicationTheme(themeName);
-    }
+        const userTheme = this.parseUserTheme("dark");
 
-    /** Useful for creating a populated ITheme object for testing purposes. */
-    public static fake(): ITheme {
-        return {
-            directoryItem: {
-                backgroundColour: "black",
-                chosenColour: "black",
-                colour: "black",
-                directoryColour: "black",
-                fileColour: "black",
-                selectedColour: "black"
-            },
-            pathPanel: {
-                backgroundColour: "black"
-            },
-            primaryBackgroundColour: "black",
-            primaryColour: "black",
-            quickSelect: {
-                backgroundColour: "black",
-                colour: "black",
-                selectedColour: "black"
-            },
-            statusBar: {
-                backgroundColour: "black"
-            }
-        }
+        return userTheme ? { ...applicationTheme, ...userTheme } : applicationTheme;
     }
 
     /**
-     * Returns the path to the theme file based on the given themeName.
+     * Parses user-specific theme settings file.
      *
      * @param themeName - the name of the theme the application is using
      *
-     * @returns - the path to the theme file based on the given themeName
+     * @returns - a fully-formed theme object, or null if no settings could
+     *      be read
      */
-    private getThemesFile(themeName: string): string {
-        return path.join(this.configManager.applicationName, "themes", `${themeName}.json`);
-    }
-
-    /**
-     * Parses application theme file.
-     *
-     * @param themeName - the name of the theme to parse
-     *
-     * @returns - a full-formed theme object
-     * @throws { Error } - when no application settings file is found
-     */
-    private parseApplicationTheme(themeName: string): ITheme {
+    private parseUserTheme(themeName: string): ITheme | null {
         const fileName = path.join(
-            this.configManager.applicationDataDirectory,
-            this.getThemesFile(themeName));
+            this.configManager.userDataDirectory,
+            "freeman.themes", `${themeName}.json`);
 
         if (!fs.existsSync(fileName)) {
-            Error(`${themeName} theme not found!`);
+            Utils.trace(`Cannot parse from non-existent file ${fileName}`);
+            return null;
         }
 
-        const applicationTheme = fs.readFileSync(fileName, "utf-8");
-        return JSON.parse(applicationTheme);
+        Utils.trace(`Retrieving user theme from ${fileName}`);
+
+        const userTheme = fs.readFileSync(fileName, "utf-8");
+        return JSON.parse(userTheme);
     }
 }
 

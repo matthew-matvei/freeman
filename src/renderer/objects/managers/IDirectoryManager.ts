@@ -26,7 +26,7 @@ interface IDirectoryManager {
      * @param itemPath - the path to the item to be created
      * @param itemType - the type of the item to be created
      */
-    createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<{}>;
+    createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<void>;
 
     /**
      * Renames an item with oldName to newName at itemPath.
@@ -35,7 +35,7 @@ interface IDirectoryManager {
      * @param newName - the new name
      * @param itemPath - the path to the item to be renamed
      */
-    renameItem(oldName: string, newName: string, itemPath: string): Promise<{}>;
+    renameItem(oldName: string, newName: string, itemPath: string): Promise<void>;
 
     /**
      * Deletes the given itemsToDelete.
@@ -50,7 +50,7 @@ interface IDirectoryManager {
      * @param itemPath - the full path to the item to be deleted
      * @param itemType - the type of the item to be deleted
      */
-    deleteItem(itemPath: string, itemType: ItemType): Promise<{}>;
+    deleteItem(itemPath: string, itemType: ItemType): Promise<void>;
 
     /**
      * Sends the given itemsToTrash to the system-dependent trash.
@@ -72,7 +72,7 @@ interface IDirectoryManager {
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to copy the item to
      */
-    copyItem(itemPath: string, destinationDirectory: string): Promise<{}>;
+    copyItem(itemPath: string, destinationDirectory: string): Promise<void>;
 
     /**
      * Moves an item at itemPath to the destinationDirectory. This involves deleting
@@ -80,8 +80,9 @@ interface IDirectoryManager {
      *
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to move the item to
+     * @param itemType - the type of the source item
      */
-    moveItem(itemPath: string, destinationDirectory: string): Promise<void>;
+    moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void>;
 }
 
 export default IDirectoryManager;

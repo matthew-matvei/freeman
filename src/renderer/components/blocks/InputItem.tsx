@@ -1,9 +1,11 @@
 import * as React from "react";
 import autobind from "autobind-decorator";
+import { HotKeys } from "react-hotkeys";
+import log from "electron-log";
 
 import { IInputItemProps } from "props/blocks";
 import { IInputItemState } from "states/blocks";
-import { HotKeys } from "react-hotkeys";
+import LoggedError from "errors/LoggedError"
 
 /** The input component to create a new directory item. */
 class InputItem extends React.Component<IInputItemProps, IInputItemState> {
@@ -91,7 +93,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
             return this.handleRename(event);
         }
 
-        console.error("No callback function passed to InputItem component");
+        log.error("No callback function passed to InputItem component");
     }
 
     /**
@@ -117,14 +119,19 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      * @require - this.input && this.props.sendUpRenameItem
      */
     private handleRename(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (!this.props.sendUpRenameItem) {
+            throw new LoggedError("sendUpRenameItem is not defined");
+        }
+
         if (event.key === "Enter") {
-            if (this.props.thisItem) {
-                return this.props.sendUpRenameItem!(this.props.thisItem.name, this.input!.value);
-            } else {
-                console.error("thisItem is not defined", this.props.thisItem);
+            if (!this.props.thisItem) {
+                throw new LoggedError("thisItem is not defined");
             }
+
+            return this.props.sendUpRenameItem(this.props.thisItem.name, this.input!.value);
+
         } else if (event.key === "Escape") {
-            return this.props.sendUpRenameItem!();
+            return this.props.sendUpRenameItem();
         }
     }
 

@@ -6,11 +6,12 @@ import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
+import applicationTheme from "configuration/internal/themes/dark";
 import { Goto } from "components/modals";
 import { IGotoProps, IQuickSelectProps } from "props/modals";
 import { IGotoState } from "states/modals";
 import { IDirectoryItem, IAppContext } from "models";
-import { IDirectoryManager, ThemesManager } from 'objects/managers';
+import { IDirectoryManager } from 'objects/managers';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -31,7 +32,7 @@ describe("<Goto />", () => {
         sandbox = sinon.createSandbox();
 
         context = {
-            theme: ThemesManager.fake()
+            theme: applicationTheme
         }
         item1 = {
             name: "Item 1",
@@ -94,11 +95,11 @@ describe("<Goto />", () => {
 
     it("updates 'items' in state after mounting", () => {
         const wrapper = shallow(component);
-        directoryManager.listDirectory("/path/to")
+        return directoryManager.listDirectory("/path/to")
             .then(() => {
                 const state = wrapper.state() as IGotoState;
 
-                expect(state.directoryItems).to.not.deep.equal([item1, item2]);
+                expect(state.directoryItems).to.deep.equal([item1, item2]);
             });
     });
 
@@ -118,7 +119,7 @@ describe("<Goto />", () => {
     it("updating 'items' re-renders the component once", () => {
         shallow(component);
         renderSpy = sinon.spy(Goto.prototype, "render");
-        directoryManager.listDirectory("/path/to")
+        return directoryManager.listDirectory("/path/to")
             .then(() => {
                 expect(renderSpy.callCount).to.equal(1);
             });

@@ -11,11 +11,6 @@ const app = electron.app || electron.remote.app;
 @injectable()
 class ConfigManager implements IConfigManager {
 
-    /** Gets the path to the application data directory. */
-    public get applicationDataDirectory(): string {
-        return app.getPath("appData");
-    }
-
     /** Gets the path to the user-specific data directory. */
     public get userDataDirectory(): string {
         return app.getPath("userData");

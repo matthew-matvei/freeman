@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const baseConfig = require("./webpack.config");
+const baseConfig = require("./webpack.common");
 
 // Taken respectively from http://blog.scottlogic.com/2017/06/06/typescript-electron-webpack.html
 const readDirRecursiveSync = (folder, filter) => {
