@@ -66,6 +66,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             item => !item.isHidden || this.state.showHiddenItems);
     }
 
+    /** Gets the currently selected item(s). */
+    private get selectedItems(): IDirectoryItem[] {
+        return this.state.chosenItems.length > 0 ?
+            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
+    }
+
     /**
      * Instantiates the DirectoryList component.
      *
@@ -405,40 +411,36 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private async pasteFromClipboard() {
         const { path, directoryManager } = this.props;
-        const { clipboardAction, clipboardItem } = this.model;
+        const { clipboardAction, clipboardItems } = this.model;
 
         if (clipboardAction === "copy") {
-            if (!clipboardItem) {
-                throw new LoggedError("Clipboard item is undefined");
+            if (!clipboardItems) {
+                throw new LoggedError("Clipboard items is undefined");
             }
 
-            Utils.trace(`Requesting to copy an item from ${clipboardItem.path} to ${path}`);
-            await directoryManager.copyItem(clipboardItem.path, path);
+            Utils.trace(`Requesting to copy ${clipboardItems.map(item => item.path).join(", ")} to ${path}`);
+            await directoryManager.copyItems(clipboardItems, path);
 
             this.setState(
                 {
                     directoryItems: await directoryManager.listDirectory(path)
                 } as IDirectoryListState);
 
-            this.props.statusNotifier.notify("Copied item");
+            this.props.statusNotifier.notify("Copied items");
         } else if (clipboardAction === "cut") {
-            if (!clipboardItem) {
-                throw new LoggedError("Clipboard item is undefined");
+            if (!clipboardItems) {
+                throw new LoggedError("Clipboard items is undefined");
             }
 
-            const itemType = Utils.parseItemType(clipboardItem);
-            Utils.trace(`Requesting to move ${itemType} from ${clipboardItem.path} to ${path}`)
-            await directoryManager.moveItem(
-                clipboardItem.path,
-                path,
-                itemType);
+            Utils.trace(`Requesting to move ${clipboardItems.map(item => item.path).join(", ")} to ${path}`);
+            await directoryManager.moveItems(clipboardItems, path);
 
             this.setState(
                 {
                     directoryItems: await directoryManager.listDirectory(path)
                 } as IDirectoryListState);
 
-            this.props.statusNotifier.notify("Cut item");
+            this.props.statusNotifier.notify("Cut items");
         }
     }
 
@@ -483,18 +485,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async sendToTrash() {
-        const selectedItems = this.state.chosenItems.length > 0 ?
-            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
-
-        const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
+        const chosenItems = this.selectedItems.length > 1 ? "the chosen items" : `'${this.selectedItems[0].name}'`;
         const confirmTrash = this.confirmationDialog(
             `Are you sure you want to send ${chosenItems} to the trash?`);
 
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmTrash) {
-            Utils.trace(`Requesting to trash ${selectedItems.map(item => item.path).join(", ")}`);
-            await this.props.directoryManager.sendItemsToTrash(selectedItems);
+            Utils.trace(`Requesting to trash ${this.selectedItems.map(item => item.path).join(", ")}`);
+            await this.props.directoryManager.sendItemsToTrash(this.selectedItems);
             this.refreshAfterDelete();
             this.props.statusNotifier.notify("Sent items to trash");
         }
@@ -519,10 +518,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private storeItemInClipboard(action: ClipboardAction) {
-        const selectedItem = this.nonHiddenDirectoryItems[this.state.selectedIndex];
-
         this.model.itemClipboard = {
-            directoryItem: selectedItem,
+            directoryItems: this.selectedItems,
             clipboardAction: action
         };
 

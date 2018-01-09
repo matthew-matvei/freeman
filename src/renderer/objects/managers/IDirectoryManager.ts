@@ -45,14 +45,6 @@ interface IDirectoryManager {
     deleteItems(itemsToDelete: IDirectoryItem[]): Promise<void>;
 
     /**
-     * Deletes the item of itemType at itemPath.
-     *
-     * @param itemPath - the full path to the item to be deleted
-     * @param itemType - the type of the item to be deleted
-     */
-    deleteItem(itemPath: string, itemType: ItemType): Promise<void>;
-
-    /**
      * Sends the given itemsToTrash to the system-dependent trash.
      *
      * @param itemsToTrash - the items to send to trash
@@ -60,29 +52,20 @@ interface IDirectoryManager {
     sendItemsToTrash(itemsToTrash: IDirectoryItem[]): Promise<void>;
 
     /**
-     * Sends the item at itemPath to the system-dependent trash.
+     * Copies the given itemsToCopy to the destinationDirectory.
      *
-     * @param itemPath - the path to the file
+     * @param itemsToCopy - the items to copy to destinationDirectory
+     * @param destinationDirectory - the directory to copy the items to
      */
-    sendItemToTrash(itemPath: string): Promise<void>;
+    copyItems(itemsToCopy: IDirectoryItem[], destinationDirectory: string): Promise<void>;
 
     /**
-     * Copies an item at itemPath to the destinationDirectory.
+     * Moves the given itemsToCopy to the destinationDirectory.
      *
-     * @param itemPath - the full path to the source item
-     * @param destinationDirectory - the directory to copy the item to
+     * @param itemsToMove - the items to move to destinationDirectory
+     * @param destinationDirectory - the directory to move the items to
      */
-    copyItem(itemPath: string, destinationDirectory: string): Promise<void>;
-
-    /**
-     * Moves an item at itemPath to the destinationDirectory. This involves deleting
-     * permanently the source file.
-     *
-     * @param itemPath - the full path to the source item
-     * @param destinationDirectory - the directory to move the item to
-     * @param itemType - the type of the source item
-     */
-    moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void>;
+    moveItems(itemsToMove: IDirectoryItem[], destinationDirectory: string): Promise<void>;
 }
 
 export default IDirectoryManager;

@@ -125,32 +125,10 @@ class DirectoryManager implements IDirectoryManager {
      */
     public async deleteItems(itemsToDelete: IDirectoryItem[]): Promise<void> {
         const itemDeletions = itemsToDelete.map(async item => {
-            await this.deleteItem(item.path, Utils.parseItemType(item));
+            await DirectoryManager.deleteItem(item.path, Utils.parseItemType(item));
         });
 
         await Promise.all(itemDeletions);
-    }
-
-    /**
-     * Deletes the item of itemType at itemPath.
-     *
-     * @param itemPath - the full path to the item to be deleted
-     * @param itemType - the type of the item to be deleted
-     */
-    public async deleteItem(itemPath: string, itemType: ItemType): Promise<void> {
-        if (itemType === "folder") {
-            try {
-                await rmdirAsync(itemPath);
-            } catch {
-                throw new DirectoryError("Cannot remove folder", itemPath);
-            }
-        } else {
-            try {
-                await unlinkAsync(itemPath);
-            } catch {
-                throw new DirectoryError("Cannot remove file", itemPath);
-            }
-        }
     }
 
     /**
@@ -160,23 +138,38 @@ class DirectoryManager implements IDirectoryManager {
      */
     public async sendItemsToTrash(itemsToTrash: IDirectoryItem[]): Promise<void> {
         const itemSoftDeletions = itemsToTrash.map(async item => {
-            await this.sendItemToTrash(item.path);
+            await DirectoryManager.sendItemToTrash(item.path);
         });
 
         await Promise.all(itemSoftDeletions);
     }
 
     /**
-     * Sends the item at itemPath to the system-dependent trash.
+     * Copies the given itemsToCopy to the destinationDirectory.
      *
-     * @param itemPath - the path to the file
+     * @param itemsToCopy - the items to copy to destinationDirectory
+     * @param destinationDirectory - the directory to copy the items to
      */
-    public async sendItemToTrash(itemPath: string): Promise<void> {
-        try {
-            await trash([itemPath], { glob: false });
-        } catch {
-            throw new DirectoryError("Could not send item to trash", itemPath);
-        }
+    public async copyItems(itemsToCopy: IDirectoryItem[], destinationDirectory: string): Promise<void> {
+        const itemCopies = itemsToCopy.map(async item => {
+            await DirectoryManager.copyItem(item.path, destinationDirectory);
+        });
+
+        await Promise.all(itemCopies);
+    }
+
+    /**
+     * Moves the given itemsToCopy to the destinationDirectory.
+     *
+     * @param itemsToMove - the items to move to destinationDirectory
+     * @param destinationDirectory - the directory to move the items to
+     */
+    public async moveItems(itemsToMove: IDirectoryItem[], destinationDirectory: string): Promise<void> {
+        const itemMoves = itemsToMove.map(async item => {
+            await DirectoryManager.moveItem(item.path, destinationDirectory, Utils.parseItemType(item));
+        });
+
+        await Promise.all(itemMoves);
     }
 
     /**
@@ -185,7 +178,7 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath - the full path to the source item
      * @param destinationDirectory - the directory to copy the item to
      */
-    public async copyItem(itemPath: string, destinationDirectory: string): Promise<void> {
+    private static async copyItem(itemPath: string, destinationDirectory: string): Promise<void> {
         const fileName = path.basename(itemPath);
         const destinationFileName = path.join(destinationDirectory, fileName);
 
@@ -204,12 +197,47 @@ class DirectoryManager implements IDirectoryManager {
      * @param destinationDirectory - the directory to move the item to
      * @param itemType - the type of the source item
      */
-    public async moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void> {
+    private static async moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void> {
         try {
-            await this.copyItem(itemPath, destinationDirectory);
-            await this.deleteItem(itemPath, itemType);
+            await DirectoryManager.copyItem(itemPath, destinationDirectory);
+            await DirectoryManager.deleteItem(itemPath, itemType);
         } catch {
             throw new DirectoryError("Failed to copy item", itemPath, destinationDirectory);
+        }
+    }
+
+    /**
+     * Deletes the item of itemType at itemPath.
+     *
+     * @param itemPath - the full path to the item to be deleted
+     * @param itemType - the type of the item to be deleted
+     */
+    private static async deleteItem(itemPath: string, itemType: ItemType): Promise<void> {
+        if (itemType === "folder") {
+            try {
+                await rmdirAsync(itemPath);
+            } catch {
+                throw new DirectoryError("Cannot remove folder", itemPath);
+            }
+        } else {
+            try {
+                await unlinkAsync(itemPath);
+            } catch {
+                throw new DirectoryError("Cannot remove file", itemPath);
+            }
+        }
+    }
+
+    /**
+     * Sends the item at itemPath to the system-dependent trash.
+     *
+     * @param itemPath - the path to the file
+     */
+    private static async sendItemToTrash(itemPath: string): Promise<void> {
+        try {
+            await trash([itemPath], { glob: false });
+        } catch {
+            throw new DirectoryError("Could not send item to trash", itemPath);
         }
     }
 

@@ -9,22 +9,32 @@ import sinon, { SinonSandbox } from "sinon";
 import { DirectoryManager, IDirectoryManager } from "objects/managers";
 import DirectoryError from "errors/DirectoryError";
 import Utils from "Utils";
+import { IDirectoryItem } from "models";
 
 chai.use(chaiAsPromised);
 
 describe("directoryManager's", () => {
     let fakeDirPath: string;
     let fakeFolder: string;
+    let fakeFolder2: string;
     let fakeFile: string;
+    let fakeFile2: string;
     let newFileName: string;
     let newFolderName: string;
 
     let directoryManager: IDirectoryManager;
 
+    let testFile: IDirectoryItem;
+    let testFile2: IDirectoryItem;
+    let testFolder: IDirectoryItem;
+    let testFolder2: IDirectoryItem;
+
     before(() => {
         fakeDirPath = "/path/to/fake/dir";
         fakeFolder = "fakeFolder";
+        fakeFolder2 = "fakeFolder2";
         fakeFile = "fakeFile.txt";
+        fakeFile2 = "fakeFile2.txt";
         newFileName = "newItem.txt";
         newFolderName = "newItem";
 
@@ -35,10 +45,40 @@ describe("directoryManager's", () => {
         mockfs({
             "/path/to/fake/dir": {
                 "fakeFolder": {},
+                "fakeFolder2": {},
                 "anotherFakeFolder": {},
-                "fakeFile.txt": "With fake news"
+                "fakeFile.txt": "With fake news",
+                "fakeFile2.txt": "And fake media"
             }
         });
+
+        testFile = {
+            path: path.join(fakeDirPath, fakeFile),
+            name: fakeFile,
+            isDirectory: false,
+            isHidden: false
+        };
+
+        testFile2 = {
+            path: path.join(fakeDirPath, fakeFile2),
+            name: fakeFile2,
+            isDirectory: false,
+            isHidden: false
+        };
+
+        testFolder = {
+            path: path.join(fakeDirPath, fakeFolder),
+            name: fakeFolder,
+            isDirectory: true,
+            isHidden: false
+        };
+
+        testFolder2 = {
+            path: path.join(fakeDirPath, fakeFolder2),
+            name: fakeFolder2,
+            isDirectory: true,
+            isHidden: false
+        };
     });
 
     afterEach(mockfs.restore);
@@ -143,19 +183,15 @@ describe("directoryManager's", () => {
         });
     });
 
-    describe("deleteItem method", () => {
-        let fileToDelete: string;
-        let folderToDelete: string;
-
-        beforeEach(() => {
-            fileToDelete = path.join(fakeDirPath, fakeFile);
-            folderToDelete = path.join(fakeDirPath, fakeFolder);
+    describe("deleteItems method", () => {
+        it("can handle empty list of items", () => {
+            expect(directoryManager.deleteItems([])).to.not.eventually.be.rejected;
         });
 
         it("can delete a file", () => {
-            return directoryManager.deleteItem(fileToDelete, "file").then(() => {
+            return directoryManager.deleteItems([testFile]).then(() => {
                 try {
-                    fs.accessSync(fileToDelete);
+                    fs.accessSync(testFile.path);
                 } catch (error) {
                     expect(error).to.not.be.null;
                 }
@@ -163,9 +199,42 @@ describe("directoryManager's", () => {
         });
 
         it("can delete a folder", () => {
-            return directoryManager.deleteItem(folderToDelete, "folder").then(() => {
+            return directoryManager.deleteItems([testFolder]).then(() => {
                 try {
-                    fs.accessSync(folderToDelete);
+                    fs.accessSync(testFolder.path);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
+            });
+        });
+
+        it("deletes multiple files", () => {
+            return directoryManager.deleteItems([testFile, testFile2]).then(() => {
+                try {
+                    fs.accessSync(testFile.path);
+                    fs.accessSync(testFile2.path);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
+            });
+        });
+
+        it("deletes multiple folders", () => {
+            return directoryManager.deleteItems([testFolder, testFolder2]).then(() => {
+                try {
+                    fs.accessSync(testFolder.path);
+                    fs.accessSync(testFolder2.path);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
+            });
+        });
+
+        it("deletes a mix of files and folders", () => {
+            return directoryManager.deleteItems([testFile, testFile2]).then(() => {
+                try {
+                    fs.accessSync(testFile.path);
+                    fs.accessSync(testFile2.path);
                 } catch (error) {
                     expect(error).to.not.be.null;
                 }
@@ -173,27 +242,34 @@ describe("directoryManager's", () => {
         });
 
         it("rejects when given an invalid path", () => {
-            fileToDelete = path.join(fakeDirPath, "invalidFileName.txt");
+            const invalidFileName = "invalidFileName.txt";
+            testFile = {
+                path: path.join(fakeDirPath, invalidFileName),
+                name: invalidFileName,
+                isDirectory: false,
+                isHidden: false
+            };
 
-            expect(directoryManager.deleteItem(fileToDelete, "file"))
+            expect(directoryManager.deleteItems([testFile]))
                 .to.eventually.be.rejectedWith(DirectoryError);
         });
     });
 
-    describe("moveItem method", () => {
-        let fileToMove: string;
-        let folderToMove: string;
+    describe("moveItems method", () => {
+        let destinationFolder: string;
 
-        before(() => {
-            fileToMove = path.join(fakeDirPath, fakeFile);
-            folderToMove = path.join(fakeDirPath, fakeFolder);
+        beforeEach(() => {
+            destinationFolder = path.join(fakeDirPath, "fakeFolder");
+        });
+
+        it("can handle empty list of items", () => {
+            expect(directoryManager.moveItems([], destinationFolder)).to.not.eventually.be.rejected;
         });
 
         it("moves a file to the given destination", () => {
-            const destinationFolder = path.join(fakeDirPath, "fakeFolder");
-            return directoryManager.moveItem(fileToMove, destinationFolder, "file").then(() => {
+            return directoryManager.moveItems([testFile], destinationFolder).then(() => {
                 try {
-                    fs.accessSync(fileToMove);
+                    fs.accessSync(testFile.path);
                 } catch (error) {
                     expect(error).to.not.be.null;
                 }
@@ -209,15 +285,16 @@ describe("directoryManager's", () => {
         });
 
         it("moves a directory to the given destination", () => {
-            const destinationFolder = path.join(fakeDirPath, "anotherFakeFolder");
-            return directoryManager.moveItem(folderToMove, destinationFolder, "folder").then(() => {
+            destinationFolder = path.join(fakeDirPath, "anotherFakeFolder");
+            return directoryManager.moveItems([testFolder], destinationFolder).then(() => {
                 try {
-                    fs.accessSync(folderToMove);
+                    fs.accessSync(testFolder.path);
                 } catch (error) {
                     expect(error).to.not.be.null;
                 }
 
                 const destinationFolderName = path.join(destinationFolder, fakeFolder);
+
                 try {
                     fs.accessSync(destinationFolderName);
                 } catch (error) {
@@ -227,9 +304,9 @@ describe("directoryManager's", () => {
         });
 
         it("handles moving to the same directory", () => {
-            return directoryManager.moveItem(fileToMove, fakeDirPath, "file").then(() => {
+            return directoryManager.moveItems([testFile], fakeDirPath).then(() => {
                 try {
-                    fs.accessSync(fileToMove);
+                    fs.accessSync(testFile.path);
                 } catch (error) {
                     expect(error).to.not.be.null;
                 }
@@ -244,17 +321,54 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("rejects when given an invalid itemPath", () => {
-            const fileToMove = path.join(fakeDirPath, "invalidFileName.txt");
+        it("moves multiple files", () => {
+            return directoryManager.moveItems([testFile, testFile2], fakeDirPath).then(() => {
+                try {
+                    fs.accessSync(testFile.path);
+                    fs.accessSync(testFile2.path);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
+            });
+        });
 
-            expect(directoryManager.moveItem(fileToMove, fakeDirPath, "file"))
+        it("moves multiple folders", () => {
+            return directoryManager.moveItems([testFolder, testFolder2], fakeDirPath).then(() => {
+                try {
+                    fs.accessSync(testFolder.path);
+                    fs.accessSync(testFolder2.path);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
+            });
+        });
+
+        it("moves a mix of files and folders", () => {
+            return directoryManager.moveItems([testFile, testFolder2], fakeDirPath).then(() => {
+                try {
+                    fs.accessSync(testFile.path);
+                    fs.accessSync(testFolder2.path);
+                } catch (error) {
+                    expect(error).to.not.be.null;
+                }
+            });
+        });
+
+        it("rejects when given an invalid itemPath", () => {
+            const invalidFileName = "invalidFileName.txt";
+            testFile = {
+                path: path.join(fakeDirPath, invalidFileName),
+                name: invalidFileName,
+                isDirectory: false,
+                isHidden: false
+            };
+
+            expect(directoryManager.moveItems([testFile], fakeDirPath))
                 .to.eventually.be.rejectedWith(DirectoryError);
         });
 
         it("rejects when given an invalid destination", () => {
-            const fileToMove = path.join(fakeDirPath, fakeFile);
-
-            expect(directoryManager.moveItem(fileToMove, path.resolve("invalidDirectory"), "file"))
+            expect(directoryManager.moveItems([testFile], path.resolve("invalidDirectory")))
                 .to.eventually.be.rejectedWith(DirectoryError);
         });
     });

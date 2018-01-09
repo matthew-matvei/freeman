@@ -4,10 +4,10 @@ import { IDirectoryItem } from "models";
 /** Describes an internal clipboard object. */
 interface IItemClipboard {
 
-    /** The directory item, if any. */
-    directoryItem?: IDirectoryItem;
+    /** The directory items, if any. */
+    directoryItems?: IDirectoryItem[];
 
-    /** The action to take on the directory item, if any. */
+    /** The action to take on the directory items, if any. */
     clipboardAction?: ClipboardAction;
 }
 

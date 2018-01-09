@@ -31,8 +31,8 @@ class DirectoryListModel {
     }
 
     /** Gets the current clipboard item, if any. */
-    public get clipboardItem(): IDirectoryItem | undefined {
-        return this._itemClipboard.directoryItem;
+    public get clipboardItems(): IDirectoryItem[] | undefined {
+        return this._itemClipboard.directoryItems;
     }
 
     /** Gets the directory text finder. */
