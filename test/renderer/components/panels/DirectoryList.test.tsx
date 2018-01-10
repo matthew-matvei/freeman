@@ -26,7 +26,7 @@ describe("<DirectoryList />", () => {
         sandbox = sinon.createSandbox();
 
         mockfs({
-            "path/to": {
+            "/path/to": {
                 "fakeFolder": {},
                 "fakeFile.txt": "With fake news"
             }
@@ -114,11 +114,10 @@ describe("<DirectoryList />", () => {
 
     it("updates 'directoryItems' after mounting", () => {
         const wrapper = shallow(component);
-        directoryManager.listDirectory("/path/to")
-            .then(() => {
-                const state = wrapper.state() as IDirectoryListState;
+        directoryManager.listDirectory("/path/to").then(() => {
+            const state = wrapper.state() as IDirectoryListState;
 
-                expect(state.directoryItems).to.be.empty;
-            });
+            expect(state.directoryItems).to.be.empty;
+        });
     });
 });

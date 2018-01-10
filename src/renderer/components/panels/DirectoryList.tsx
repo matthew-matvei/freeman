@@ -170,10 +170,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         const cachedNavigation = this.model.popCachedNavigation(this.props.path);
 
         if (cachedNavigation) {
+            const remainingChosenItems = this.state.chosenItems.filter(item => cachedNavigation.directoryItems.includes(item));
             this.setState(
                 {
                     directoryItems: cachedNavigation.directoryItems,
-                    selectedIndex: cachedNavigation.selectedIndex
+                    selectedIndex: cachedNavigation.selectedIndex,
+                    chosenItems: remainingChosenItems
                 } as IDirectoryListState);
         } else {
             const directoryItems = await this.props.directoryManager.listDirectory(this.props.path);
