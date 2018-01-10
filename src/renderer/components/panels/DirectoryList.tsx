@@ -12,7 +12,7 @@ import { DirectoryItem, InputItem } from "components/blocks";
 import { IDirectoryItem, IAppContext } from "models";
 import { DirectoryListModel } from "objects";
 import { IDirectoryListState } from "states/panels";
-import { DirectoryDirection, ItemType, ClipboardAction } from "types";
+import { DirectoryDirection, ItemType, ClipboardAction, ScrollToDirection } from "types";
 import { IDirectoryListProps } from "props/panels";
 import { Goto } from "components/modals";
 import DirectoryError from "errors/DirectoryError";
@@ -45,7 +45,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         chooseItem: this.toggleItemChosen,
         sendToTrash: this.sendToTrash,
         delete: this.delete,
-        openGoto: this.openGoto
+        openGoto: this.openGoto,
+        scrollToTop: () => this.scrollTo("top"),
+        scrollToBottom: () => this.scrollTo("bottom")
     }
 
     /** The internal model of this DirectoryList. */
@@ -465,6 +467,27 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             await this.props.directoryManager.renameItem(oldName, newName, this.props.path);
 
             this.setState({ renamingItem: false } as IDirectoryListState);
+        }
+    }
+
+    /**
+     * Handles scrolling in the given scrollToDirection.
+     *
+     * @param scrollToDirection - the direction in which to scroll to
+     */
+    @autobind
+    private scrollTo(scrollToDirection: ScrollToDirection) {
+        if (scrollToDirection === "top") {
+            this.setState({ selectedIndex: 0 } as IDirectoryListState, () => {
+                this.context.scrollArea.scrollTop();
+            });
+        } else {
+            this.setState(
+                {
+                    selectedIndex: this.nonHiddenDirectoryItems.length - 1
+                } as IDirectoryListState, () => {
+                    this.context.scrollArea.scrollBottom();
+                });
         }
     }
 

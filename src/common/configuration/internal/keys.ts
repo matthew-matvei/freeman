@@ -19,5 +19,7 @@ export default {
     paste: ["ctrl+v"],
     openCommandPalette: ["f1"],
     chooseItem: ["space"],
-    openGoto: ["ctrl+e"]
+    openGoto: ["ctrl+e"],
+    scrollToTop: ["pageup"],
+    scrollToBottom: ["pagedown"]
 } as IKeyMap;

@@ -15,3 +15,6 @@ export type ClipboardAction = "copy" | "cut";
 
 /** The status update type given when updating the status component. */
 export type StatusUpdate = "notification" | "itemCount" | "chosenCount";
+
+/** The direction in which to scroll a scroll area. */
+export type ScrollToDirection = "top" | "bottom";

@@ -55,5 +55,11 @@
     ],
     "openGoto": [
         "ctrl+e"
+    ],
+    "scrollToTop": [
+        "pageup"
+    ],
+    "scrollToBottom": [
+        "pagedown"
     ]
 }
