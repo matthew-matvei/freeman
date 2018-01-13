@@ -5,7 +5,7 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import { SinonSpy } from "sinon";
 
-import applicationTheme from "configuration/internal/themes/dark";
+import applicationTheme from "settings/internal/themes/dark";
 import { PathPanel } from "components/panels";
 import { IPathPanelProps } from "props/panels";
 import { IAppContext } from 'models';

@@ -5,8 +5,9 @@ import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import mockfs from "mock-fs";
 import sinon, { SinonSandbox } from "sinon";
+import { Mock } from "typemoq";
 
-import { DirectoryManager, IDirectoryManager } from "objects/managers";
+import { DirectoryManager, IDirectoryManager, ISettingsManager } from "managers";
 import DirectoryError from "errors/DirectoryError";
 import Utils from "Utils";
 import { IDirectoryItem } from "models";
@@ -38,7 +39,15 @@ describe("directoryManager's", () => {
         newFileName = "newItem.txt";
         newFolderName = "newItem";
 
-        directoryManager = new DirectoryManager();
+        const settings: any = {
+            windows: {
+                hideUnixStyleHiddenItems: false
+            }
+        };
+
+        const settingsManager = Mock.ofType<ISettingsManager>();
+        settingsManager.setup(sm => sm.settings).returns(() => settings);
+        directoryManager = new DirectoryManager(settingsManager.object);
     });
 
     beforeEach(() => {

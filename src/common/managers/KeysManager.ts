@@ -1,28 +1,28 @@
 import fs from "fs";
 import path from "path";
+import { injectable } from "inversify";
+const electron = require("electron");
+const app = electron.app || electron.remote.app;
 
-import applicationKeys from "configuration/internal/keys";
+import applicationKeys from "settings/internal/keys";
 import { IKeyMap } from "models";
-import { IConfigManager } from "configuration";
 import Utils from "Utils";
+import { IKeysManager } from "managers";
 
 /** Manages parsing key maps from application and user settings files. */
-class KeysManager {
+@injectable()
+class KeysManager implements IKeysManager {
 
-    /** A base configuration manager held as an instance variable. */
-    private configManager: IConfigManager;
+    /** The internally held key map for this manager. */
+    private _keyMap: IKeyMap;
 
-    /**
-     * Initialises an instance of the KeysManager class.
-     *
-     * @param configManager - the configuration manager providing helper properties
-     */
-    public constructor(configManager: IConfigManager) {
-        if (!configManager) {
-            throw new Error("Config manager must be defined");
+    /** Gets the key map retrieved by the keys manager. */
+    public get keyMap(): IKeyMap {
+        if (!this._keyMap) {
+            this._keyMap = this.retrieve();
         }
 
-        this.configManager = configManager;
+        return this._keyMap;
     }
 
     /**
@@ -31,7 +31,7 @@ class KeysManager {
      * @returns - a fully-formed key map object, or null if no settings could
      *      be read
      */
-    public retrieve(): IKeyMap {
+    private retrieve(): IKeyMap {
         const userKeys = this.parseUserKeys();
 
         return userKeys ? { ...applicationKeys, ...userKeys } : applicationKeys;
@@ -45,7 +45,7 @@ class KeysManager {
      */
     private parseUserKeys(): IKeyMap | null {
         const fileName = path.join(
-            this.configManager.userDataDirectory,
+            app.getPath("userData"),
             "freeman.keys.json");
 
         if (!fs.existsSync(fileName)) {

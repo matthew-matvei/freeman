@@ -1,4 +1,4 @@
-import { IDirectoryManager } from "objects/managers";
+import { IDirectoryManager } from "managers";
 
 /** Describes properties for a component capable of managing a directory. */
 interface IDirectoryManageableProps {

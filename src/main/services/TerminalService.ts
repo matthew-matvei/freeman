@@ -2,19 +2,39 @@ import * as http from "http";
 import * as WebSocket from "ws";
 import * as pty from "node-pty";
 import { ITerminal } from "node-pty/lib/interfaces";
+import { inject, injectable } from "inversify";
 
 import { ISocketMessage } from "models";
 import { isISocketMessage } from "typeGuards";
 import Utils from "Utils";
+import TYPES from "ioc/types";
+import { ISettingsManager } from "managers";
+import { ITerminalService } from "services";
 
 /** Provides access to a terminal backend as a service. */
-class TerminalService {
+@injectable()
+class TerminalService implements ITerminalService {
+
+    /** A manager for application settings. */
+    private settingsManager: ISettingsManager;
 
     /** The underlying websocket server for this terminal service. */
     private socketServer: WebSocket.Server;
 
-    /** Initialises an instance of the Terminalservice class. */
-    public constructor() {
+    /**
+     * Initialises an instance of the Terminalservice class.
+     *
+     * @param settingsManager - a manager for application settings
+     */
+    public constructor(
+        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager) {
+
+        if (!settingsManager) {
+            throw new ReferenceError("Settings manager is not defined");
+        }
+
+        this.settingsManager = settingsManager;
+
         const server = http.createServer();
         this.socketServer = new WebSocket.Server({ server: server });
         this.socketServer.on("connection", (webSocket, request) => {
@@ -33,6 +53,17 @@ class TerminalService {
         this.socketServer.close();
     }
 
+    /** Gets the path or name of the system-dependent and configurable shell. */
+    private get shell(): string {
+        const { windows, linux } = this.settingsManager.settings;
+
+        if (process.platform === "win32") {
+            return windows.shell;
+        } else {
+            return linux.shell;
+        }
+    }
+
     /**
      * Sets up the terminal backend process associated with the given webSocket.
      *
@@ -43,7 +74,7 @@ class TerminalService {
         const { cols, rows } = request.headers;
 
         Utils.trace("Spawning pty");
-        const terminal = pty.spawn(process.platform === "win32" ? "cmd.exe" : "bash", [], {
+        const terminal = pty.spawn(this.shell, [], {
             name: "xterm-color",
             cols: parseInt(cols as string) || 80,
             rows: parseInt(rows as string) || 24,

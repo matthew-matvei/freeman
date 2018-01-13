@@ -7,6 +7,14 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-insta
 
 import { App } from "components";
 import Utils from "Utils";
+import container from "ioc/container";
+import TYPES from "ioc/types";
+import {
+    IDirectoryManager,
+    IKeysManager,
+    ISettingsManager,
+    IThemesManager
+} from "managers";
 
 import "styles/main.scss";
 
@@ -23,4 +31,14 @@ window.addEventListener("error", (event) => {
     log.error(event.error);
 });
 
-ReactDOM.render(<App />, document.getElementById("app-root"));
+const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
+const keysManager = container.get<IKeysManager>(TYPES.IKeysManager);
+const themeManager = container.get<IThemesManager>(TYPES.IThemesManager);
+const directoryManager = container.get<IDirectoryManager>(TYPES.IDirectoryManager);
+
+ReactDOM.render(<App
+    settingsManager={settingsManager}
+    keysManager={keysManager}
+    themeManager={themeManager}
+    directoryManager={directoryManager} />,
+    document.getElementById("app-root"));

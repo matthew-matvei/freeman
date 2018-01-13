@@ -1,29 +1,47 @@
 import fs from "fs";
 import path from "path";
+import { inject, injectable } from "inversify";
+const electron = require("electron");
+const app = electron.app || electron.remote.app;
 
-import applicationTheme from "configuration/internal/themes/dark";
+import applicationTheme from "settings/internal/themes/dark";
 import { ITheme } from "models";
-import { IConfigManager } from "configuration";
 import Utils from "Utils";
+import TYPES from "ioc/types";
+import { ISettingsManager, IThemesManager } from "managers";
 
 /** Manages parsing themes from application settings files. */
-class ThemesManager {
+@injectable()
+class ThemesManager implements IThemesManager {
 
-    /** A base config manager held as an instance variable. */
-    private configManager: IConfigManager;
+    /** A settings manager for retrieving theme name. */
+    private settingsManager: ISettingsManager;
+
+    /** The internally held theme for this manager. */
+    private _theme: ITheme;
 
     /**
      * Initialises an instance of the KeysManager class.
      *
-     * @param configManager - the configuration manager providing helper properties
+     * @param settingsManager - the settings manager providing application settings
      */
-    public constructor(configManager: IConfigManager) {
+    public constructor(
+        @inject(TYPES.ISettingsManager) SettingsManager: ISettingsManager) {
 
-        if (!configManager) {
-            throw new Error("Config manager must be defined");
+        if (!SettingsManager) {
+            throw new Error("Settings manager must be defined");
         }
 
-        this.configManager = configManager;
+        this.settingsManager = SettingsManager;
+    }
+
+    /** Gets the theme retrieved by the keys manager. */
+    public get theme(): ITheme {
+        if (!this._theme) {
+            this._theme = this.retrieve(this.settingsManager.settings.themeName);
+        }
+
+        return this._theme;
     }
 
     /**
@@ -33,7 +51,7 @@ class ThemesManager {
      *
      * @returns - the application theme settings file
      */
-    public retrieve(themeName: string): ITheme {
+    private retrieve(themeName: string): ITheme {
         const userTheme = this.parseUserTheme("dark");
 
         return userTheme ? { ...applicationTheme, ...userTheme } : applicationTheme;
@@ -49,7 +67,7 @@ class ThemesManager {
      */
     private parseUserTheme(themeName: string): ITheme | null {
         const fileName = path.join(
-            this.configManager.userDataDirectory,
+            app.getPath("userData"),
             "freeman.themes", `${themeName}.json`);
 
         if (!fs.existsSync(fileName)) {

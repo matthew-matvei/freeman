@@ -4,11 +4,11 @@ import path from "path";
 import log from "electron-log";
 import { HotKeys } from "react-hotkeys";
 import fuzzysearch from "fuzzysearch";
-import winattr, {Attributes} from "winattr";
+import winattr, { Attributes } from "winattr";
 
 import { IDirectoryItem } from "models";
 import { ItemType } from "types";
-import DirectoryError from 'errors/DirectoryError';
+import DirectoryError from "errors/DirectoryError";
 
 class Utils {
 
@@ -98,16 +98,21 @@ class Utils {
 
     /**
      * Returns whether a given file or folder is hidden.
-     * 
+     *
      * @param pathToItem - the path to the file or folder
-     * 
+     * @param hideUnixStyleHiddenItems - whether Unix-style hidden items should be hidden on Windows
+     *
      * @returns whether the file at pathToItem is hidden
      */
-    public static isHidden = async (pathToItem: string): Promise<boolean> => {
+    public static isHidden = async (pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> => {
         const itemName = path.basename(pathToItem);
         if (os.platform() === "linux") {
             return itemName.startsWith(".");
         } else if (os.platform() === "win32") {
+            if (hideUnixStyleHiddenItems && itemName.startsWith(".")) {
+                return true;
+            }
+
             try {
                 const attributes = await Utils.getAsync(pathToItem);
                 return attributes.hidden;
@@ -123,7 +128,7 @@ class Utils {
 
     /**
      * Returns a promisified version of the winattr.get function.
-     * 
+     *
      * @param path - the path to a file or folder
      */
     public static getAsync = (path: string): Promise<Attributes> => {

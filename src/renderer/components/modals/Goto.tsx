@@ -1,6 +1,6 @@
 import * as React from "react";
 import path from "path";
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent } from "react";
 import autobind from "autobind-decorator";
 
 import { QuickSelect } from "components/modals";

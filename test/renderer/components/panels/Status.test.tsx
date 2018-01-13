@@ -5,7 +5,7 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import { SinonSpy } from "sinon";
 
-import applicationTheme from "configuration/internal/themes/dark";
+import applicationTheme from "settings/internal/themes/dark";
 import { Status } from "components/panels";
 import { IStatusProps } from "props/panels";
 import { ITheme } from "models";

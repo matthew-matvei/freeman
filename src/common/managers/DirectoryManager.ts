@@ -2,15 +2,16 @@ import fs from "fs";
 import path from "path";
 import trash from "trash";
 import ncp from "ncp";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { promisify, Promise } from "bluebird";
 
 import { IDirectoryItem } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
-import { IDirectoryManager } from "objects/managers";
+import { IDirectoryManager, ISettingsManager } from "managers";
 import DirectoryError from "errors/DirectoryError";
 import Utils from "Utils";
+import TYPES from "ioc/types";
 
 const lstatAsync = promisify(fs.lstat);
 const ncpAsync = promisify(ncp.ncp);
@@ -20,11 +21,27 @@ const renameAsync = promisify(fs.rename);
 const mkdirAsync = promisify(fs.mkdir);
 const writeFileAsync = promisify(fs.writeFile);
 
-/**
- * Provides static methods for reading, writing and creating files and folders.
- */
+/** Provides methods for reading, writing and creating files and folders. */
 @injectable()
 class DirectoryManager implements IDirectoryManager {
+
+    /** A manager for application settings. */
+    private settingsManager: ISettingsManager;
+
+    /**
+     * Initialises a new instance of the DirectoryManager class.
+     *
+     * @param settingsManager - a manager for application settings
+     */
+    public constructor(
+        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager) {
+
+        if (!settingsManager) {
+            throw new ReferenceError("settingsManager must be defined");
+        }
+
+        this.settingsManager = settingsManager;
+    }
 
     /**
      * Returns a list of paths of all files in the directory given in path.
@@ -57,12 +74,13 @@ class DirectoryManager implements IDirectoryManager {
         const filePromises = fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
             const fileStats = await lstatAsync(fullPath);
+            const { hideUnixStyleHiddenItems } = this.settingsManager.settings.windows;
 
             return {
                 name: fileName,
                 path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: await Utils.isHidden(fullPath)
+                isHidden: await Utils.isHidden(fullPath, hideUnixStyleHiddenItems)
             } as IDirectoryItem;
         });
 

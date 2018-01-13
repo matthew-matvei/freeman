@@ -5,11 +5,11 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSpy } from "sinon";
 
-import applicationTheme from "configuration/internal/themes/dark";
+import applicationTheme from "settings/internal/themes/dark";
 import { DirectoryWrapper } from "components/panels";
 import { IDirectoryWrapperProps } from "props/panels";
 import { IAppContext, IStatusNotifier } from "models";
-import { IDirectoryManager } from "objects/managers";
+import { IDirectoryManager } from "managers";
 
 Enzyme.configure({ adapter: new Adapter() });
 

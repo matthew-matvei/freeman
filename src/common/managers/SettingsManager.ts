@@ -1,29 +1,28 @@
 import fs from "fs";
 import path from "path";
+import { injectable } from "inversify";
+const electron = require("electron");
+const app = electron.app || electron.remote.app;
 
-import applicationSettings from "configuration/internal/settings";
-import { ISettings } from "models";
-import { IConfigManager } from "configuration";
+import applicationSettings from "settings/internal/settings";
+import { ICommonSettings } from "models/settings";
 import Utils from "Utils";
+import { ISettingsManager } from "managers";
 
 /** Manages parsing settings from application settings files. */
-class SettingsManager {
+@injectable()
+class SettingsManager implements ISettingsManager {
 
-    /** A base config manager held as an instance variable. */
-    private configManager: IConfigManager;
+    /** The internally held settings for this manager. */
+    private _settings: ICommonSettings;
 
-    /**
-     * Initialises an instance of the SettingsManager class.
-     *
-     * @param configManager - the configuration manager providing helper properties
-     */
-    public constructor(configManager: IConfigManager) {
-
-        if (!configManager) {
-            throw new Error("Config manager must be defined");
+    /** Gets the settings retrieved by the settings manager. */
+    public get settings(): ICommonSettings {
+        if (!this._settings) {
+            this._settings = this.retrieve();
         }
 
-        this.configManager = configManager;
+        return this._settings;
     }
 
     /**
@@ -31,10 +30,11 @@ class SettingsManager {
      *
      * @returns - a fully-formed settings object
      */
-    public retrieve(): ISettings {
+    private retrieve(): ICommonSettings {
         const userSettings = this.parseUserSettings();
 
-        return userSettings ? { ...applicationSettings, ...userSettings } : applicationSettings;
+        return userSettings ?
+            { ...applicationSettings, ...userSettings } : applicationSettings;
     }
 
     /**
@@ -43,9 +43,9 @@ class SettingsManager {
      * @returns - a fully-formed settings object, or null if no settings could
      *      be read
      */
-    private parseUserSettings(): ISettings | null {
+    private parseUserSettings(): ICommonSettings | null {
         const fileName = path.join(
-            this.configManager.userDataDirectory,
+            app.getPath("userData"),
             "freeman.settings.json");
 
         if (!fs.existsSync(fileName)) {

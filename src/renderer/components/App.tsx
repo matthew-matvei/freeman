@@ -5,35 +5,23 @@ import SplitPane from "react-split-pane";
 import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
 
-import TYPES from "ioc/types";
-import container from "ioc/container";
 import { DirectoryWrapper, Status } from "components/panels";
 import { CommandPalette } from "components/modals";
+import { IAppProps } from "props";
 import { IAppState } from "states";
-import { IKeyMap, ISettings, ITheme, IAppContext, IStatusNotifier } from "models";
+import { IAppContext, IStatusNotifier } from "models";
 import { ApplicationCommander } from "objects";
-import { IDirectoryManager, KeysManager, SettingsManager, ThemesManager } from "objects/managers";
 import { DirectoryPaneSide, StatusUpdate } from "types";
-import { IConfigManager } from "configuration";
 
 import "styles/App.scss";
 
 /** The main application component. */
-class App extends React.Component<{}, IAppState> {
+class App extends React.Component<IAppProps, IAppState> {
 
     /** Validation for child context types. */
     public static childContextTypes = {
         theme: PropTypes.object
     }
-
-    /** Settings to use in the application. */
-    private settings: ISettings;
-
-    /** The global key map to pass down to child components. */
-    private keyMap: IKeyMap | null;
-
-    /** The colour theme to use in the application. */
-    private theme: ITheme;
 
     /** Handler functions for the given events this component handles. */
     private handlers = {
@@ -41,6 +29,7 @@ class App extends React.Component<{}, IAppState> {
         openCommandPalette: this.openCommandPalette
     }
 
+    /** Notifies the status component of current application state. */
     private statusNotifier: IStatusNotifier;
 
     /** A timer used for the status message. */
@@ -49,15 +38,12 @@ class App extends React.Component<{}, IAppState> {
     /**
      * Defines how the main app component is rendered.
      *
+     * @param - the props for the component
+     *
      * @returns - a JSX element representing the app view
      */
-    constructor(props: {}) {
+    constructor(props: IAppProps) {
         super(props);
-
-        const configManager = container.get<IConfigManager>(TYPES.IConfigManager);
-        this.settings = new SettingsManager(configManager).retrieve();
-        this.keyMap = new KeysManager(configManager).retrieve();
-        this.theme = new ThemesManager(configManager).retrieve(this.settings.themeName);
 
         this.statusNotifier = {
             notify: (payload: string) => this.updateStatus("notification", payload),
@@ -78,7 +64,7 @@ class App extends React.Component<{}, IAppState> {
 
     /** Returns the child context to pass down the component tree. */
     public getChildContext(): IAppContext {
-        return { theme: this.theme };
+        return { theme: this.props.themeManager.theme };
     }
 
     /**
@@ -87,13 +73,11 @@ class App extends React.Component<{}, IAppState> {
      * @returns - a JSX element representing the main application view
      */
     public render(): JSX.Element {
-        const appStyle = { color: this.theme.primaryColour };
+        const appStyle = { color: this.props.themeManager.theme.primaryColour };
         const splitPaneStyle = { height: "97vh" };
 
-        const directoryManager = container.get<IDirectoryManager>(TYPES.IDirectoryManager);
-
         return <div>
-            <HotKeys keyMap={this.keyMap || undefined} handlers={this.handlers}>
+            <HotKeys keyMap={this.props.keysManager.keyMap || undefined} handlers={this.handlers}>
                 <div className="App" style={appStyle}>
                     <SplitPane
                         split="vertical"
@@ -104,14 +88,14 @@ class App extends React.Component<{}, IAppState> {
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "left"}
                             sendSelectedPaneUp={this.selectPane}
-                            directoryManager={directoryManager}
+                            directoryManager={this.props.directoryManager}
                             statusNotifier={this.statusNotifier} />
                         <DirectoryWrapper
                             id="right"
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "right"}
                             sendSelectedPaneUp={this.selectPane}
-                            directoryManager={directoryManager}
+                            directoryManager={this.props.directoryManager}
                             statusNotifier={this.statusNotifier} />
                     </SplitPane>
                     <Status {...this.state.status} />

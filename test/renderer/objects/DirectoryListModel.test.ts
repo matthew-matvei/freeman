@@ -6,7 +6,7 @@ import { IDirectoryListState } from "states/panels";
 import { IDirectoryListProps } from "props/panels";
 import { DirectoryPaneSide } from "types";
 import { IDirectoryItem, INavigationNode, IStatusNotifier } from "models";
-import { IDirectoryManager } from "objects/managers";
+import { IDirectoryManager } from "managers";
 
 describe("DirectoryListModel's", () => {
     let directoryListModel: DirectoryListModel;

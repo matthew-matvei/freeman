@@ -6,7 +6,7 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
-import applicationTheme from "configuration/internal/themes/dark";
+import applicationTheme from "settings/internal/themes/dark";
 import { DirectoryItem } from "components/blocks";
 import { IDirectoryItemProps } from "props/blocks";
 import { IAppContext, IDirectoryItem } from "models";

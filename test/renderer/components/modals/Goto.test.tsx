@@ -6,12 +6,12 @@ import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
-import applicationTheme from "configuration/internal/themes/dark";
+import applicationTheme from "settings/internal/themes/dark";
 import { Goto } from "components/modals";
 import { IGotoProps, IQuickSelectProps } from "props/modals";
 import { IGotoState } from "states/modals";
 import { IDirectoryItem, IAppContext } from "models";
-import { IDirectoryManager } from 'objects/managers';
+import { IDirectoryManager } from "managers";
 
 Enzyme.configure({ adapter: new Adapter() });
 

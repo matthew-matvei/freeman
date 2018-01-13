@@ -1,3 +1,11 @@
 {
+    "linux": {
+        "shell": "bash"
+    },
+    "windows": {
+        "hideUnixStyleHiddenItems": false,
+        "shell": "powershell.exe"
+    },
+    "fullscreen": false,
     "themeName": "dark"
 }

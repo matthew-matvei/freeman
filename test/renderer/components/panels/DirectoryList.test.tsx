@@ -5,11 +5,12 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import sinon, { SinonSandbox } from "sinon";
 import mockfs from "mock-fs";
+import { IMock, It, Mock } from "typemoq";
 
 import { DirectoryList } from "components/panels";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
-import { IDirectoryManager } from "objects/managers";
+import { IDirectoryManager } from "managers";
 import { IStatusNotifier } from "models";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -20,7 +21,7 @@ describe("<DirectoryList />", () => {
 
     let sandbox: SinonSandbox;
 
-    let directoryManager: IDirectoryManager;
+    let directoryManager: IMock<IDirectoryManager>;
 
     before(() => {
         sandbox = sinon.createSandbox();
@@ -32,8 +33,8 @@ describe("<DirectoryList />", () => {
             }
         });
 
-        directoryManager = {} as IDirectoryManager;
-        directoryManager.listDirectory = sandbox.stub().resolves();
+        directoryManager = Mock.ofType<IDirectoryManager>();
+        directoryManager.setup(dm => dm.listDirectory(It.isAnyString())).returns(sandbox.stub().resolves());
 
         const statusNotifier = {} as IStatusNotifier;
 
@@ -43,7 +44,7 @@ describe("<DirectoryList />", () => {
             path: "/path/to",
             sendPathUp: (path: string) => { },
             sendSelectedPaneUp: () => { },
-            directoryManager,
+            directoryManager: directoryManager.object,
             statusNotifier
         };
     });
@@ -114,7 +115,7 @@ describe("<DirectoryList />", () => {
 
     it("updates 'directoryItems' after mounting", () => {
         const wrapper = shallow(component);
-        directoryManager.listDirectory("/path/to").then(() => {
+        directoryManager.object.listDirectory("/path/to").then(() => {
             const state = wrapper.state() as IDirectoryListState;
 
             expect(state.directoryItems).to.be.empty;
