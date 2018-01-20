@@ -20,4 +20,4 @@ export {
     IStatus,
     IStatusNotifier,
     ITheme
-}
+};

@@ -38,6 +38,7 @@ class DirectorySorter {
     public static sortByTypeThenAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort((a, b) => {
             const typeCompare = DirectorySorter.compareTypes(a, b);
+
             return typeCompare !== 0 ? typeCompare : a.name.localeCompare(b.name);
         });
     }

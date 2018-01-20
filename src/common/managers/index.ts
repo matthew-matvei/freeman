@@ -16,4 +16,4 @@ export {
     KeysManager,
     SettingsManager,
     ThemesManager
-}
+};

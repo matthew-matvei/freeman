@@ -1,11 +1,11 @@
-import * as React from "react";
-import * as PropTypes from "prop-types";
-import { shell } from "electron";
 import autobind from "autobind-decorator";
+import { shell } from "electron";
+import * as PropTypes from "prop-types";
+import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
-import { IDirectoryItemProps } from "props/blocks";
 import { IAppContext } from "models";
+import { IDirectoryItemProps } from "props/blocks";
 import Utils from "Utils";
 
 import "styles/blocks/DirectoryItem.scss";
@@ -16,7 +16,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     /** Validation for context types. */
     public static contextTypes = {
         theme: PropTypes.object
-    }
+    };
 
     /** The global application context. */
     public context: IAppContext;
@@ -71,7 +71,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     @autobind
     private openDirectory() {
         if (this.props.model.isDirectory) {
-            this.props.sendPathUp(this.props.model.path)
+            this.props.sendPathUp(this.props.model.path);
         }
     }
 

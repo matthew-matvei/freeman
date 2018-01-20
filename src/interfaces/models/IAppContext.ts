@@ -8,7 +8,7 @@ interface IAppContext {
     /**
      * The theme object to apply to the application components.
      */
-    theme: ITheme
+    theme: ITheme;
 }
 
 export default IAppContext;

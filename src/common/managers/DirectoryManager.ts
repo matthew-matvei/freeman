@@ -1,17 +1,17 @@
+import { Promise, promisify } from "bluebird";
 import fs from "fs";
+import { inject, injectable } from "inversify";
+import ncp from "ncp";
 import path from "path";
 import trash from "trash";
-import ncp from "ncp";
-import { inject, injectable } from "inversify";
-import { promisify, Promise } from "bluebird";
 
+import DirectoryError from "errors/DirectoryError";
+import TYPES from "ioc/types";
+import { IDirectoryManager, ISettingsManager } from "managers";
 import { IDirectoryItem } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
-import { IDirectoryManager, ISettingsManager } from "managers";
-import DirectoryError from "errors/DirectoryError";
 import Utils from "Utils";
-import TYPES from "ioc/types";
 
 const lstatAsync = promisify(fs.lstat);
 const ncpAsync = promisify(ncp.ncp);
@@ -262,12 +262,12 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Returns whether the file at the given path is a directory.
      *
-     * @param path - the path to the file
+     * @param pathToItem - the path to the file
      *
      * @returns - whether the file is a directory
      */
-    private static async isDirectory(path: string): Promise<boolean> {
-        const stats = await lstatAsync(path);
+    private static async isDirectory(pathToItem: string): Promise<boolean> {
+        const stats = await lstatAsync(pathToItem);
 
         return stats.isDirectory();
     }

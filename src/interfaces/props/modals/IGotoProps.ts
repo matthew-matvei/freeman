@@ -1,4 +1,4 @@
-import { ICloseableProps, IOpenableProps, IDirectoryManageableProps } from "props/common";
+import { ICloseableProps, IDirectoryManageableProps, IOpenableProps } from "props/common";
 
 /** Describes the properties for the Goto component. */
 interface IGotoProps extends ICloseableProps, IOpenableProps, IDirectoryManageableProps {
@@ -7,7 +7,7 @@ interface IGotoProps extends ICloseableProps, IOpenableProps, IDirectoryManageab
     initialPath: string;
 
     /** A callback function for navigating to the given filePath. */
-    navigateTo: (filePath: string) => void;
+    navigateTo(filePath: string): void;
 }
 
 export default IGotoProps;

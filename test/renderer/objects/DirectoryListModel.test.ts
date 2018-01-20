@@ -1,18 +1,17 @@
-import "reflect-metadata";
 import { expect } from "chai";
+import "reflect-metadata";
 
-import { DirectoryListModel } from "objects";
-import { IDirectoryListState } from "states/panels";
-import { IDirectoryListProps } from "props/panels";
-import { DirectoryPaneSide } from "types";
-import { IDirectoryItem, INavigationNode, IStatusNotifier } from "models";
 import { IDirectoryManager } from "managers";
+import { IDirectoryItem, INavigationNode, IStatusNotifier } from "models";
+import { DirectoryListModel } from "objects";
+import { IDirectoryListProps } from "props/panels";
+import { IDirectoryListState } from "states/panels";
+import { IMock, Mock } from "typemoq";
+import { DirectoryPaneSide } from "types";
 
 describe("DirectoryListModel's", () => {
     let directoryListModel: DirectoryListModel;
     let directoryItem1: IDirectoryItem;
-
-    let directoryManager: IDirectoryManager;
 
     before(() => {
         directoryListModel = new DirectoryListModel();
@@ -100,18 +99,22 @@ describe("DirectoryListModel's", () => {
         let prevProps: IDirectoryListProps;
         let nextProps: IDirectoryListProps;
 
+        let directoryManager: IMock<IDirectoryManager>;
+
         const statusNotifier = {} as IStatusNotifier;
 
         beforeEach(() => {
+            directoryManager = Mock.ofType<IDirectoryManager>();
+
             const commonProps: IDirectoryListProps = {
                 id: "left",
                 isSelectedPane: false,
                 path: "/path/to/directory",
                 sendPathUp: (path: string) => { },
                 sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => { },
-                directoryManager,
+                directoryManager: directoryManager.object,
                 statusNotifier
-            }
+            };
 
             prevProps = { ...commonProps };
             nextProps = { ...commonProps };

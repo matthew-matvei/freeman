@@ -9,7 +9,7 @@ class ApplicationCommander {
     public static get commands(): IApplicationCommands {
         return {
             reloadWindow: ApplicationCommander.reloadWindow
-        }
+        };
     }
 
     /** Reloads the window by sending a reload-request to the main process. */

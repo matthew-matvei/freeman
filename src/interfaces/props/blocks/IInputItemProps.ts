@@ -1,5 +1,5 @@
-import { ItemType } from "types";
 import { IDirectoryItem } from "models";
+import { ItemType } from "types";
 
 /**
  * Describes the properties of a directory input item component.
@@ -25,13 +25,13 @@ interface IInputItemProps {
      * Callback function that sends up the item name and type. If no arguments
      * are provided, user has cancelled creating new item.
      */
-    sendUpCreateItem?: (itemName?: string, itemType?: ItemType) => void;
+    sendUpCreateItem?(itemName?: string, itemType?: ItemType): void;
 
     /**
      * Callback function that sends up the item's old and new names. If no arguments
      * are provided, user has cancelled renaming item.
      */
-    sendUpRenameItem?: (oldName?: string, newName?: string) => void;
+    sendUpRenameItem?(oldName?: string, newName?: string): void;
 }
 
 export default IInputItemProps;

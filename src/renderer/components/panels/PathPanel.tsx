@@ -1,8 +1,8 @@
-import * as React from "react";
 import * as PropTypes from "prop-types";
+import * as React from "react";
 
-import { IPathPanelProps } from "props/panels";
 import { IAppContext } from "models";
+import { IPathPanelProps } from "props/panels";
 
 import "styles/panels/PathPanel.scss";
 
@@ -14,7 +14,7 @@ class PathPanel extends React.PureComponent<IPathPanelProps> {
     /** Validation for context types. */
     public static contextTypes = {
         theme: PropTypes.object
-    }
+    };
 
     /** The global application context. */
     public context: IAppContext;

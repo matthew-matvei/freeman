@@ -6,4 +6,4 @@ export {
     CommandPalette,
     Goto,
     QuickSelect
-}
+};

@@ -1,9 +1,9 @@
-import "reflect-metadata";
 import { expect } from "chai";
+import "reflect-metadata";
 import sinon from "sinon";
 
-import { DirectoryTextFinder } from "objects";
 import { IDirectoryItem } from "models";
+import { DirectoryTextFinder } from "objects";
 
 describe("DirectoryTextFinder's", () => {
     let clock: sinon.SinonFakeTimers;
@@ -31,14 +31,14 @@ describe("DirectoryTextFinder's", () => {
             path: "path/to/B item",
             isDirectory: false,
             isHidden: true
-        }
+        };
 
         item3 = {
             name: "BA item",
             path: "path/to/BA item",
             isDirectory: false,
             isHidden: true
-        }
+        };
 
         directoryItems = [item1, item2, item3];
     });
@@ -81,7 +81,8 @@ describe("DirectoryTextFinder's", () => {
 
         it("clears the search term if timeout expired", () => {
             directoryTextFinder.addCharAndSearch("b", directoryItems);
-            clock.tick(510);
+            const excessiveTimeout = 510;
+            clock.tick(excessiveTimeout);
             const result = directoryTextFinder.addCharAndSearch("a", directoryItems);
 
             expect(result).to.equal(0);

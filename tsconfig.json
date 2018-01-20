@@ -1,13 +1,5 @@
 {
     "compilerOptions": {
-        "plugins": [
-            {
-                "name": "tslint-language-service",
-                "ignoreDefinitionFiles": true,
-                "configFile": "./tslint.json",
-                "suppressWhileTypeErrorsPresent": false
-            }
-        ],
         "alwaysStrict": true,
         "baseUrl": ".",
         "paths": {

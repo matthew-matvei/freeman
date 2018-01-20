@@ -1,7 +1,6 @@
-import * as React from "react";
-import path from "path";
-import { KeyboardEvent } from "react";
 import autobind from "autobind-decorator";
+import path from "path";
+import * as React from "react";
 
 import { QuickSelect } from "components/modals";
 import { IGotoProps } from "props/modals";
@@ -23,7 +22,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
             searchTerm: this.props.initialPath,
             currentDirectory: this.props.initialPath,
             directoryItems: []
-        }
+        };
     }
 
     /**
@@ -64,7 +63,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
             onKeyUp={this.handleKeyUp}
             onSelect={this.handleSelect}
             inputValue={this.state.quickSelectValue}
-            onUpdate={this.handleUpdate} />
+            onUpdate={this.handleUpdate} />;
     }
 
     /**
@@ -73,7 +72,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * @param event - a keyboard event fired when a user finishes pressing a key
      */
     @autobind
-    private async handleKeyUp(event: KeyboardEvent<HTMLInputElement>) {
+    private async handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === "up" || event.key === "down") {
             return;
         }

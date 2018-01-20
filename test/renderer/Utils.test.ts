@@ -1,44 +1,44 @@
-import "reflect-metadata";
-import path from "path";
 import { expect } from "chai";
+import path from "path";
+import "reflect-metadata";
 
 import Utils from "Utils";
 
 describe("isAlphanumeric function", () => {
     it("returns true on 'a'", () => {
-        expect(Utils.isAlphanumeric('a')).to.be.true;
+        expect(Utils.isAlphanumeric("a")).to.be.true;
     });
 
     it("returns true on 'A'", () => {
-        expect(Utils.isAlphanumeric('A')).to.be.true;
+        expect(Utils.isAlphanumeric("A")).to.be.true;
     });
 
     it("returns true on 'ab'", () => {
-        expect(Utils.isAlphanumeric('ab')).to.be.true;
+        expect(Utils.isAlphanumeric("ab")).to.be.true;
     });
 
     it("returns true on '1'", () => {
-        expect(Utils.isAlphanumeric('1')).to.be.true;
+        expect(Utils.isAlphanumeric("1")).to.be.true;
     });
 
     it("returns true on '10'", () => {
-        expect(Utils.isAlphanumeric('10')).to.be.true;
+        expect(Utils.isAlphanumeric("10")).to.be.true;
     });
 
     it("returns true on '1a'", () => {
-        expect(Utils.isAlphanumeric('1a')).to.be.true;
+        expect(Utils.isAlphanumeric("1a")).to.be.true;
     });
 
     it("returns true on 'a1'", () => {
-        expect(Utils.isAlphanumeric('a1')).to.be.true;
+        expect(Utils.isAlphanumeric("a1")).to.be.true;
     });
 
     it("returns false on '.'", () => {
-        expect(Utils.isAlphanumeric('.')).to.be.false;
+        expect(Utils.isAlphanumeric(".")).to.be.false;
     });
 
     it("returns false on ' '", () => {
-        expect(Utils.isAlphanumeric(' ')).to.be.false;
+        expect(Utils.isAlphanumeric(" ")).to.be.false;
     });
 });
 
@@ -55,7 +55,7 @@ describe("fuzzySearchItems function", () => {
         item2 = "/path/to/cgb";
         item3 = "/path/to/gst";
         item4 = "/path/to/bgz";
-        item5 = "/path/to/abc" + path.sep; // used for testing system-dependent separator
+        item5 = `/path/to/abc${path.sep}`; // used for testing system-dependent separator
         items = [item1, item2, item3, item4, item5];
     });
 

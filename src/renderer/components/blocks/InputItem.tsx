@@ -1,11 +1,11 @@
-import * as React from "react";
 import autobind from "autobind-decorator";
-import { HotKeys } from "react-hotkeys";
 import log from "electron-log";
+import * as React from "react";
+import { HotKeys } from "react-hotkeys";
 
+import LoggedError from "errors/LoggedError";
 import { IInputItemProps } from "props/blocks";
 import { IInputItemState } from "states/blocks";
-import LoggedError from "errors/LoggedError"
 
 /** The input component to create a new directory item. */
 class InputItem extends React.Component<IInputItemProps, IInputItemState> {
@@ -15,7 +15,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
         moveUp: () => { },
         moveDown: () => { },
         moveBack: () => { }
-    }
+    };
 
     /** A reference to this input element. */
     private input: HTMLInputElement | null;
@@ -30,7 +30,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
 
         this.state = {
             isInvalid: false
-        }
+        };
     }
 
     /** Sets the focus to this item immediately after mounting. */
@@ -51,10 +51,10 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     }
 
     /**
-    * Defines how the input item component is rendered.
-    *
-    * @returns - a JSX element representing the directory view
-    */
+     * Defines how the input item component is rendered.
+     *
+     * @returns - a JSX element representing the directory view
+     */
     public render(): JSX.Element {
         const inputStyle: React.CSSProperties = {
             borderColor: this.state.isInvalid && "red"
@@ -82,6 +82,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
 
         if (!this.validate(this.input.value)) {
             this.setState({ isInvalid: true } as IInputItemState);
+
             return;
         } else {
             this.setState({ isInvalid: false } as IInputItemState);

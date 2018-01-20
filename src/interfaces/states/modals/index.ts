@@ -4,4 +4,4 @@ import IQuickSelectState from "./IQuickSelectState";
 export {
     IGotoState,
     IQuickSelectState
-}
+};

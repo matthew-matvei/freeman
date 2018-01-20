@@ -5,6 +5,6 @@ const TYPES = {
     IKeysManager: Symbol.for("IKeysManager"),
     IThemesManager: Symbol.for("IThemesManager"),
     ITerminalService: Symbol.for("ITerminalService")
-}
+};
 
 export default TYPES;

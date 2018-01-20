@@ -1,5 +1,5 @@
-import { ICloseableProps, IOpenableProps } from "props/common";
 import { IApplicationCommands } from "models";
+import { ICloseableProps, IOpenableProps } from "props/common";
 
 /** Describes the properties for the CommandPalette. */
 interface ICommandPaletteProps extends ICloseableProps, IOpenableProps {

@@ -1,15 +1,15 @@
 import * as http from "http";
-import * as WebSocket from "ws";
+import { inject, injectable } from "inversify";
 import * as pty from "node-pty";
 import { ITerminal } from "node-pty/lib/interfaces";
-import { inject, injectable } from "inversify";
+import * as WebSocket from "ws";
 
-import { ISocketMessage } from "models";
-import { isISocketMessage } from "typeGuards";
-import Utils from "Utils";
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
+import { ISocketMessage } from "models";
 import { ITerminalService } from "services";
+import { isISocketMessage } from "typeGuards";
+import Utils from "Utils";
 
 /** Provides access to a terminal backend as a service. */
 @injectable()
@@ -36,13 +36,15 @@ class TerminalService implements ITerminalService {
         this.settingsManager = settingsManager;
 
         const server = http.createServer();
-        this.socketServer = new WebSocket.Server({ server: server });
+        const port = 8080;
+
+        this.socketServer = new WebSocket.Server({ server });
         this.socketServer.on("connection", (webSocket, request) => {
             Utils.trace("Setting up terminal");
             this.setupTerminal(webSocket, request);
         });
 
-        server.listen(8080, () => {
+        server.listen(port, () => {
             Utils.trace("Server listening on port 8080");
         });
     }
@@ -72,12 +74,14 @@ class TerminalService implements ITerminalService {
      */
     private setupTerminal(webSocket: WebSocket, request: http.IncomingMessage) {
         const { cols, rows } = request.headers;
+        const defaultCols = 80;
+        const defaultRows = 24;
 
         Utils.trace("Spawning pty");
         const terminal = pty.spawn(this.shell, [], {
             name: "xterm-color",
-            cols: parseInt(cols as string) || 80,
-            rows: parseInt(rows as string) || 24,
+            cols: parseInt(cols as string) || defaultCols,
+            rows: parseInt(rows as string) || defaultRows,
             cwd: process.cwd(),
             env: process.env
         });
@@ -112,7 +116,8 @@ class TerminalService implements ITerminalService {
             const socketMessage = parsedMessage as any as ISocketMessage;
             if (socketMessage.messageType === "resize") {
                 Utils.trace("Resizing terminal");
-                return terminal.resize(socketMessage.payload.cols, socketMessage.payload.rows)
+
+                return terminal.resize(socketMessage.payload.cols, socketMessage.payload.rows);
             }
         }
 

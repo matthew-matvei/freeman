@@ -1,8 +1,8 @@
-import "reflect-metadata";
-import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import * as React from "react";
+import "reflect-metadata";
 import sinon, { SinonSpy } from "sinon";
 
 import { InputItem } from "components/blocks";

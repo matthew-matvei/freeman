@@ -1,14 +1,13 @@
-import "reflect-metadata";
-import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import { SinonSpy } from "sinon";
+import * as React from "react";
+import "reflect-metadata";
 
-import applicationTheme from "settings/internal/themes/dark";
 import { PathPanel } from "components/panels";
+import { IAppContext } from "models";
 import { IPathPanelProps } from "props/panels";
-import { IAppContext } from 'models';
+import applicationTheme from "settings/internal/themes/dark";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -17,8 +16,6 @@ describe("<PathPanel />", () => {
     let props: IPathPanelProps;
 
     let component: React.ReactElement<IPathPanelProps>;
-
-    let renderSpy: SinonSpy;
 
     before(() => {
         context = {
@@ -34,12 +31,8 @@ describe("<PathPanel />", () => {
         component = <PathPanel {...props} />;
     });
 
-    afterEach(() => {
-        renderSpy && renderSpy.restore();
-    });
-
     it("contains a <div /> with classname 'PathPanel'", () => {
-        const wrapper = shallow(component, { context: context });
+        const wrapper = shallow(component, { context });
 
         expect(wrapper.findWhere(n => n.hasClass("PathPanel")))
             .to.have.length(1);

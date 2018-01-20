@@ -6,4 +6,4 @@ export {
     ICommandPaletteProps,
     IGotoProps,
     IQuickSelectProps
-}
+};

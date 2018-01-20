@@ -1,15 +1,15 @@
-import "reflect-metadata";
-import * as React from "react";
 import { expect } from "chai";
 import { shell } from "electron";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import * as React from "react";
+import "reflect-metadata";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
-import applicationTheme from "settings/internal/themes/dark";
 import { DirectoryItem } from "components/blocks";
-import { IDirectoryItemProps } from "props/blocks";
 import { IAppContext, IDirectoryItem } from "models";
+import { IDirectoryItemProps } from "props/blocks";
+import applicationTheme from "settings/internal/themes/dark";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -35,7 +35,7 @@ describe("<DirectoryItem />", () => {
             path: "/path/to/",
             isDirectory: false,
             isHidden: false
-        }
+        };
 
         props = {
             model: directoryModel,
@@ -44,7 +44,7 @@ describe("<DirectoryItem />", () => {
             sendPathUp: (path: string) => { },
             sendSelectedItemUp: (selectedItem: IDirectoryItem) => { },
             sendDeletionUp: () => { }
-        }
+        };
 
         sandbox = sinon.createSandbox();
     });

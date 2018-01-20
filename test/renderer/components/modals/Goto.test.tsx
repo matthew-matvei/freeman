@@ -1,17 +1,17 @@
-import "reflect-metadata";
-import * as React from "react";
-import * as PropTypes from "prop-types";
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import * as PropTypes from "prop-types";
+import * as React from "react";
+import "reflect-metadata";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
-import applicationTheme from "settings/internal/themes/dark";
 import { Goto } from "components/modals";
-import { IGotoProps, IQuickSelectProps } from "props/modals";
-import { IGotoState } from "states/modals";
-import { IDirectoryItem, IAppContext } from "models";
 import { IDirectoryManager } from "managers";
+import { IAppContext, IDirectoryItem } from "models";
+import { IGotoProps, IQuickSelectProps } from "props/modals";
+import applicationTheme from "settings/internal/themes/dark";
+import { IGotoState } from "states/modals";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -33,7 +33,7 @@ describe("<Goto />", () => {
 
         context = {
             theme: applicationTheme
-        }
+        };
         item1 = {
             name: "Item 1",
             path: "/path/to/Item 1",
@@ -93,8 +93,9 @@ describe("<Goto />", () => {
         expect(state.directoryItems).to.be.empty;
     });
 
-    it("updates 'items' in state after mounting", () => {
+    it("updates 'items' in state after mounting", async () => {
         const wrapper = shallow(component);
+
         return directoryManager.listDirectory("/path/to")
             .then(() => {
                 const state = wrapper.state() as IGotoState;
@@ -116,9 +117,10 @@ describe("<Goto />", () => {
         expect(quickSelectProps.initialItems[0]).to.equal(state.currentDirectory);
     });
 
-    it("updating 'items' re-renders the component once", () => {
+    it("updating 'items' re-renders the component once", async () => {
         shallow(component);
         renderSpy = sinon.spy(Goto.prototype, "render");
+
         return directoryManager.listDirectory("/path/to")
             .then(() => {
                 expect(renderSpy.callCount).to.equal(1);

@@ -1,13 +1,13 @@
 import fs from "fs";
-import path from "path";
 import { injectable } from "inversify";
+import path from "path";
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
-import applicationSettings from "settings/internal/settings";
-import { ICommonSettings } from "models/settings";
-import Utils from "Utils";
 import { ISettingsManager } from "managers";
+import { ICommonSettings } from "models/settings";
+import applicationSettings from "settings/internal/settings";
+import Utils from "Utils";
 
 /** Manages parsing settings from application settings files. */
 @injectable()
@@ -50,12 +50,14 @@ class SettingsManager implements ISettingsManager {
 
         if (!fs.existsSync(fileName)) {
             Utils.trace(`Cannot parse settings from non-existent file ${fileName}`);
+
             return null;
         }
 
         Utils.trace(`Retrieving user settings from ${fileName}`);
 
         const userSettings = fs.readFileSync(fileName, "utf-8");
+
         return JSON.parse(userSettings);
     }
 }

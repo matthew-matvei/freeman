@@ -1,17 +1,17 @@
-import "reflect-metadata";
-import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import sinon, { SinonSandbox } from "sinon";
 import mockfs from "mock-fs";
+import * as React from "react";
+import "reflect-metadata";
+import sinon, { SinonSandbox } from "sinon";
 import { IMock, It, Mock } from "typemoq";
 
 import { DirectoryList } from "components/panels";
-import { IDirectoryListProps } from "props/panels";
-import { IDirectoryListState } from "states/panels";
 import { IDirectoryManager } from "managers";
 import { IStatusNotifier } from "models";
+import { IDirectoryListProps } from "props/panels";
+import { IDirectoryListState } from "states/panels";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -28,13 +28,13 @@ describe("<DirectoryList />", () => {
 
         mockfs({
             "/path/to": {
-                "fakeFolder": {},
+                fakeFolder: {},
                 "fakeFile.txt": "With fake news"
             }
         });
 
         directoryManager = Mock.ofType<IDirectoryManager>();
-        directoryManager.setup(dm => dm.listDirectory(It.isAnyString())).returns(sandbox.stub().resolves());
+        directoryManager.setup(async dm => dm.listDirectory(It.isAnyString())).returns(sandbox.stub().resolves());
 
         const statusNotifier = {} as IStatusNotifier;
 
@@ -113,9 +113,10 @@ describe("<DirectoryList />", () => {
         expect(state.isGotoOpen).to.be.false;
     });
 
-    it("updates 'directoryItems' after mounting", () => {
+    it("updates 'directoryItems' after mounting", async () => {
         const wrapper = shallow(component);
-        directoryManager.object.listDirectory("/path/to").then(() => {
+
+        return directoryManager.object.listDirectory("/path/to").then(() => {
             const state = wrapper.state() as IDirectoryListState;
 
             expect(state.directoryItems).to.be.empty;

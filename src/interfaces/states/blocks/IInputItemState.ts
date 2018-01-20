@@ -1,11 +1,7 @@
-/**
- * Describes the internal state of the InputItem.
- */
+/** Describes the internal state of the InputItem. */
 interface IInputItemState {
 
-    /**
-     * Whether the input item is invalid, if known.
-     */
+    /** Whether the input item is invalid, if known. */
     isInvalid?: boolean;
 }
 

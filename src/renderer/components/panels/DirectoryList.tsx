@@ -1,22 +1,22 @@
-import * as React from "react";
-import * as PropTypes from "prop-types";
-import fs from "fs";
-import path from "path";
-import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
-import { List } from "immutable";
 import { remote } from "electron";
+import fs from "fs";
+import { List } from "immutable";
+import path from "path";
+import * as PropTypes from "prop-types";
+import * as React from "react";
+import { HotKeys } from "react-hotkeys";
 const dialog = remote.dialog;
 
 import { DirectoryItem, InputItem } from "components/blocks";
-import { IDirectoryItem, IAppContext } from "models";
-import { DirectoryListModel } from "objects";
-import { IDirectoryListState } from "states/panels";
-import { DirectoryDirection, ItemType, ClipboardAction, ScrollToDirection } from "types";
-import { IDirectoryListProps } from "props/panels";
 import { Goto } from "components/modals";
 import DirectoryError from "errors/DirectoryError";
 import LoggedError from "errors/LoggedError";
+import { IAppContext, IDirectoryItem } from "models";
+import { DirectoryListModel } from "objects";
+import { IDirectoryListProps } from "props/panels";
+import { IDirectoryListState } from "states/panels";
+import { ClipboardAction, DirectoryDirection, ItemType, ScrollToDirection } from "types";
 import Utils from "Utils";
 
 /** The component for displaying a directory's list of items. */
@@ -25,7 +25,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /** Validation for context types. */
     public static contextTypes = {
         scrollArea: PropTypes.object
-    }
+    };
 
     /** Context available within a ScrollArea. */
     public context: { scrollArea: any };
@@ -48,7 +48,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         openGoto: this.openGoto,
         scrollToTop: () => this.scrollTo("top"),
         scrollToBottom: () => this.scrollTo("bottom")
-    }
+    };
 
     /** The internal model of this DirectoryList. */
     private model: DirectoryListModel;
@@ -93,27 +93,27 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             itemDeleted: false,
             isGotoOpen: false,
             isFocused: this.props.isSelectedPane
-        }
+        };
 
         this.model = new DirectoryListModel();
     }
 
     /** Updates the directory contents after loading the component. */
     public async componentDidMount() {
-        const { path, directoryManager } = this.props;
+        const { directoryManager } = this.props;
 
         try {
-            this.watcher = fs.watch(path, async (eventType, filename) => {
+            this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
                 this.setState(
                     {
-                        directoryItems: await directoryManager.listDirectory(path)
+                        directoryItems: await directoryManager.listDirectory(this.props.path)
                     } as IDirectoryListState);
             });
         } catch {
-            throw new DirectoryError("Could not set watcher", path);
+            throw new DirectoryError("Could not set watcher", this.props.path);
         }
 
-        const items = await directoryManager.listDirectory(path);
+        const items = await directoryManager.listDirectory(this.props.path);
 
         this.setState({ directoryItems: items } as IDirectoryListState);
     }
@@ -172,7 +172,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         const cachedNavigation = this.model.popCachedNavigation(this.props.path);
 
         if (cachedNavigation) {
-            const remainingChosenItems = this.state.chosenItems.filter(item => cachedNavigation.directoryItems.includes(item));
+            const remainingChosenItems = this.state.chosenItems
+                .filter(item => cachedNavigation.directoryItems.includes(item));
             this.setState(
                 {
                     directoryItems: cachedNavigation.directoryItems,
@@ -184,7 +185,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
             this.setState(
                 {
-                    directoryItems: directoryItems,
+                    directoryItems,
                     chosenItems: remainingChosenItems
                 } as IDirectoryListState);
         }
@@ -210,12 +211,14 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     public render(): JSX.Element {
         const items = this.nonHiddenDirectoryItems
-            .map((item, i) => {
-                const isSelectedItem = this.props.isSelectedPane && !this.state.creatingNewItem && this.state.selectedIndex === i;
+            .map((item, index) => {
+                const isSelectedItem = this.props.isSelectedPane &&
+                    !this.state.creatingNewItem && this.state.selectedIndex === index;
 
                 if (this.state.renamingItem && isSelectedItem) {
                     const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
                     const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
+
                     return <InputItem
                         thisItem={thisItem}
                         otherItems={otherItems}
@@ -238,7 +241,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     handlers={this.handlers}
                     ref={component => {
                         this.keysTrapper = component;
-                        this.keysTrapper && items.length === 0 && Utils.autoFocus(this.keysTrapper)
+                        this.keysTrapper && items.length === 0 && Utils.autoFocus(this.keysTrapper);
                     }}
                     onFocus={this.setFocused}
                     onBlur={this.setUnFocused}>
@@ -335,10 +338,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Updates the path held in the directory pane's state
      *
-     * @param path - the path to update to
+     * @param pathToDirectory - the path to update to
      */
     @autobind
-    private goIn(path: string) {
+    private goIn(pathToDirectory: string) {
         this.context.scrollArea.scrollTop();
 
         this.model.cacheNavigation({
@@ -348,7 +351,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         });
 
         this.setState({ selectedIndex: 0 } as IDirectoryListState);
-        this.props.sendPathUp(path);
+        this.props.sendPathUp(pathToDirectory);
     }
 
     /**
@@ -414,7 +417,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async pasteFromClipboard() {
-        const { path, directoryManager } = this.props;
+        const { directoryManager } = this.props;
         const { clipboardAction, clipboardItems } = this.model;
 
         if (clipboardAction === "copy") {
@@ -422,12 +425,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                 throw new LoggedError("Clipboard items is undefined");
             }
 
-            Utils.trace(`Requesting to copy ${clipboardItems.map(item => item.path).join(", ")} to ${path}`);
-            await directoryManager.copyItems(clipboardItems, path);
+            Utils.trace(`Requesting to copy ${clipboardItems.map(item => item.path).join(", ")} to ${this.props.path}`);
+            await directoryManager.copyItems(clipboardItems, this.props.path);
 
             this.setState(
                 {
-                    directoryItems: await directoryManager.listDirectory(path)
+                    directoryItems: await directoryManager.listDirectory(this.props.path)
                 } as IDirectoryListState);
 
             this.props.statusNotifier.notify("Copied items");
@@ -437,11 +440,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             }
 
             Utils.trace(`Requesting to move ${clipboardItems.map(item => item.path).join(", ")} to ${path}`);
-            await directoryManager.moveItems(clipboardItems, path);
+            await directoryManager.moveItems(clipboardItems, this.props.path);
 
             this.setState(
                 {
-                    directoryItems: await directoryManager.listDirectory(path)
+                    directoryItems: await directoryManager.listDirectory(this.props.path)
                 } as IDirectoryListState);
 
             this.props.statusNotifier.notify("Cut items");
@@ -463,7 +466,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private async renameItem(oldName?: string, newName?: string) {
         if (oldName && newName) {
-            Utils.trace(`Requesting to rename item from ${oldName} to ${newName}`)
+            Utils.trace(`Requesting to rename item from ${oldName} to ${newName}`);
             await this.props.directoryManager.renameItem(oldName, newName, this.props.path);
 
             this.setState({ renamingItem: false } as IDirectoryListState);
@@ -564,10 +567,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             this.setState((currentState) => (
                 {
                     chosenItems: currentState.chosenItems.filter(item => item.name !== selectedItem.name)
-                } as IDirectoryListState))
+                } as IDirectoryListState));
         } else {
             const chosenItems = List(this.state.chosenItems).withMutations(list => list.push(selectedItem));
-            this.setState((currentState) => ({ chosenItems: chosenItems.toArray() } as IDirectoryListState))
+            this.setState((currentState) => ({ chosenItems: chosenItems.toArray() } as IDirectoryListState));
         }
     }
 
@@ -603,7 +606,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             defaultId: cancelIndex,
             cancelId: cancelIndex,
             title: "Confirm deletion",
-            message: message
+            message
         });
 
         return confirmation === confirmIndex;

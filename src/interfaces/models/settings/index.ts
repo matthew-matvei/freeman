@@ -8,4 +8,4 @@ export {
     ISystemDependentSettings,
     IUnixSettings,
     IWindowsSettings
-}
+};

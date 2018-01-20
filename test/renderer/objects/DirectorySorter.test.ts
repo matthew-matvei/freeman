@@ -1,5 +1,5 @@
-import "reflect-metadata";
 import { expect } from "chai";
+import "reflect-metadata";
 
 import { IDirectoryItem } from "models";
 import { DirectorySorter } from "objects";
@@ -130,5 +130,5 @@ describe("DirectorySorter's", () => {
 
             expect(actual).to.deep.equal(expected);
         });
-    })
+    });
 });

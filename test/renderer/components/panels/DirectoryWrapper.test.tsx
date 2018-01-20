@@ -1,15 +1,16 @@
-import "reflect-metadata";
-import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import * as React from "react";
+import "reflect-metadata";
 import sinon, { SinonSpy } from "sinon";
+import { IMock, Mock } from "typemoq";
 
-import applicationTheme from "settings/internal/themes/dark";
 import { DirectoryWrapper } from "components/panels";
-import { IDirectoryWrapperProps } from "props/panels";
-import { IAppContext, IStatusNotifier } from "models";
 import { IDirectoryManager } from "managers";
+import { IAppContext, IStatusNotifier } from "models";
+import { IDirectoryWrapperProps } from "props/panels";
+import applicationTheme from "settings/internal/themes/dark";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -19,21 +20,23 @@ describe("<DirectoryWrapper />", () => {
     let component: React.ReactElement<IDirectoryWrapperProps>;
     let renderSpy: SinonSpy;
 
-    let directoryManager: IDirectoryManager;
+    let directoryManager: IMock<IDirectoryManager>;
 
     before(() => {
         context = {
             theme: applicationTheme
-        }
+        };
 
         const statusNotifier = {} as IStatusNotifier;
+
+        directoryManager = Mock.ofType<IDirectoryManager>();
 
         props = {
             id: "left",
             initialPath: "path/to/initial",
             isSelectedPane: true,
             sendSelectedPaneUp: () => { },
-            directoryManager,
+            directoryManager: directoryManager.object,
             statusNotifier
         };
     });

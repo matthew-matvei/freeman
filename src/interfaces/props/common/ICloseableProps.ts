@@ -2,7 +2,7 @@
 interface ICloseableProps {
 
     /** Callback function invoked on closing the component. */
-    onClose: () => void;
+    onClose(): void;
 }
 
 export default ICloseableProps;

@@ -4,4 +4,4 @@ import TerminalService from "./TerminalService";
 export {
     ITerminalService,
     TerminalService
-}
+};

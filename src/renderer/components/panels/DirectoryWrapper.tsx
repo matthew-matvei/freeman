@@ -1,13 +1,13 @@
-import * as React from "react";
-import * as PropTypes from "prop-types";
 import autobind from "autobind-decorator";
+import * as PropTypes from "prop-types";
+import * as React from "react";
 import ScrollArea from "react-scrollbar";
 import SplitPane from "react-split-pane";
 
 import { DirectoryList, PathPanel, TerminalPane } from "components/panels";
 import { IAppContext } from "models";
-import { IDirectoryWrapperState } from "states/panels";
 import { IDirectoryWrapperProps } from "props/panels";
+import { IDirectoryWrapperState } from "states/panels";
 
 import "styles/panels/DirectoryWrapper.scss";
 
@@ -19,7 +19,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /** Validation for context types. */
     public static contextTypes = {
         theme: PropTypes.object
-    }
+    };
 
     /** The global application context. */
     public context: IAppContext;
@@ -43,6 +43,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public render(): JSX.Element {
         const scrollAreaVertContainerStyle = { width: "20px" };
         const scrollAreaVertBarStyle = { width: "100%" };
+
         return <div className="DirectoryWrapper">
             <PathPanel path={this.state.path} />
             <div className="splitPaneWrapper">
@@ -82,7 +83,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
      */
     @autobind
     private updatePath(path: string) {
-        this.setState({ path: path } as IDirectoryWrapperState);
+        this.setState({ path } as IDirectoryWrapperState);
     }
 }
 

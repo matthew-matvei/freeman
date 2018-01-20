@@ -9,7 +9,7 @@ interface ISocketMessage {
     /** The payload of the message, dependent on the messageType. */
     payload: {
         [key: string]: number
-    }
+    };
 }
 
 export default ISocketMessage;

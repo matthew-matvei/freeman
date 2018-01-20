@@ -2,7 +2,7 @@
 interface ITerminalService {
 
     /** Closes the underlying websocket server. */
-    close: () => void;
+    close(): void;
 }
 
 export default ITerminalService;

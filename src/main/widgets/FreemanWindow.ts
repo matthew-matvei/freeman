@@ -1,6 +1,6 @@
 import { BrowserWindow, dialog } from "electron";
-import path from "path";
 import log from "electron-log";
+import path from "path";
 
 import Utils from "Utils";
 
@@ -43,7 +43,7 @@ class FreemanWindow extends BrowserWindow {
 
         this.once("ready-to-show", () => {
             Utils.trace("Displaying main window");
-            this.show()
+            this.show();
         });
     }
 }

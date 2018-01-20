@@ -10,4 +10,4 @@ export {
     PathPanel,
     Status,
     TerminalPane
-}
+};

@@ -1,8 +1,8 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import Modal from "react-modal";
 import autobind from "autobind-decorator";
-import { HotKeys } from 'react-hotkeys';
+import PropTypes from "prop-types";
+import * as React from "react";
+import { HotKeys } from "react-hotkeys";
+import Modal from "react-modal";
 
 import { IAppContext, IKeyMap } from "models";
 import { IQuickSelectProps } from "props/modals";
@@ -19,7 +19,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     /** Validation for context types. */
     public static contextTypes = {
         theme: PropTypes.object
-    }
+    };
 
     /** The global application context. */
     public context: IAppContext;
@@ -31,7 +31,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         nextItem: ["down"],
         selectItem: ["enter"],
         complete: ["tab"]
-    }
+    };
 
     /** Handler functions for the given events this component handles. */
     private handlers = {
@@ -40,7 +40,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         nextItem: this.selectNextItem,
         selectItem: this.handleSelectItem,
         complete: this.completeInput
-    }
+    };
 
     /** Styles for the Modal component this QuickSelect utilises. */
     private styles = {
@@ -59,7 +59,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
             left: "25%",
             color: this.context.theme.quickSelect.colour || "inherit"
         }
-    }
+    };
 
     /** The input field for the QuickSelect. */
     private input: HTMLInputElement | null;
@@ -75,7 +75,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
 
         this.state = {
             selectedIndex: 0
-        }
+        };
     }
 
     /**
@@ -89,7 +89,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         const items = this.props.initialItems.map((item, i) => {
             return this.state.selectedIndex === i ?
                 <li key={item} style={{ backgroundColor: selectedColour }}>{item}</li>
-                : <li key={item} style={{ backgroundColor: backgroundColour }}>{item}</li>
+                : <li key={item} style={{ backgroundColor: backgroundColour }}>{item}</li>;
         });
 
         return <Modal

@@ -1,11 +1,7 @@
-/**
- * Describes the properties of a path panel component.
- */
+/** Describes the properties of a path panel component. */
 interface IPathPanelProps {
 
-    /**
-     * The path to display.
-     */
+    /** The path to display. */
     path: string;
 }
 

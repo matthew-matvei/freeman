@@ -8,4 +8,4 @@ export {
     DirectoryListModel,
     DirectorySorter,
     DirectoryTextFinder,
-}
+};

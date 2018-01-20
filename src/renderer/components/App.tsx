@@ -1,16 +1,16 @@
-import * as React from "react";
-import * as PropTypes from "prop-types";
-import os from "os";
-import SplitPane from "react-split-pane";
-import { HotKeys } from "react-hotkeys";
 import autobind from "autobind-decorator";
+import os from "os";
+import * as PropTypes from "prop-types";
+import * as React from "react";
+import { HotKeys } from "react-hotkeys";
+import SplitPane from "react-split-pane";
 
-import { DirectoryWrapper, Status } from "components/panels";
 import { CommandPalette } from "components/modals";
-import { IAppProps } from "props";
-import { IAppState } from "states";
+import { DirectoryWrapper, Status } from "components/panels";
 import { IAppContext, IStatusNotifier } from "models";
 import { ApplicationCommander } from "objects";
+import { IAppProps } from "props";
+import { IAppState } from "states";
 import { DirectoryPaneSide, StatusUpdate } from "types";
 
 import "styles/App.scss";
@@ -21,13 +21,13 @@ class App extends React.Component<IAppProps, IAppState> {
     /** Validation for child context types. */
     public static childContextTypes = {
         theme: PropTypes.object
-    }
+    };
 
     /** Handler functions for the given events this component handles. */
     private handlers = {
         switchPane: this.switchPane,
         openCommandPalette: this.openCommandPalette
-    }
+    };
 
     /** Notifies the status component of current application state. */
     private statusNotifier: IStatusNotifier;
@@ -49,7 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
             notify: (payload: string) => this.updateStatus("notification", payload),
             setItemCount: (payload: number) => this.updateStatus("itemCount", payload),
             setChosenCount: (payload: number) => this.updateStatus("chosenCount", payload)
-        }
+        };
 
         this.state = {
             selectedPane: "left",
@@ -59,7 +59,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 itemCount: 0,
                 chosenCount: 0
             }
-        }
+        };
     }
 
     /** Returns the child context to pass down the component tree. */
@@ -128,6 +128,7 @@ class App extends React.Component<IAppProps, IAppState> {
     @autobind
     private updateStatus(updateType: StatusUpdate, payload: string | number) {
         const status = this.state.status;
+        const statusTimeout = 2000;
 
         if (updateType === "itemCount") {
             status.itemCount = payload as number;
@@ -139,7 +140,7 @@ class App extends React.Component<IAppProps, IAppState> {
             this.statusMessageTimeout = setTimeout(() => {
                 status.message = "";
                 this.setState({ status } as IAppState);
-            }, 2000);
+            }, statusTimeout);
         }
 
         this.setState({ status } as IAppState);
@@ -153,7 +154,7 @@ class App extends React.Component<IAppProps, IAppState> {
         if (selectedPane === "left") {
             this.setState({ selectedPane: "right" } as IAppState);
         } else {
-            this.setState({ selectedPane: "left" } as IAppState)
+            this.setState({ selectedPane: "left" } as IAppState);
         }
     }
 

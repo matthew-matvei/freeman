@@ -10,7 +10,7 @@ interface IDirectoryCommonProps {
     isSelectedPane: boolean;
 
     /** Callback function to send selected pane up to parent. */
-    sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => void;
+    sendSelectedPaneUp(paneToSelect: DirectoryPaneSide): void;
 }
 
 export default IDirectoryCommonProps;

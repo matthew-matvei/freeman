@@ -1,13 +1,13 @@
-import "reflect-metadata";
 import { app, dialog, ipcMain, Menu } from "electron";
+import "reflect-metadata";
 require("electron-debug")({ enabled: true });
 
-import { ITerminalService } from "services";
-import { FreemanWindow } from "widgets";
-import Utils from "Utils";
 import container from "ioc/container";
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
+import { ITerminalService } from "services";
+import Utils from "Utils";
+import { FreemanWindow } from "widgets";
 
 let mainWindow: FreemanWindow | null = null;
 
@@ -18,14 +18,14 @@ if (process.argv.includes("--verbose")) {
 
 const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
 const terminalService = container.get<ITerminalService>(TYPES.ITerminalService);
-buildWindow(mainWindow);
+buildWindow();
 
 /** Handles constructing the main window. */
-function buildWindow(window: FreemanWindow | null) {
+function buildWindow() {
     app.on("activate", () => {
-        if (window === null) {
+        if (mainWindow === null) {
             Utils.trace("Building window");
-            buildWindow(window);
+            buildWindow();
         }
     });
 
@@ -47,22 +47,22 @@ function buildWindow(window: FreemanWindow | null) {
             backgroundColor: "#272822",
         };
 
-        window = new FreemanWindow(windowOptions);
-        settingsManager.settings.fullscreen && window.maximize();
+        mainWindow = new FreemanWindow(windowOptions);
+        settingsManager.settings.fullscreen && mainWindow.maximize();
         const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
         Menu.setApplicationMenu(menu);
 
-        window.on("closed", () => {
+        mainWindow.on("closed", () => {
             terminalService.close();
             Utils.trace("Main window closing");
-            window = null;
+            mainWindow = null;
         });
 
-        window.on("unresponsive", () => {
+        mainWindow.on("unresponsive", () => {
             Utils.trace("Main window unresponsive");
             const killIndex = 0;
             const cancelIndex = 1;
-            const kill = dialog.showMessageBox(window!, {
+            const kill = dialog.showMessageBox(mainWindow!, {
                 type: "warning",
                 buttons: ["OK", "Wait"],
                 defaultId: killIndex,
@@ -77,7 +77,7 @@ function buildWindow(window: FreemanWindow | null) {
         });
 
         ipcMain.on("reload-request", () => {
-            window && window.reload();
+            mainWindow && mainWindow.reload();
         });
     });
 }

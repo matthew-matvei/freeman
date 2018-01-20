@@ -1,4 +1,4 @@
-import { IWindowsSettings, IUnixSettings } from "models/settings";
+import { IUnixSettings, IWindowsSettings } from "models/settings";
 
 /** Describes settings for the application. */
 interface ICommonSettings {

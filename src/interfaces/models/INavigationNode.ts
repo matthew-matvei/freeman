@@ -1,8 +1,6 @@
 import { IDirectoryItem } from "models";
 
-/**
- * A single node in a navigation stack data structure.
- */
+/** A single node in a navigation stack data structure. */
 interface INavigationNode {
 
     /** The path to the directory the navigation node refers to. */

@@ -1,15 +1,16 @@
-import * as ReactDOM from "react-dom";
+import log from "electron-log";
+import fuzzysearch from "fuzzysearch";
 import os from "os";
 import path from "path";
-import log from "electron-log";
+import * as ReactDOM from "react-dom";
 import { HotKeys } from "react-hotkeys";
-import fuzzysearch from "fuzzysearch";
 import winattr, { Attributes } from "winattr";
 
+import DirectoryError from "errors/DirectoryError";
 import { IDirectoryItem } from "models";
 import { ItemType } from "types";
-import DirectoryError from "errors/DirectoryError";
 
+/** Provides several static helper functions. */
 class Utils {
 
     /**
@@ -30,6 +31,7 @@ class Utils {
      */
     public static isAlphanumeric = (letters: string): boolean => {
         const regex = new RegExp(/[a-z0-9]/, "i");
+
         return regex.test(letters);
     }
 
@@ -51,7 +53,7 @@ class Utils {
             const itemSuffix = path.basename(item.toLocaleLowerCase());
 
             return fuzzysearch(searchTermSuffix, itemSuffix);
-        })
+        });
     }
 
     /**
@@ -115,6 +117,7 @@ class Utils {
 
             try {
                 const attributes = await Utils.getAsync(pathToItem);
+
                 return attributes.hidden;
             } catch {
                 throw new DirectoryError("Could not determine attributes", pathToItem);
@@ -131,9 +134,9 @@ class Utils {
      *
      * @param path - the path to a file or folder
      */
-    public static getAsync = (path: string): Promise<Attributes> => {
+    public static getAsync = async (pathToItem: string): Promise<Attributes> => {
         return new Promise<Attributes>((resolve, reject) => {
-            winattr.get(path, (err, attrs) => {
+            winattr.get(pathToItem, (err, attrs) => {
                 err && reject(err);
 
                 resolve(attrs);

@@ -7,7 +7,10 @@
         ],
         "arrow-parens": false,
         "arrow-return-shorthand": true,
-        "await-promise": true,
+        "await-promise": [
+            true,
+            "Bluebird"
+        ],
         "class-name": true,
         "comment-format": [
             true,
@@ -70,13 +73,19 @@
         "no-duplicate-variable": true,
         "no-eval": true,
         "no-floating-promises": true,
-        "no-import-side-effect": true,
         "no-inferrable-types": true,
         "no-inferred-empty-object-type": true,
         "no-invalid-template-strings": true,
         "no-irregular-whitespace": true,
         "no-invalid-this": true,
-        "no-magic-numbers": true,
+        "no-magic-numbers": [
+            true,
+            -1,
+            0,
+            1,
+            2,
+            3
+        ],
         "no-misused-new": true,
         "no-parameter-reassignment": true,
         "no-shadowed-variable": true,
@@ -86,16 +95,12 @@
         "no-switch-case-fall-through": true,
         "no-this-assignment": true,
         "no-trailing-whitespace": true,
-        "no-unbound-method": true,
         "no-unnecessary-callback-wrapper": true,
         "no-unnecessary-initializer": true,
-        "no-unsafe-any": true,
         "no-unsafe-finally": true,
-        "no-unused-expression": true,
         "no-unused-variable": true,
         "no-use-before-declare": false,
         "no-var-keyword": true,
-        "no-var-requires": true,
         "number-literal-format": true,
         "object-literal-key-quotes": [
             true,
@@ -103,7 +108,6 @@
         ],
         "object-literal-shorthand": true,
         "one-line": true,
-        "no-void-expression": true,
         "only-arrow-functions": [
             true,
             "allow-declarations"
@@ -136,10 +140,6 @@
         "typeof-compare": true,
         "unified-signatures": true,
         "use-isnan": true,
-        "variable-name": [
-            true,
-            "allow-pascal-case"
-        ],
         "whitespace": true
     }
 }

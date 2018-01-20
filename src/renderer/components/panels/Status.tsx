@@ -1,8 +1,8 @@
-import * as React from "react";
 import * as PropTypes from "prop-types";
+import * as React from "react";
 
-import { IStatusProps } from "props/panels";
 import { IAppContext } from "models";
+import { IStatusProps } from "props/panels";
 
 import "styles/panels/Status.scss";
 
@@ -12,7 +12,7 @@ class Status extends React.PureComponent<IStatusProps> {
     /** Validation for context types. */
     public static contextTypes = {
         theme: PropTypes.object
-    }
+    };
 
     /** The global application context. */
     public context: IAppContext;

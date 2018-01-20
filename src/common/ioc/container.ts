@@ -5,9 +5,9 @@ import {
     DirectoryManager,
     IDirectoryManager,
     IKeysManager,
-    KeysManager,
     ISettingsManager,
     IThemesManager,
+    KeysManager,
     SettingsManager,
     ThemesManager
 } from "managers";

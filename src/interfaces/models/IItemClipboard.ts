@@ -1,5 +1,5 @@
-import { ClipboardAction } from "types";
 import { IDirectoryItem } from "models";
+import { ClipboardAction } from "types";
 
 /** Describes an internal clipboard object. */
 interface IItemClipboard {

@@ -8,7 +8,7 @@ interface IDirectoryListProps
     path: string;
 
     /** Callback function that handles sending the path up to the parent. */
-    sendPathUp: (path: string) => void;
+    sendPathUp(path: string): void;
 }
 
 export default IDirectoryListProps;

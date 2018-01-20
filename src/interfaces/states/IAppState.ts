@@ -1,5 +1,5 @@
-import { DirectoryPaneSide } from "types";
 import { IStatus } from "models";
+import { DirectoryPaneSide } from "types";
 
 /** Describes the internal state of the App. */
 interface IAppState {

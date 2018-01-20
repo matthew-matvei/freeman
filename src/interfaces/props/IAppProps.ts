@@ -1,8 +1,8 @@
 import {
+    IDirectoryManager,
     IKeysManager,
     ISettingsManager,
-    IThemesManager,
-    IDirectoryManager
+    IThemesManager
 } from "managers";
 
 /** Describes properties for the App component. */

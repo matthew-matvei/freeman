@@ -1,12 +1,11 @@
-import "reflect-metadata";
+import { remote } from "electron";
+import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
+import log from "electron-log";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { remote } from "electron";
-import log from "electron-log";
-import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
+import "reflect-metadata";
 
 import { App } from "components";
-import Utils from "Utils";
 import container from "ioc/container";
 import TYPES from "ioc/types";
 import {
@@ -15,6 +14,7 @@ import {
     ISettingsManager,
     IThemesManager
 } from "managers";
+import Utils from "Utils";
 
 import "styles/main.scss";
 

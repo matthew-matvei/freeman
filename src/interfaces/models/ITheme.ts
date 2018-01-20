@@ -1,6 +1,4 @@
-/**
- * Describes colour themes for the application.
- */
+/** Describes colour themes for the application. */
 interface ITheme {
 
     /** The primary foreground colour. */
@@ -19,7 +17,7 @@ interface ITheme {
     pathPanel: {
         /** The background colour of the path panel. */
         backgroundColour: string;
-    }
+    };
 
     /** The colours of the DirectoryItem component. */
     directoryItem: {
@@ -33,7 +31,7 @@ interface ITheme {
         backgroundColour: string;
         /** The background colour of the selected directory item. */
         selectedColour: string;
-    }
+    };
 
     /** The colours of the QuickSelect component. */
     quickSelect: {
@@ -43,7 +41,7 @@ interface ITheme {
         backgroundColour: string;
         /** The background colour of the selected item in the QuickSelect component. */
         selectedColour: string;
-    }
+    };
 }
 
 export default ITheme;

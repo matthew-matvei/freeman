@@ -1,16 +1,16 @@
-import "reflect-metadata";
-import fs from "fs";
-import path from "path";
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
+import fs from "fs";
 import mockfs from "mock-fs";
+import path from "path";
+import "reflect-metadata";
 import sinon, { SinonSandbox } from "sinon";
 import { Mock } from "typemoq";
 
-import { DirectoryManager, IDirectoryManager, ISettingsManager } from "managers";
 import DirectoryError from "errors/DirectoryError";
-import Utils from "Utils";
+import { DirectoryManager, IDirectoryManager, ISettingsManager } from "managers";
 import { IDirectoryItem } from "models";
+import Utils from "Utils";
 
 chai.use(chaiAsPromised);
 
@@ -53,9 +53,9 @@ describe("directoryManager's", () => {
     beforeEach(() => {
         mockfs({
             "/path/to/fake/dir": {
-                "fakeFolder": {},
-                "fakeFolder2": {},
-                "anotherFakeFolder": {},
+                fakeFolder: {},
+                fakeFolder2: {},
+                anotherFakeFolder: {},
                 "fakeFile.txt": "With fake news",
                 "fakeFile2.txt": "And fake media"
             }
@@ -134,7 +134,7 @@ describe("directoryManager's", () => {
     });
 
     describe("createItem method", () => {
-        it("can create a file with given name at given path", () => {
+        it("can create a file with given name at given path", async () => {
             return directoryManager.createItem(newFileName, fakeDirPath, "file").then(resolved => {
                 const newFile = fs.lstatSync(path.resolve(fakeDirPath, newFileName));
 
@@ -142,7 +142,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("can create a folder with given name at given path", () => {
+        it("can create a folder with given name at given path", async () => {
             return directoryManager.createItem(newFolderName, fakeDirPath, "folder").then(resolved => {
                 const newFolder = fs.lstatSync(path.resolve(fakeDirPath, newFolderName));
 
@@ -157,8 +157,9 @@ describe("directoryManager's", () => {
     });
 
     describe("renameItem method", () => {
-        it("can rename a file", () => {
+        it("can rename a file", async () => {
             const newName = "renamedFakeFile.txt";
+
             return directoryManager.renameItem(fakeFile, newName, fakeDirPath).then(resolved => {
                 const renamedFile = fs.lstatSync(path.join(fakeDirPath, newName));
 
@@ -166,7 +167,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("can rename a folder", () => {
+        it("can rename a folder", async () => {
             const newName = "renamedFakeFolder";
 
             return directoryManager.renameItem(fakeFolder, newName, fakeDirPath).then(resolved => {
@@ -176,7 +177,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("handles renaming to same name", () => {
+        it("handles renaming to same name", async () => {
             return directoryManager.renameItem(fakeFile, fakeFile, fakeDirPath)
                 .then(() => {
                     const oldNamedFile = fs.lstatSync(path.join(fakeDirPath, fakeFile));
@@ -197,7 +198,7 @@ describe("directoryManager's", () => {
             expect(directoryManager.deleteItems([])).to.not.eventually.be.rejected;
         });
 
-        it("can delete a file", () => {
+        it("can delete a file", async () => {
             return directoryManager.deleteItems([testFile]).then(() => {
                 try {
                     fs.accessSync(testFile.path);
@@ -207,7 +208,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("can delete a folder", () => {
+        it("can delete a folder", async () => {
             return directoryManager.deleteItems([testFolder]).then(() => {
                 try {
                     fs.accessSync(testFolder.path);
@@ -217,7 +218,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("deletes multiple files", () => {
+        it("deletes multiple files", async () => {
             return directoryManager.deleteItems([testFile, testFile2]).then(() => {
                 try {
                     fs.accessSync(testFile.path);
@@ -228,7 +229,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("deletes multiple folders", () => {
+        it("deletes multiple folders", async () => {
             return directoryManager.deleteItems([testFolder, testFolder2]).then(() => {
                 try {
                     fs.accessSync(testFolder.path);
@@ -239,7 +240,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("deletes a mix of files and folders", () => {
+        it("deletes a mix of files and folders", async () => {
             return directoryManager.deleteItems([testFile, testFile2]).then(() => {
                 try {
                     fs.accessSync(testFile.path);
@@ -275,7 +276,7 @@ describe("directoryManager's", () => {
             expect(directoryManager.moveItems([], destinationFolder)).to.not.eventually.be.rejected;
         });
 
-        it("moves a file to the given destination", () => {
+        it("moves a file to the given destination", async () => {
             return directoryManager.moveItems([testFile], destinationFolder).then(() => {
                 try {
                     fs.accessSync(testFile.path);
@@ -293,8 +294,9 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("moves a directory to the given destination", () => {
+        it("moves a directory to the given destination", async () => {
             destinationFolder = path.join(fakeDirPath, "anotherFakeFolder");
+
             return directoryManager.moveItems([testFolder], destinationFolder).then(() => {
                 try {
                     fs.accessSync(testFolder.path);
@@ -312,7 +314,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("handles moving to the same directory", () => {
+        it("handles moving to the same directory", async () => {
             return directoryManager.moveItems([testFile], fakeDirPath).then(() => {
                 try {
                     fs.accessSync(testFile.path);
@@ -330,7 +332,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("moves multiple files", () => {
+        it("moves multiple files", async () => {
             return directoryManager.moveItems([testFile, testFile2], fakeDirPath).then(() => {
                 try {
                     fs.accessSync(testFile.path);
@@ -341,7 +343,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("moves multiple folders", () => {
+        it("moves multiple folders", async () => {
             return directoryManager.moveItems([testFolder, testFolder2], fakeDirPath).then(() => {
                 try {
                     fs.accessSync(testFolder.path);
@@ -352,7 +354,7 @@ describe("directoryManager's", () => {
             });
         });
 
-        it("moves a mix of files and folders", () => {
+        it("moves a mix of files and folders", async () => {
             return directoryManager.moveItems([testFile, testFolder2], fakeDirPath).then(() => {
                 try {
                     fs.accessSync(testFile.path);

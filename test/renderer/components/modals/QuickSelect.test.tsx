@@ -1,15 +1,15 @@
-import "reflect-metadata";
-import * as React from "react";
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import * as React from "react";
+import "reflect-metadata";
 import sinon, { SinonSpy } from "sinon";
 
-import applicationTheme from "settings/internal/themes/dark";
-import { IQuickSelectProps } from "props/modals";
-import { IQuickSelectState } from "states/modals";
+import { QuickSelect } from "components/modals";
 import { IAppContext } from "models";
-import { QuickSelect } from 'components/modals';
+import { IQuickSelectProps } from "props/modals";
+import applicationTheme from "settings/internal/themes/dark";
+import { IQuickSelectState } from "states/modals";
 
 Enzyme.configure({ adapter: new Adapter() });
 

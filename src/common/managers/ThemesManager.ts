@@ -1,14 +1,14 @@
 import fs from "fs";
-import path from "path";
 import { inject, injectable } from "inversify";
+import path from "path";
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
-import applicationTheme from "settings/internal/themes/dark";
-import { ITheme } from "models";
-import Utils from "Utils";
 import TYPES from "ioc/types";
 import { ISettingsManager, IThemesManager } from "managers";
+import { ITheme } from "models";
+import applicationTheme from "settings/internal/themes/dark";
+import Utils from "Utils";
 
 /** Manages parsing themes from application settings files. */
 @injectable()
@@ -72,12 +72,14 @@ class ThemesManager implements IThemesManager {
 
         if (!fs.existsSync(fileName)) {
             Utils.trace(`Cannot parse from non-existent file ${fileName}`);
+
             return null;
         }
 
         Utils.trace(`Retrieving user theme from ${fileName}`);
 
         const userTheme = fs.readFileSync(fileName, "utf-8");
+
         return JSON.parse(userTheme);
     }
 }

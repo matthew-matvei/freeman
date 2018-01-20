@@ -1,9 +1,9 @@
 interface IStatusNotifier {
-    notify: (message: string) => void;
+    notify(message: string): void;
 
-    setItemCount: (itemCount: number) => void;
+    setItemCount(itemCount: number): void;
 
-    setChosenCount: (chosenCount: number) => void;
+    setChosenCount(chosenCount: number): void;
 }
 
 export default IStatusNotifier;

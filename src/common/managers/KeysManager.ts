@@ -1,13 +1,13 @@
 import fs from "fs";
-import path from "path";
 import { injectable } from "inversify";
+import path from "path";
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
-import applicationKeys from "settings/internal/keys";
-import { IKeyMap } from "models";
-import Utils from "Utils";
 import { IKeysManager } from "managers";
+import { IKeyMap } from "models";
+import applicationKeys from "settings/internal/keys";
+import Utils from "Utils";
 
 /** Manages parsing key maps from application and user settings files. */
 @injectable()
@@ -50,12 +50,14 @@ class KeysManager implements IKeysManager {
 
         if (!fs.existsSync(fileName)) {
             Utils.trace(`Cannot parse key map from non-existent file ${fileName}`);
+
             return null;
         }
 
         Utils.trace(`Retrieving user keys from ${fileName}`);
 
         const userKeys = fs.readFileSync(fileName, "utf-8");
+
         return JSON.parse(userKeys);
     }
 }

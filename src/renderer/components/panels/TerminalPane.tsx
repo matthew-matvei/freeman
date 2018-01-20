@@ -1,8 +1,8 @@
-import * as React from "react";
-import Terminal from "xterm";
 import autobind from "autobind-decorator";
-import ReactResizeDetector from "react-resize-detector";
 import log from "electron-log";
+import * as React from "react";
+import ReactResizeDetector from "react-resize-detector";
+import Terminal from "xterm";
 
 import { ISocketMessage } from "models";
 import Utils from "Utils";

@@ -1,8 +1,6 @@
 import { IDirectoryCommonProps, IDirectoryManageableProps, IStatusNotifiableProps } from "props/common";
 
-/**
- * Describes the properties of a directory pane component.
- */
+/** Describes the properties of a directory pane component. */
 interface IDirectoryWrapperProps extends
     IDirectoryCommonProps, IDirectoryManageableProps, IStatusNotifiableProps {
 

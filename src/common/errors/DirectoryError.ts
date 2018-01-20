@@ -29,11 +29,11 @@ class DirectoryError extends LoggedError {
         let result = message;
 
         if (sourcePath) {
-            result += os.EOL + `Source directory item: ${sourcePath}`;
+            result += `${os.EOL}Source directory item: ${sourcePath}`;
         }
 
         if (destinationPath) {
-            result += os.EOL + `Destination directory item: ${destinationPath}`;
+            result += `${os.EOL}Destination directory item: ${destinationPath}`;
         }
 
         return result;
