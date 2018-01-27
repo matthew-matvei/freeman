@@ -5,12 +5,10 @@ import mockfs from "mock-fs";
 import path from "path";
 import "reflect-metadata";
 import sinon, { SinonSandbox } from "sinon";
-import { Mock } from "typemoq";
 
 import DirectoryError from "errors/DirectoryError";
-import { DirectoryManager, IDirectoryManager, ISettingsManager } from "managers";
-import { IDirectoryItem } from "models";
-import Utils from "Utils";
+import { DirectoryManager, IDirectoryManager } from "managers";
+import { IDirectoryItem, IListDirectoryOptions } from "models";
 
 chai.use(chaiAsPromised);
 
@@ -24,6 +22,7 @@ describe("directoryManager's", () => {
     let newFolderName: string;
 
     let directoryManager: IDirectoryManager;
+    let options: IListDirectoryOptions;
 
     let testFile: IDirectoryItem;
     let testFile2: IDirectoryItem;
@@ -39,15 +38,10 @@ describe("directoryManager's", () => {
         newFileName = "newItem.txt";
         newFolderName = "newItem";
 
-        const settings: any = {
-            windows: {
-                hideUnixStyleHiddenItems: false
-            }
+        directoryManager = new DirectoryManager();
+        options = {
+            hideUnixStyleHiddenItems: false
         };
-
-        const settingsManager = Mock.ofType<ISettingsManager>();
-        settingsManager.setup(sm => sm.settings).returns(() => settings);
-        directoryManager = new DirectoryManager(settingsManager.object);
     });
 
     beforeEach(() => {
@@ -97,8 +91,6 @@ describe("directoryManager's", () => {
 
         before(() => {
             sandbox = sinon.createSandbox();
-
-            sandbox.stub(Utils, "getAsync").resolves(false);
         });
 
         after(() => {
@@ -108,25 +100,25 @@ describe("directoryManager's", () => {
         it("throws a DirectoryError if given path is not a directory", async () => {
             const nonDirectory = path.join(fakeDirPath, "fakeFile.txt");
 
-            expect(directoryManager.listDirectory(nonDirectory)).to.eventually.be.rejectedWith(DirectoryError);
+            expect(directoryManager.listDirectory(nonDirectory, options)).to.eventually.be.rejectedWith(DirectoryError);
         });
 
         it("returns an empty list when pointed to empty folder", async () => {
             const emptyFolder = path.join(fakeDirPath, fakeFolder);
-            const result = await directoryManager.listDirectory(emptyFolder);
+            const result = await directoryManager.listDirectory(emptyFolder, options);
 
             expect(result).to.be.empty;
         });
 
         it("can return a child file of the given path", async () => {
-            const result = await directoryManager.listDirectory(fakeDirPath);
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === "fakeFile.txt" &&
                 !item.isDirectory));
         });
 
         it("can return a child folder of the given path", async () => {
-            const result = await directoryManager.listDirectory(fakeDirPath);
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === fakeFolder &&
                 item.isDirectory));

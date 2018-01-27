@@ -1,6 +1,5 @@
 import autobind from "autobind-decorator";
 import { remote } from "electron";
-import fs from "fs";
 import { List } from "immutable";
 import path from "path";
 import * as PropTypes from "prop-types";
@@ -12,7 +11,7 @@ import { DirectoryItem, InputItem } from "components/blocks";
 import { Goto } from "components/modals";
 import DirectoryError from "errors/DirectoryError";
 import LoggedError from "errors/LoggedError";
-import { IAppContext, IDirectoryItem } from "models";
+import { IDirectoryItem, IHandlers } from "models";
 import { DirectoryListModel } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
@@ -31,7 +30,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     public context: { scrollArea: any };
 
     /** Handler functions for the given events this component handles. */
-    private handlers = {
+    private handlers: IHandlers = {
         moveUp: () => this.move("up"),
         moveDown: () => this.move("down"),
         moveBack: this.goBack,
@@ -52,9 +51,6 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** The internal model of this DirectoryList. */
     private model: DirectoryListModel;
-
-    /** A watcher that monitors activity on the directory list's current directory. */
-    private watcher: fs.FSWatcher;
 
     /**
      * A trapper that can be given focus in cases where focus on directory items
@@ -78,10 +74,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * Instantiates the DirectoryList component.
      *
      * @param props - the properties for the DirectoryList component
-     * @param context - the context for the DirectoryList component
      */
-    public constructor(props: IDirectoryListProps, context: IAppContext) {
-        super(props, context);
+    public constructor(props: IDirectoryListProps) {
+        super(props);
 
         this.state = {
             directoryItems: [],
@@ -100,27 +95,31 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** Updates the directory contents after loading the component. */
     public async componentDidMount() {
-        const { directoryManager } = this.props;
+        const { directoryManager, settingsManager } = this.props;
 
         try {
-            this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
+            directoryManager.startWatching(this.props.path, async () => {
                 this.setState(
                     {
-                        directoryItems: await directoryManager.listDirectory(this.props.path)
+                        directoryItems: await directoryManager.listDirectory(
+                            this.props.path,
+                            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
                     } as IDirectoryListState);
             });
         } catch {
             throw new DirectoryError("Could not set watcher", this.props.path);
         }
 
-        const items = await directoryManager.listDirectory(this.props.path);
+        const items = await directoryManager.listDirectory(
+            this.props.path,
+            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems });
 
         this.setState({ directoryItems: items } as IDirectoryListState);
     }
 
     /** Handles closing the watcher on unmounting the directory list. */
     public componentWillUnmount() {
-        this.watcher.close();
+        this.props.directoryManager.stopWatching();
     }
 
     /**
@@ -141,6 +140,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param prevState - the previous state object
      */
     public async componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
+        const { directoryManager, settingsManager } = this.props;
+
         this.props.statusNotifier.setItemCount(this.nonHiddenDirectoryItems.length);
         this.props.statusNotifier.setChosenCount(this.state.chosenItems.length);
 
@@ -158,10 +159,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         if (prevProps.path !== this.props.path) {
             try {
-                this.watcher = fs.watch(this.props.path, async (eventType, filename) => {
+                directoryManager.startWatching(this.props.path, async () => {
                     this.setState(
                         {
-                            directoryItems: await this.props.directoryManager.listDirectory(this.props.path)
+                            directoryItems: await directoryManager.listDirectory(
+                                this.props.path,
+                                { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
                         } as IDirectoryListState);
                 });
             } catch {
@@ -181,7 +184,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     chosenItems: remainingChosenItems
                 } as IDirectoryListState);
         } else {
-            const directoryItems = await this.props.directoryManager.listDirectory(this.props.path);
+            const directoryItems = await directoryManager.listDirectory(
+                this.props.path,
+                { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems });
             const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
             this.setState(
                 {
@@ -231,7 +236,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                         isChosen={this.state.chosenItems.includes(item)}
                         sendPathUp={this.goIn}
                         sendSelectedItemUp={this.selectItem}
-                        sendDeletionUp={this.refreshAfterDelete} />;
+                        sendDeletionUp={this.refreshAfterDelete}
+                        theme={this.props.theme} />;
                 }
             });
 
@@ -259,7 +265,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     isOpen={this.state.isGotoOpen}
                     onClose={this.closeGoto}
                     navigateTo={this.navigateToPath}
-                    directoryManager={this.props.directoryManager} />
+                    directoryManager={this.props.directoryManager}
+                    settingsManager={this.props.settingsManager}
+                    theme={this.props.theme} />
             </div>);
     }
 
@@ -417,7 +425,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async pasteFromClipboard() {
-        const { directoryManager } = this.props;
+        const { directoryManager, settingsManager } = this.props;
         const { clipboardAction, clipboardItems } = this.model;
 
         if (clipboardAction === "copy") {
@@ -430,7 +438,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
             this.setState(
                 {
-                    directoryItems: await directoryManager.listDirectory(this.props.path)
+                    directoryItems: await directoryManager.listDirectory(
+                        this.props.path,
+                        { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
                 } as IDirectoryListState);
 
             this.props.statusNotifier.notify("Copied items");
@@ -444,7 +454,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
             this.setState(
                 {
-                    directoryItems: await directoryManager.listDirectory(this.props.path)
+                    directoryItems: await directoryManager.listDirectory(
+                        this.props.path,
+                        { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
                 } as IDirectoryListState);
 
             this.props.statusNotifier.notify("Cut items");

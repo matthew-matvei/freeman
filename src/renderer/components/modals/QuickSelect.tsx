@@ -1,10 +1,9 @@
 import autobind from "autobind-decorator";
-import PropTypes from "prop-types";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 import Modal from "react-modal";
 
-import { IAppContext, IKeyMap } from "models";
+import { IHandlers, IKeyMap } from "models";
 import { IQuickSelectProps } from "props/modals";
 import { IQuickSelectState } from "states/modals";
 import Utils from "Utils";
@@ -16,14 +15,6 @@ import "styles/panels/QuickSelect.scss";
  */
 class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> {
 
-    /** Validation for context types. */
-    public static contextTypes = {
-        theme: PropTypes.object
-    };
-
-    /** The global application context. */
-    public context: IAppContext;
-
     /** A keymap for hot keys when QuickSelect focused. */
     private keyMap: IKeyMap = {
         close: ["esc"],
@@ -34,7 +25,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     };
 
     /** Handler functions for the given events this component handles. */
-    private handlers = {
+    private handlers: IHandlers = {
         close: this.closeQuickSelect,
         previousItem: this.selectPreviousItem,
         nextItem: this.selectNextItem,
@@ -48,7 +39,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
             backgroundColor: "rgba(0, 0, 0, 0)",
         },
         content: {
-            backgroundColor: this.context.theme.quickSelect.backgroundColour,
+            backgroundColor: this.props.theme.quickSelect.backgroundColour,
             borderRadius: "1px",
             padding: "20px 10px",
             border: undefined,
@@ -57,7 +48,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
             right: "25%",
             bottom: undefined,
             left: "25%",
-            color: this.context.theme.quickSelect.colour || "inherit"
+            color: this.props.theme.quickSelect.colour || "inherit"
         }
     };
 
@@ -68,10 +59,9 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
      * Instantiates the QuickSelect component.
      *
      * @param props - the properties for this component
-     * @param context - the context for this component
      */
-    public constructor(props: IQuickSelectProps, context: IAppContext) {
-        super(props, context);
+    public constructor(props: IQuickSelectProps) {
+        super(props);
 
         this.state = {
             selectedIndex: 0
@@ -84,7 +74,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
      * @returns - a JSX element representing the quick select view
      */
     public render(): JSX.Element {
-        const { selectedColour, backgroundColour } = this.context.theme.quickSelect;
+        const { selectedColour, backgroundColour } = this.props.theme.quickSelect;
 
         const items = this.props.initialItems.map((item, i) => {
             return this.state.selectedIndex === i ?

@@ -1,11 +1,10 @@
-import fs from "fs";
 import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
 import TYPES from "ioc/types";
-import { ISettingsManager, IThemesManager } from "managers";
+import { IDirectoryManager, ISettingsManager, IThemesManager } from "managers";
 import { ITheme } from "models";
 import applicationTheme from "settings/internal/themes/dark";
 import Utils from "Utils";
@@ -17,6 +16,9 @@ class ThemesManager implements IThemesManager {
     /** A settings manager for retrieving theme name. */
     private settingsManager: ISettingsManager;
 
+    /** A directory manager for reading the user theme file. */
+    private directoryManager: IDirectoryManager;
+
     /** The internally held theme for this manager. */
     private _theme: ITheme;
 
@@ -24,15 +26,22 @@ class ThemesManager implements IThemesManager {
      * Initialises an instance of the KeysManager class.
      *
      * @param settingsManager - the settings manager providing application settings
+     * @param directoryManager - a directory manager for reading user-defined key map files
      */
     public constructor(
-        @inject(TYPES.ISettingsManager) SettingsManager: ISettingsManager) {
+        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
+        @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
 
-        if (!SettingsManager) {
+        if (!settingsManager) {
             throw new Error("Settings manager must be defined");
         }
 
-        this.settingsManager = SettingsManager;
+        if (!directoryManager) {
+            throw new Error("Directory manager must be defined");
+        }
+
+        this.settingsManager = settingsManager;
+        this.directoryManager = directoryManager;
     }
 
     /** Gets the theme retrieved by the keys manager. */
@@ -70,17 +79,16 @@ class ThemesManager implements IThemesManager {
             app.getPath("userData"),
             "freeman.themes", `${themeName}.json`);
 
-        if (!fs.existsSync(fileName)) {
+        try {
+            const userTheme = this.directoryManager.readFileSync(fileName);
+            Utils.trace(`Retrieving user theme from ${fileName}`);
+
+            return JSON.parse(userTheme);
+        } catch {
             Utils.trace(`Cannot parse from non-existent file ${fileName}`);
 
             return null;
         }
-
-        Utils.trace(`Retrieving user theme from ${fileName}`);
-
-        const userTheme = fs.readFileSync(fileName, "utf-8");
-
-        return JSON.parse(userTheme);
     }
 }
 

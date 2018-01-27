@@ -1,4 +1,3 @@
-
 /** Describes the internal state of the DirectoryPane. */
 interface IDirectoryWrapperState {
 

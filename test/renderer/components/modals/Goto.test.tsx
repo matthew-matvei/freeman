@@ -1,22 +1,22 @@
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import * as PropTypes from "prop-types";
 import * as React from "react";
 import "reflect-metadata";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
+import { IMock, It, Mock } from "typemoq";
 
 import { Goto } from "components/modals";
-import { IDirectoryManager } from "managers";
-import { IAppContext, IDirectoryItem } from "models";
+import { IDirectoryManager, ISettingsManager } from "managers";
+import { IDirectoryItem } from "models";
 import { IGotoProps, IQuickSelectProps } from "props/modals";
+import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
 import { IGotoState } from "states/modals";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("<Goto />", () => {
-    let context: IAppContext;
     let props: IGotoProps;
     let component: React.ReactElement<IGotoProps>;
 
@@ -26,14 +26,12 @@ describe("<Goto />", () => {
     let item1: IDirectoryItem;
     let item2: IDirectoryItem;
 
-    let directoryManager: IDirectoryManager;
+    let directoryManager: IMock<IDirectoryManager>;
+    let settingsManager: IMock<ISettingsManager>;
 
     before(() => {
         sandbox = sinon.createSandbox();
 
-        context = {
-            theme: applicationTheme
-        };
         item1 = {
             name: "Item 1",
             path: "/path/to/Item 1",
@@ -48,15 +46,21 @@ describe("<Goto />", () => {
             isHidden: false
         };
 
-        directoryManager = {} as IDirectoryManager;
-        directoryManager.listDirectory = sandbox.stub().resolves([item1, item2]);
+        directoryManager = Mock.ofType<IDirectoryManager>();
+        directoryManager.setup(async dm => dm.listDirectory(It.isAnyString(), It.isAny()))
+            .returns(sandbox.stub().resolves([item1, item2]));
+
+        settingsManager = Mock.ofType<ISettingsManager>();
+        settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
 
         props = {
             isOpen: false,
             onClose: () => { },
             initialPath: "/path/to/initial",
             navigateTo: () => { },
-            directoryManager
+            directoryManager: directoryManager.object,
+            settingsManager: settingsManager.object,
+            theme: applicationTheme
         };
     });
 
@@ -96,7 +100,7 @@ describe("<Goto />", () => {
     it("updates 'items' in state after mounting", async () => {
         const wrapper = shallow(component);
 
-        return directoryManager.listDirectory("/path/to")
+        return directoryManager.object.listDirectory("/path/to", {} as any)
             .then(() => {
                 const state = wrapper.state() as IGotoState;
 
@@ -105,11 +109,7 @@ describe("<Goto />", () => {
     });
 
     it("first item in the QuickSelect is the current directory", () => {
-        const wrapper = mount(component, {
-            context, childContextTypes: {
-                theme: PropTypes.object
-            }
-        });
+        const wrapper = mount(component);
         const state = wrapper.state() as IGotoState;
         const quickSelect = wrapper.findWhere(n => n.name() === "QuickSelect");
         const quickSelectProps = quickSelect.instance().props as IQuickSelectProps;
@@ -121,7 +121,7 @@ describe("<Goto />", () => {
         shallow(component);
         renderSpy = sinon.spy(Goto.prototype, "render");
 
-        return directoryManager.listDirectory("/path/to")
+        return directoryManager.object.listDirectory("/path/to", {} as any)
             .then(() => {
                 expect(renderSpy.callCount).to.equal(1);
             });

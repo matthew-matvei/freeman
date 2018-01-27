@@ -1,10 +1,10 @@
-import fs from "fs";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
-import { ISettingsManager } from "managers";
+import TYPES from "ioc/types";
+import { IDirectoryManager, ISettingsManager } from "managers";
 import { ICommonSettings } from "models/settings";
 import applicationSettings from "settings/internal/settings";
 import Utils from "Utils";
@@ -15,6 +15,24 @@ class SettingsManager implements ISettingsManager {
 
     /** The internally held settings for this manager. */
     private _settings: ICommonSettings;
+
+    /** The directory manager used to read user-defined settings file. */
+    private directoryManager: IDirectoryManager;
+
+    /**
+     * Initialises an instance of the SettingsManager class.
+     *
+     * @param directoryManager - a directory manager for reading user-defined key map files
+     */
+    public constructor(
+        @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
+
+        if (!directoryManager) {
+            throw new ReferenceError("Directory manager must be defined");
+        }
+
+        this.directoryManager = directoryManager;
+    }
 
     /** Gets the settings retrieved by the settings manager. */
     public get settings(): ICommonSettings {
@@ -48,17 +66,16 @@ class SettingsManager implements ISettingsManager {
             app.getPath("userData"),
             "freeman.settings.json");
 
-        if (!fs.existsSync(fileName)) {
-            Utils.trace(`Cannot parse settings from non-existent file ${fileName}`);
+        try {
+            const userSettings = this.directoryManager.readFileSync(fileName);
+            Utils.trace(`Retrieving user settings from ${fileName}`);
+
+            return JSON.parse(userSettings);
+        } catch {
+            Utils.trace(`Cannot parse settings from ${fileName}`);
 
             return null;
         }
-
-        Utils.trace(`Retrieving user settings from ${fileName}`);
-
-        const userSettings = fs.readFileSync(fileName, "utf-8");
-
-        return JSON.parse(userSettings);
     }
 }
 

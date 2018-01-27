@@ -1,9 +1,9 @@
 import { KeyboardEvent } from "react";
 
-import { ICloseableProps, IOpenableProps } from "props/common";
+import { ICloseableProps, IOpenableProps, IThemeableProps } from "props/common";
 
 /** Represents properties for the QuickSelect component. */
-interface IQuickSelectProps extends ICloseableProps, IOpenableProps {
+interface IQuickSelectProps extends ICloseableProps, IOpenableProps, IThemeableProps {
 
     /** The items to select within the quick select component. */
     initialItems: string[];

@@ -1,14 +1,13 @@
 import { Promise, promisify } from "bluebird";
 import fs from "fs";
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import ncp from "ncp";
 import path from "path";
 import trash from "trash";
 
 import DirectoryError from "errors/DirectoryError";
-import TYPES from "ioc/types";
-import { IDirectoryManager, ISettingsManager } from "managers";
-import { IDirectoryItem } from "models";
+import { IDirectoryManager } from "managers";
+import { IDirectoryItem, IListDirectoryOptions } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
 import Utils from "Utils";
@@ -25,43 +24,30 @@ const writeFileAsync = promisify(fs.writeFile);
 @injectable()
 class DirectoryManager implements IDirectoryManager {
 
-    /** A manager for application settings. */
-    private settingsManager: ISettingsManager;
-
-    /**
-     * Initialises a new instance of the DirectoryManager class.
-     *
-     * @param settingsManager - a manager for application settings
-     */
-    public constructor(
-        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager) {
-
-        if (!settingsManager) {
-            throw new ReferenceError("settingsManager must be defined");
-        }
-
-        this.settingsManager = settingsManager;
-    }
+    /** A watcher that observes changes to a directory. */
+    private watcher: fs.FSWatcher;
 
     /**
      * Returns a list of paths of all files in the directory given in path.
      *
      * @param filePath - the path to the directory to list
-     * @param filterCondition - a condition with which to filter the items
-     * @param sort - a compare function that determines how the items
-     *      are sorted
+     * @param options - an object of options to use when invoking the method
      *
      * @returns - a list of all files in the given directory
      */
     public async listDirectory(
         filePath: string,
-        filterCondition: (item: IDirectoryItem) => boolean = (item: IDirectoryItem) => true,
-        sort: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[] = DirectorySorter.sortByTypeThenAlphaNumery
+        options: IListDirectoryOptions
     ): Promise<IDirectoryItem[]> {
 
         if (!(await DirectoryManager.isDirectory(filePath))) {
             throw new DirectoryError("Cannot call listDirectory on a non-directory item", filePath);
         }
+
+        const filterCondition = options.filterCondition ? options.filterCondition :
+            (item: IDirectoryItem) => true;
+        const sort = options.sort ? options.sort :
+            DirectorySorter.sortByTypeThenAlphaNumery;
 
         let fileList;
 
@@ -74,13 +60,12 @@ class DirectoryManager implements IDirectoryManager {
         const filePromises = fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
             const fileStats = await lstatAsync(fullPath);
-            const { hideUnixStyleHiddenItems } = this.settingsManager.settings.windows;
 
             return {
                 name: fileName,
                 path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: await Utils.isHidden(fullPath, hideUnixStyleHiddenItems)
+                isHidden: await Utils.isHidden(fullPath, options.hideUnixStyleHiddenItems)
             } as IDirectoryItem;
         });
 
@@ -188,6 +173,30 @@ class DirectoryManager implements IDirectoryManager {
         });
 
         await Promise.all(itemMoves);
+    }
+
+    /**
+     * Reads the contents of the given file synchronously.
+     *
+     * @param filePath - the path to the file to read
+     */
+    public readFileSync(filePath: string): string {
+        return fs.readFileSync(filePath, "utf-8");
+    }
+
+    /**
+     * Starts watching pathToWatch, attaching listener to any change events.
+     *
+     * @param pathToWatch - the path to begin watching
+     * @param listener - a callback function to invoke when pathToWatch changes
+     */
+    public startWatching(pathToWatch: string, listener: () => void) {
+        this.watcher = fs.watch(pathToWatch, listener);
+    }
+
+    /** Stops watching any directory. */
+    public stopWatching() {
+        this.watcher && this.watcher.close();
     }
 
     /**

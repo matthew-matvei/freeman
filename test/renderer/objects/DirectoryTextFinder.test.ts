@@ -74,9 +74,10 @@ describe("DirectoryTextFinder's", () => {
 
         it("adds to the search term after simultaneous calls", () => {
             directoryTextFinder.addCharAndSearch("b", directoryItems);
+            const expectedIndex = 2;
             const result = directoryTextFinder.addCharAndSearch("a", directoryItems);
 
-            expect(result).to.equal(2);
+            expect(result).to.equal(expectedIndex);
         });
 
         it("clears the search term if timeout expired", () => {

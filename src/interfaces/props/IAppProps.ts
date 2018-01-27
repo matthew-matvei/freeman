@@ -1,24 +1,14 @@
-import {
-    IDirectoryManager,
-    IKeysManager,
-    ISettingsManager,
-    IThemesManager
-} from "managers";
+import { IKeysManager, IThemesManager } from "managers";
+import { IDirectoryManageableProps, ISettingsManageableProps } from "props/common";
 
 /** Describes properties for the App component. */
-interface IAppProps {
-
-    /** A manager that handles application settings. */
-    settingsManager: ISettingsManager;
+interface IAppProps extends IDirectoryManageableProps, ISettingsManageableProps {
 
     /** A manager that handles key mappings. */
     keysManager: IKeysManager;
 
     /** A manager that handles the theme. */
     themeManager: IThemesManager;
-
-    /** A manager that handles a user's directory. */
-    directoryManager: IDirectoryManager;
 }
 
 export default IAppProps;

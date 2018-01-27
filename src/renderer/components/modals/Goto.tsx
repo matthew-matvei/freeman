@@ -32,7 +32,11 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     public async componentDidMount() {
         const nonHiddenDirectoryFolders = await this.props.directoryManager.listDirectory(
             this.state.currentDirectory,
-            item => item.isDirectory && !item.isHidden);
+            {
+                filterCondition: item => item.isDirectory && !item.isHidden,
+                hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
+            }
+        );
 
         this.setState({ directoryItems: nonHiddenDirectoryFolders } as IGotoState);
     }
@@ -63,7 +67,8 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
             onKeyUp={this.handleKeyUp}
             onSelect={this.handleSelect}
             inputValue={this.state.quickSelectValue}
-            onUpdate={this.handleUpdate} />;
+            onUpdate={this.handleUpdate}
+            theme={this.props.theme} />;
     }
 
     /**
@@ -87,7 +92,11 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
             const basePath = path.dirname(this.state.searchTerm);
             const nonHiddenDirectoryItems = await this.props.directoryManager.listDirectory(
                 basePath,
-                item => item.isDirectory && !item.isHidden);
+                {
+                    filterCondition: item => item.isDirectory && !item.isHidden,
+                    hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
+                }
+            );
 
             this.setState(
                 {
@@ -102,7 +111,11 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
         } else if (event.key === path.sep) {
             const nonHiddenDirectoryItems = await this.props.directoryManager.listDirectory(
                 newPath,
-                item => item.isDirectory && !item.isHidden);
+                {
+                    filterCondition: item => item.isDirectory && !item.isHidden,
+                    hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
+                }
+            );
 
             this.setState(
                 {
@@ -135,7 +148,11 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     @autobind
     private async handleUpdate(selectedItem: string) {
         const newDirectoryItems = await this.props.directoryManager.listDirectory(selectedItem,
-            item => item.isDirectory && !item.isHidden);
+            {
+                filterCondition: item => item.isDirectory && !item.isHidden,
+                hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
+            }
+        );
 
         this.setState(
             {

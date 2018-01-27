@@ -1,8 +1,14 @@
-import { expect } from "chai";
+import chai, { expect } from "chai";
+import chaiAsPromised from "chai-as-promised";
+import os from "os";
 import path from "path";
 import "reflect-metadata";
+import sinon, { SinonSandbox } from "sinon";
+import winattr, { Attributes } from "winattr";
 
 import Utils from "Utils";
+
+chai.use(chaiAsPromised);
 
 describe("isAlphanumeric function", () => {
     it("returns true on 'a'", () => {
@@ -97,5 +103,94 @@ describe("fuzzySearchItems function", () => {
         const result = Utils.fuzzySearchItems("gb", items);
 
         expect(result).to.deep.equal(expected);
+    });
+});
+
+describe("tryParseJSON function", () => {
+    it("returns false when given empty string", () => {
+        const result = Utils.tryParseJSON("");
+
+        expect(result).to.be.false;
+    });
+
+    it("returns false when given non JSON-encoded string", () => {
+        const result = Utils.tryParseJSON("Non-JSON string");
+
+        expect(result).to.be.false;
+    });
+
+    it("returns false when string describes non-object", () => {
+        const someFunction = () => { };
+        const result = Utils.tryParseJSON(JSON.stringify(someFunction));
+
+        expect(result).to.be.false;
+    });
+
+    it("return parsed object when string is JSON-encoded object", () => {
+        const someObject = { someKey: "value" };
+        const result = Utils.tryParseJSON(JSON.stringify(someObject));
+
+        expect(result).to.deep.equal(someObject);
+    });
+});
+
+describe("isHidden function", () => {
+    let sandbox: SinonSandbox;
+
+    before(() => {
+        sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+        sandbox && sandbox.restore();
+    });
+
+    it("throws a ReferenceError if given empty pathToItem", () => {
+        expect(Utils.isHidden("", false)).to.eventually.be
+            .rejectedWith(ReferenceError);
+    });
+
+    it("returns true using linux and item starting with '.'", () => {
+        sandbox.stub(os, "platform").returns("linux");
+        const result = Utils.isHidden("/path/to/.item", false);
+
+        expect(result).to.eventually.be.true;
+    });
+
+    it("returns false using linux and items not starting with '.'", () => {
+        sandbox.stub(os, "platform").returns("linux");
+        const result = Utils.isHidden("/path/to/item", false);
+
+        expect(result).to.eventually.be.true;
+    });
+
+    it("returns true using windows, hideUnixStyleHiddenItems and item starting with '.'", () => {
+        sandbox.stub(os, "platform").returns("win32");
+        const result = Utils.isHidden("/path/to/.item", true);
+
+        expect(result).to.eventually.be.true;
+    });
+
+    it("returns true using windows and item's attributes.hidden is set", () => {
+        sandbox.stub(os, "platform").returns("win32");
+        sandbox.stub(winattr, "get").returns(() => ({ hidden: true } as Attributes));
+        const result = Utils.isHidden("/path/to/hiddenItem", false);
+
+        expect(result).to.eventually.be.true;
+    });
+
+    it("returns true using windows, hideUnixStyleHiddenItems and item's attributes.hidden is set", () => {
+        sandbox.stub(os, "platform").returns("win32");
+        sandbox.stub(winattr, "get").returns(() => ({ hidden: true } as Attributes));
+        const result = Utils.isHidden("/path/to/hiddenItem", true);
+
+        expect(result).to.eventually.be.true;
+    });
+
+    it("returns false using windows and item's attributes.hidden is cleared", () => {
+        sandbox.stub(os, "platform").returns("win32");
+        const result = Utils.isHidden("/path/to/.item", false);
+
+        expect(result).to.eventually.be.false;
     });
 });

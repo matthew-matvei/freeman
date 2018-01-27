@@ -7,25 +7,25 @@ import sinon, { SinonSpy } from "sinon";
 import { IMock, Mock } from "typemoq";
 
 import { DirectoryWrapper } from "components/panels";
-import { IDirectoryManager } from "managers";
-import { IAppContext, IStatusNotifier } from "models";
+import { IDirectoryManager, ISettingsManager } from "managers";
+import { IStatusNotifier } from "models";
 import { IDirectoryWrapperProps } from "props/panels";
 import applicationTheme from "settings/internal/themes/dark";
+import { IDirectoryWrapperState } from "states/panels";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("<DirectoryWrapper />", () => {
-    let context: IAppContext;
     let props: IDirectoryWrapperProps;
     let component: React.ReactElement<IDirectoryWrapperProps>;
     let renderSpy: SinonSpy;
 
     let directoryManager: IMock<IDirectoryManager>;
+    let settingsManager: IMock<ISettingsManager>;
 
     before(() => {
-        context = {
-            theme: applicationTheme
-        };
+        directoryManager = Mock.ofType<IDirectoryManager>();
+        settingsManager = Mock.ofType<ISettingsManager>();
 
         const statusNotifier = {} as IStatusNotifier;
 
@@ -37,7 +37,9 @@ describe("<DirectoryWrapper />", () => {
             isSelectedPane: true,
             sendSelectedPaneUp: () => { },
             directoryManager: directoryManager.object,
-            statusNotifier
+            statusNotifier,
+            settingsManager: settingsManager.object,
+            theme: applicationTheme
         };
     });
 
@@ -50,21 +52,28 @@ describe("<DirectoryWrapper />", () => {
     });
 
     it("contains a <div /> with the className 'DirectoryWrapper'", () => {
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
 
         expect(wrapper.findWhere(n => n.hasClass("DirectoryWrapper")))
             .to.have.length(1);
     });
 
     it("contains a container with the className 'directoryScrollArea'", () => {
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
 
         expect(wrapper.findWhere(n => n.hasClass("directoryScrollArea")))
             .to.have.length(1);
     });
 
+    it("starts with 'path' set to 'initialPath'", () => {
+        const wrapper = shallow(component);
+        const state = wrapper.state() as IDirectoryWrapperState;
+
+        expect(state.path).to.equal(props.initialPath);
+    });
+
     it("re-renders only once when updating path", () => {
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
         renderSpy = sinon.spy(DirectoryWrapper.prototype, "render");
         wrapper.setState({ updatePath: "/new/path" });
 

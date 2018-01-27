@@ -1,11 +1,9 @@
 import autobind from "autobind-decorator";
-import * as PropTypes from "prop-types";
 import * as React from "react";
 import ScrollArea from "react-scrollbar";
 import SplitPane from "react-split-pane";
 
 import { DirectoryList, PathPanel, TerminalPane } from "components/panels";
-import { IAppContext } from "models";
 import { IDirectoryWrapperProps } from "props/panels";
 import { IDirectoryWrapperState } from "states/panels";
 
@@ -16,21 +14,13 @@ import "styles/panels/DirectoryWrapper.scss";
  */
 class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirectoryWrapperState> {
 
-    /** Validation for context types. */
-    public static contextTypes = {
-        theme: PropTypes.object
-    };
-
-    /** The global application context. */
-    public context: IAppContext;
-
     /**
      * Instantiates the DirectoryPane component.
      *
      * @param props - the properties for the DirectoryPane component
      */
-    public constructor(props: IDirectoryWrapperProps, context: IAppContext) {
-        super(props, context);
+    public constructor(props: IDirectoryWrapperProps) {
+        super(props);
 
         this.state = { path: this.props.initialPath };
     }
@@ -45,7 +35,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         const scrollAreaVertBarStyle = { width: "100%" };
 
         return <div className="DirectoryWrapper">
-            <PathPanel path={this.state.path} />
+            <PathPanel path={this.state.path} theme={this.props.theme} />
             <div className="splitPaneWrapper">
                 <SplitPane
                     split="horizontal"
@@ -55,7 +45,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         <ScrollArea
                             className="directoryScrollArea"
                             horizontal={false}
-                            style={{ backgroundColor: this.context.theme.primaryBackgroundColour }}
+                            style={{ backgroundColor: this.props.theme.primaryBackgroundColour }}
                             verticalContainerStyle={scrollAreaVertContainerStyle}
                             verticalScrollbarStyle={scrollAreaVertBarStyle}>
                             <DirectoryList
@@ -65,7 +55,9 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                                 sendSelectedPaneUp={this.props.sendSelectedPaneUp}
                                 sendPathUp={this.updatePath}
                                 directoryManager={this.props.directoryManager}
-                                statusNotifier={this.props.statusNotifier} />
+                                statusNotifier={this.props.statusNotifier}
+                                settingsManager={this.props.settingsManager}
+                                theme={this.props.theme} />
                         </ScrollArea>
                     </div>
                     <div className="terminalPaneWrapper">

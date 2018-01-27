@@ -1,10 +1,9 @@
 import autobind from "autobind-decorator";
 import { shell } from "electron";
-import * as PropTypes from "prop-types";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
-import { IAppContext } from "models";
+import { IHandlers } from "models";
 import { IDirectoryItemProps } from "props/blocks";
 import Utils from "Utils";
 
@@ -13,16 +12,8 @@ import "styles/blocks/DirectoryItem.scss";
 /** A single directory item component. */
 class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
-    /** Validation for context types. */
-    public static contextTypes = {
-        theme: PropTypes.object
-    };
-
-    /** The global application context. */
-    public context: IAppContext;
-
     /** Handler functions for the given events this component handles. */
-    private handlers = {
+    private handlers: IHandlers = {
         openDirectory: this.openDirectory,
         activate: this.activate,
         openInNativeExplorer: this.openInNativeExplorer
@@ -42,7 +33,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
             backgroundColour,
             chosenColour,
             selectedColour
-        } = this.context.theme.directoryItem;
+        } = this.props.theme.directoryItem;
         const style: React.CSSProperties = {
             color: (this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||

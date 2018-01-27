@@ -1,4 +1,4 @@
-import { IDirectoryItem } from "models";
+import { IDirectoryItem, IListDirectoryOptions } from "models";
 import { ItemType } from "types";
 
 /** The interface describing a DirectoryManager. */
@@ -8,15 +8,13 @@ interface IDirectoryManager {
      * Returns a list of paths of all files in the directory given in path.
      *
      * @param filePath - the path to the directory to list
-     * @param sort - a compare function that determines how the items
-     *      are sorted
+     * @param options - an object of options to use when invoking the method
      *
      * @returns - a list of all files in the given directory
      */
     listDirectory(
         filePath: string,
-        filterCondition?: (item: IDirectoryItem) => boolean,
-        sort?: (unsortedItems: IDirectoryItem[]) => IDirectoryItem[]
+        options: IListDirectoryOptions
     ): Promise<IDirectoryItem[]>;
 
     /**
@@ -66,6 +64,24 @@ interface IDirectoryManager {
      * @param destinationDirectory - the directory to move the items to
      */
     moveItems(itemsToMove: IDirectoryItem[], destinationDirectory: string): Promise<void>;
+
+    /**
+     * Reads the contents of the given file synchronously.
+     *
+     * @param filePath - the path to the file to read
+     */
+    readFileSync(filePath: string): string;
+
+    /**
+     * Starts watching pathToWatch, attaching listener to any change events.
+     *
+     * @param pathToWatch - the path to begin watching
+     * @param listener - a callback function to invoke when pathToWatch changes
+     */
+    startWatching(pathToWatch: string, listener: () => void): void;
+
+    /** Stops watching any directory. */
+    stopWatching(): void;
 }
 
 export default IDirectoryManager;

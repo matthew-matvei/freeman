@@ -4,6 +4,7 @@ import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
 import LoggedError from "errors/LoggedError";
+import { IHandlers } from "models";
 import { IInputItemProps } from "props/blocks";
 import { IInputItemState } from "states/blocks";
 
@@ -11,7 +12,7 @@ import { IInputItemState } from "states/blocks";
 class InputItem extends React.Component<IInputItemProps, IInputItemState> {
 
     /** Handler functions for the given events this component handles. */
-    private handlers = {
+    private handlers: IHandlers = {
         moveUp: () => { },
         moveDown: () => { },
         moveBack: () => { }

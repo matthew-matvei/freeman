@@ -1,20 +1,24 @@
 import { expect } from "chai";
 import "reflect-metadata";
+import { IMock, Mock } from "typemoq";
 
-import { IDirectoryManager } from "managers";
+import { IDirectoryManager, ISettingsManager } from "managers";
 import { IDirectoryItem, INavigationNode, IStatusNotifier } from "models";
 import { DirectoryListModel } from "objects";
 import { IDirectoryListProps } from "props/panels";
+import applicationTheme from "settings/internal/themes/dark";
 import { IDirectoryListState } from "states/panels";
-import { IMock, Mock } from "typemoq";
 import { DirectoryPaneSide } from "types";
 
 describe("DirectoryListModel's", () => {
     let directoryListModel: DirectoryListModel;
     let directoryItem1: IDirectoryItem;
 
+    let settingsManager: IMock<ISettingsManager>;
+
     before(() => {
         directoryListModel = new DirectoryListModel();
+        settingsManager = Mock.ofType<ISettingsManager>();
     });
 
     beforeEach(() => {
@@ -113,7 +117,9 @@ describe("DirectoryListModel's", () => {
                 sendPathUp: (path: string) => { },
                 sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => { },
                 directoryManager: directoryManager.object,
-                statusNotifier
+                statusNotifier,
+                settingsManager: settingsManager.object,
+                theme: applicationTheme
             };
 
             prevProps = { ...commonProps };

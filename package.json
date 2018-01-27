@@ -1,7 +1,7 @@
 {
   "name": "freeman",
   "productName": "FreeMAN",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "A free, extensible, cross-platform file manager for power users",
   "main": "app/main.js",
   "build": {
@@ -27,9 +27,10 @@
   },
   "scripts": {
     "build": "webpack --config webpack.common.js",
+    "prebuild:test": "rimraf __tests__/*",
     "build:test": "webpack --config webpack.test.js",
     "build:prod": "webpack --config webpack.prod.js",
-    "pretest": "rimraf __tests__/* && npm run build:test",
+    "pretest": "npm run build:test",
     "test": "electron-mocha --renderer __tests__",
     "prestart": "npm run build",
     "start": "electron app/main.js",
@@ -65,7 +66,7 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "devtron": "^1.4.0",
-    "electron": "1.7.10",
+    "electron": "1.7.11",
     "electron-builder": "^19.49.4",
     "electron-mocha": "^5.0.0",
     "enzyme": "^3.2.0",

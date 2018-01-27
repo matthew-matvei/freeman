@@ -15,7 +15,8 @@ import { ITerminalService, TerminalService } from "services";
 
 const container = new Container({ defaultScope: "Singleton" });
 
-container.bind<IDirectoryManager>(TYPES.IDirectoryManager).to(DirectoryManager);
+container.bind<IDirectoryManager>(TYPES.IDirectoryManager)
+    .to(DirectoryManager).inTransientScope();
 container.bind<ISettingsManager>(TYPES.ISettingsManager).to(SettingsManager);
 container.bind<IKeysManager>(TYPES.IKeysManager).to(KeysManager);
 container.bind<IThemesManager>(TYPES.IThemesManager).to(ThemesManager);

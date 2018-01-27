@@ -107,7 +107,12 @@ class Utils {
      * @returns whether the file at pathToItem is hidden
      */
     public static isHidden = async (pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> => {
+        if (!pathToItem) {
+            throw new ReferenceError("pathToItem must contain characters");
+        }
+
         const itemName = path.basename(pathToItem);
+
         if (os.platform() === "linux") {
             return itemName.startsWith(".");
         } else if (os.platform() === "win32") {

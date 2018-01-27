@@ -5,7 +5,7 @@ import { QuickSelect } from "components/modals";
 import { ICommandPaletteProps } from "props/modals";
 
 /** The CommandPalette component, a QuickSelect for general commands. */
-class CommandPalette extends React.Component<ICommandPaletteProps, {}> {
+class CommandPalette extends React.PureComponent<ICommandPaletteProps> {
 
     /**
      * Defines how the command palette component is rendered.
@@ -19,7 +19,8 @@ class CommandPalette extends React.Component<ICommandPaletteProps, {}> {
             isOpen={this.props.isOpen}
             onClose={this.props.onClose}
             initialItems={itemKeys}
-            onSelect={this.handleSelect} />;
+            onSelect={this.handleSelect}
+            theme={this.props.theme} />;
     }
 
     /**

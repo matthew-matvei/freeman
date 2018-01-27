@@ -1,10 +1,10 @@
-import fs from "fs";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
 const app = electron.app || electron.remote.app;
 
-import { IKeysManager } from "managers";
+import TYPES from "ioc/types";
+import { IDirectoryManager, IKeysManager } from "managers";
 import { IKeyMap } from "models";
 import applicationKeys from "settings/internal/keys";
 import Utils from "Utils";
@@ -15,6 +15,24 @@ class KeysManager implements IKeysManager {
 
     /** The internally held key map for this manager. */
     private _keyMap: IKeyMap;
+
+    /** The directory manager used to read user-defined key map file. */
+    private directoryManager: IDirectoryManager;
+
+    /**
+     * Initialises an instance of the KeysManager class.
+     *
+     * @param directoryManager - a directory manager for reading user-defined key map files
+     */
+    public constructor(
+        @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
+
+        if (!directoryManager) {
+            throw new ReferenceError("Directory manager must be defined");
+        }
+
+        this.directoryManager = directoryManager;
+    }
 
     /** Gets the key map retrieved by the keys manager. */
     public get keyMap(): IKeyMap {
@@ -48,17 +66,16 @@ class KeysManager implements IKeysManager {
             app.getPath("userData"),
             "freeman.keys.json");
 
-        if (!fs.existsSync(fileName)) {
-            Utils.trace(`Cannot parse key map from non-existent file ${fileName}`);
+        try {
+            const userKeys = this.directoryManager.readFileSync(fileName);
+            Utils.trace(`Retrieving user keys from ${fileName}`);
+
+            return JSON.parse(userKeys);
+        } catch {
+            Utils.trace(`Cannot parse key map from ${fileName}`);
 
             return null;
         }
-
-        Utils.trace(`Retrieving user keys from ${fileName}`);
-
-        const userKeys = fs.readFileSync(fileName, "utf-8");
-
-        return JSON.parse(userKeys);
     }
 }
 

@@ -1,13 +1,12 @@
 import autobind from "autobind-decorator";
 import os from "os";
-import * as PropTypes from "prop-types";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 import SplitPane from "react-split-pane";
 
 import { CommandPalette } from "components/modals";
 import { DirectoryWrapper, Status } from "components/panels";
-import { IAppContext, IStatusNotifier } from "models";
+import { IHandlers, IStatusNotifier } from "models";
 import { ApplicationCommander } from "objects";
 import { IAppProps } from "props";
 import { IAppState } from "states";
@@ -18,13 +17,8 @@ import "styles/App.scss";
 /** The main application component. */
 class App extends React.Component<IAppProps, IAppState> {
 
-    /** Validation for child context types. */
-    public static childContextTypes = {
-        theme: PropTypes.object
-    };
-
     /** Handler functions for the given events this component handles. */
-    private handlers = {
+    private handlers: IHandlers = {
         switchPane: this.switchPane,
         openCommandPalette: this.openCommandPalette
     };
@@ -62,22 +56,18 @@ class App extends React.Component<IAppProps, IAppState> {
         };
     }
 
-    /** Returns the child context to pass down the component tree. */
-    public getChildContext(): IAppContext {
-        return { theme: this.props.themeManager.theme };
-    }
-
     /**
      * Defines how the main application component is rendered
      *
      * @returns - a JSX element representing the main application view
      */
     public render(): JSX.Element {
-        const appStyle = { color: this.props.themeManager.theme.primaryColour };
+        const { directoryManager, keysManager, settingsManager, themeManager } = this.props;
+        const appStyle = { color: themeManager.theme.primaryColour };
         const splitPaneStyle = { height: "97vh" };
 
         return <div>
-            <HotKeys keyMap={this.props.keysManager.keyMap || undefined} handlers={this.handlers}>
+            <HotKeys keyMap={keysManager.keyMap} handlers={this.handlers}>
                 <div className="App" style={appStyle}>
                     <SplitPane
                         split="vertical"
@@ -88,23 +78,28 @@ class App extends React.Component<IAppProps, IAppState> {
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "left"}
                             sendSelectedPaneUp={this.selectPane}
-                            directoryManager={this.props.directoryManager}
-                            statusNotifier={this.statusNotifier} />
+                            directoryManager={directoryManager}
+                            statusNotifier={this.statusNotifier}
+                            settingsManager={settingsManager}
+                            theme={themeManager.theme} />
                         <DirectoryWrapper
                             id="right"
                             initialPath={os.homedir()}
                             isSelectedPane={this.state.selectedPane === "right"}
                             sendSelectedPaneUp={this.selectPane}
-                            directoryManager={this.props.directoryManager}
-                            statusNotifier={this.statusNotifier} />
+                            directoryManager={directoryManager}
+                            statusNotifier={this.statusNotifier}
+                            settingsManager={settingsManager}
+                            theme={themeManager.theme} />
                     </SplitPane>
-                    <Status {...this.state.status} />
+                    <Status {...this.state.status} theme={themeManager.theme} />
                 </div>
             </HotKeys>
             <CommandPalette
                 isOpen={this.state.isCommandPaletteOpen}
                 onClose={this.closeCommandPalette}
-                applicationCommands={ApplicationCommander.commands} />
+                applicationCommands={ApplicationCommander.commands}
+                theme={this.props.themeManager.theme} />
         </div>;
     }
 
@@ -124,7 +119,12 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    /** Handles updating the status component's message. */
+    /**
+     * Handles updating the status component's message.
+     *
+     * @param updateType - the type of the status update
+     * @param payload - the data to use in the status update
+     */
     @autobind
     private updateStatus(updateType: StatusUpdate, payload: string | number) {
         const status = this.state.status;
@@ -152,9 +152,9 @@ class App extends React.Component<IAppProps, IAppState> {
         const { selectedPane } = this.state;
 
         if (selectedPane === "left") {
-            this.setState({ selectedPane: "right" } as IAppState);
+            this.selectPane("right");
         } else {
-            this.setState({ selectedPane: "left" } as IAppState);
+            this.selectPane("left");
         }
     }
 

@@ -7,14 +7,13 @@ import "reflect-metadata";
 import sinon, { SinonSandbox, SinonSpy } from "sinon";
 
 import { DirectoryItem } from "components/blocks";
-import { IAppContext, IDirectoryItem } from "models";
+import { IDirectoryItem } from "models";
 import { IDirectoryItemProps } from "props/blocks";
 import applicationTheme from "settings/internal/themes/dark";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("<DirectoryItem />", () => {
-    let context: IAppContext;
     let props: IDirectoryItemProps;
     let component: React.ReactElement<IDirectoryItemProps>;
 
@@ -22,12 +21,6 @@ describe("<DirectoryItem />", () => {
 
     let sandbox: SinonSandbox;
     let renderSpy: SinonSpy;
-
-    before(() => {
-        context = {
-            theme: applicationTheme
-        };
-    });
 
     beforeEach(() => {
         directoryModel = {
@@ -43,10 +36,13 @@ describe("<DirectoryItem />", () => {
             isChosen: false,
             sendPathUp: (path: string) => { },
             sendSelectedItemUp: (selectedItem: IDirectoryItem) => { },
-            sendDeletionUp: () => { }
+            sendDeletionUp: () => { },
+            theme: applicationTheme
         };
 
         sandbox = sinon.createSandbox();
+
+        component = <DirectoryItem {...props} />;
     });
 
     afterEach(() => {
@@ -54,8 +50,7 @@ describe("<DirectoryItem />", () => {
     });
 
     it("has the className 'DirectoryItem'", () => {
-        component = <DirectoryItem {...props} />;
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
 
         expect(wrapper.findWhere(n => n.hasClass("DirectoryItem")))
             .to.have.length(1);
@@ -64,31 +59,28 @@ describe("<DirectoryItem />", () => {
     it("has the className 'selected' when item is selected", () => {
         props.isSelected = true;
         component = <DirectoryItem {...props} />;
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
 
         expect(wrapper.findWhere(n => n.hasClass("selected")))
             .to.have.length(1);
     });
 
     it("does not have the className 'selected' when item is not selected", () => {
-        component = <DirectoryItem {...props} />;
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
 
         expect(wrapper.findWhere(n => n.hasClass("selected")))
             .to.have.length(0);
     });
 
     it("renders only once when mounted", () => {
-        component = <DirectoryItem {...props} />;
         renderSpy = sandbox.spy(DirectoryItem.prototype, "render");
-        shallow(component, { context });
+        shallow(component);
 
         expect(renderSpy.callCount).to.equal(1);
     });
 
     it("renders only once when updated", () => {
-        component = <DirectoryItem {...props} />;
-        const wrapper = shallow(component, { context });
+        const wrapper = shallow(component);
         renderSpy = sandbox.spy(DirectoryItem.prototype, "render");
         wrapper.instance().forceUpdate();
 
@@ -100,16 +92,25 @@ describe("<DirectoryItem />", () => {
         props.model.isDirectory = true;
         props.sendPathUp = sendPathUp;
         component = <DirectoryItem {...props} />;
-        const wrapper = shallow(component, { context }).find("button");
+        const wrapper = shallow(component).find("button");
         wrapper.simulate("doubleClick");
 
         expect(sendPathUp.calledOnce).to.be.true;
     });
 
+    it("requests selecting the item when clicked", () => {
+        const sendSelectionUp = sandbox.stub();
+        props.sendSelectedItemUp = sendSelectionUp;
+        component = <DirectoryItem { ...props } />;
+        const wrapper = shallow(component).find("button");
+        wrapper.simulate("click");
+
+        expect(sendSelectionUp.calledOnce).to.be.true;
+    });
+
     it("opens item using Electron shell when file activated", () => {
         const openItem = sandbox.stub(shell, "openItem");
-        component = <DirectoryItem {...props} />;
-        const wrapper = shallow(component, { context }).find("button");
+        const wrapper = shallow(component).find("button");
         wrapper.simulate("doubleClick");
 
         expect(openItem.calledOnce).to.be.true;

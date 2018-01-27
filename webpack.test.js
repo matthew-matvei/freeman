@@ -30,7 +30,8 @@ const getEntries = (folder) =>
         }, {});
 
 module.exports = [
-    Object.assign(baseConfig[1], { entry: getEntries('./test/renderer/') })
+    Object.assign({}, baseConfig[1], { entry: getEntries('./test/renderer/') }),
+    Object.assign({}, baseConfig[1], { entry: getEntries('./test/common/') })
 ].map(s => {
     s.output.path = path.resolve(__dirname, '__tests__');
     return s;
