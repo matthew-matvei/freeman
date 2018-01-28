@@ -370,7 +370,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
-        if (event.key.length === 1 && Utils.isAlphanumeric(event.key)) {
+        if (event.key.length === 1) {
             const indexToSelect = this.model.textFinder.addCharAndSearch(
                 event.key, this.nonHiddenDirectoryItems);
 

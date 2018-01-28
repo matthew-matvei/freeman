@@ -10,44 +10,6 @@ import Utils from "Utils";
 
 chai.use(chaiAsPromised);
 
-describe("isAlphanumeric function", () => {
-    it("returns true on 'a'", () => {
-        expect(Utils.isAlphanumeric("a")).to.be.true;
-    });
-
-    it("returns true on 'A'", () => {
-        expect(Utils.isAlphanumeric("A")).to.be.true;
-    });
-
-    it("returns true on 'ab'", () => {
-        expect(Utils.isAlphanumeric("ab")).to.be.true;
-    });
-
-    it("returns true on '1'", () => {
-        expect(Utils.isAlphanumeric("1")).to.be.true;
-    });
-
-    it("returns true on '10'", () => {
-        expect(Utils.isAlphanumeric("10")).to.be.true;
-    });
-
-    it("returns true on '1a'", () => {
-        expect(Utils.isAlphanumeric("1a")).to.be.true;
-    });
-
-    it("returns true on 'a1'", () => {
-        expect(Utils.isAlphanumeric("a1")).to.be.true;
-    });
-
-    it("returns false on '.'", () => {
-        expect(Utils.isAlphanumeric(".")).to.be.false;
-    });
-
-    it("returns false on ' '", () => {
-        expect(Utils.isAlphanumeric(" ")).to.be.false;
-    });
-});
-
 describe("fuzzySearchItems function", () => {
     let items: string[];
     let item1: string;

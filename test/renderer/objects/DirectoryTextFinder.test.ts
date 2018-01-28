@@ -13,6 +13,7 @@ describe("DirectoryTextFinder's", () => {
     let item1: IDirectoryItem;
     let item2: IDirectoryItem;
     let item3: IDirectoryItem;
+    let item4: IDirectoryItem;
 
     beforeEach(() => {
         clock = sinon.useFakeTimers();
@@ -40,7 +41,14 @@ describe("DirectoryTextFinder's", () => {
             isHidden: true
         };
 
-        directoryItems = [item1, item2, item3];
+        item4 = {
+            name: "B-A item",
+            path: "path/to/B-A item",
+            isDirectory: false,
+            isHidden: false
+        };
+
+        directoryItems = [item1, item2, item3, item4];
     });
 
     afterEach(() => {
@@ -74,10 +82,9 @@ describe("DirectoryTextFinder's", () => {
 
         it("adds to the search term after simultaneous calls", () => {
             directoryTextFinder.addCharAndSearch("b", directoryItems);
-            const expectedIndex = 2;
             const result = directoryTextFinder.addCharAndSearch("a", directoryItems);
 
-            expect(result).to.equal(expectedIndex);
+            expect(result).to.equal(2);
         });
 
         it("clears the search term if timeout expired", () => {
@@ -87,6 +94,13 @@ describe("DirectoryTextFinder's", () => {
             const result = directoryTextFinder.addCharAndSearch("a", directoryItems);
 
             expect(result).to.equal(0);
+        });
+
+        it("handles non-alphanumeric characters", () => {
+            directoryTextFinder.addCharAndSearch("b", directoryItems);
+            const result = directoryTextFinder.addCharAndSearch("-", directoryItems);
+
+            expect(result).to.equal(3);
         });
     });
 });

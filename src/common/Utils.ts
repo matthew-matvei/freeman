@@ -23,19 +23,6 @@ class Utils {
     }
 
     /**
-     * Returns whether all characters in a given string are alphanumeric.
-     *
-     * @param letters - a string to test for alphanumeracy
-     *
-     * @returns - whether all letters are alphanumeric
-     */
-    public static isAlphanumeric = (letters: string): boolean => {
-        const regex = new RegExp(/[a-z0-9]/, "i");
-
-        return regex.test(letters);
-    }
-
-    /**
      * Returns all items where pathToFind's basename is fuzzy found in the item's basename.
      *
      * @param pathToFind - the path whose basename is to be found within items
