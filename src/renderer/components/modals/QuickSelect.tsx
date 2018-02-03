@@ -48,7 +48,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
             right: "25%",
             bottom: undefined,
             left: "25%",
-            color: this.props.theme.quickSelect.colour || "inherit"
+            color: this.props.theme.quickSelect.colour
         }
     };
 

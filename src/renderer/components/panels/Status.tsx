@@ -1,4 +1,7 @@
+import autobind from "autobind-decorator";
+import { shell } from "electron";
 import * as React from "react";
+import FaGithub from "react-icons/lib/fa/github";
 
 import { IStatusProps } from "props/panels";
 
@@ -13,8 +16,8 @@ class Status extends React.PureComponent<IStatusProps> {
      * @returns - a JSX element representing the status indication view
      */
     public render(): JSX.Element {
-        const { backgroundColour } = this.props.theme.statusBar;
-        const statusBarStyle = { backgroundColor: backgroundColour };
+        const { backgroundColour, foregroundColour } = this.props.theme.statusBar;
+        const statusBarStyle: React.CSSProperties = { backgroundColor: backgroundColour, color: foregroundColour };
 
         return <div
             style={statusBarStyle}
@@ -25,8 +28,15 @@ class Status extends React.PureComponent<IStatusProps> {
             <div className="rightGroup">
                 <span>{`${this.props.itemCount} items`}</span>
                 <span>{`${this.props.chosenCount} chosen`}</span>
+                <span><FaGithub color={foregroundColour} onClick={this.openGithub} /></span>
             </div>
         </div>;
+    }
+
+    /** Handles opening the Github page for this project in the user's browser. */
+    @autobind
+    private openGithub() {
+        shell.openExternal("https://github.com/matthew-matvei/freeman");
     }
 }
 

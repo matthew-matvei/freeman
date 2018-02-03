@@ -9,6 +9,8 @@ interface ITheme {
 
     /** The colours of the Status component */
     statusBar: {
+        /** The foreground colour of the status bar. */
+        foregroundColour: string;
         /** The background colour of the status bar. */
         backgroundColour: string
     };
@@ -23,8 +25,12 @@ interface ITheme {
     directoryItem: {
         /** The colour of a file-type directory item. */
         fileColour: string;
+        /** The colour of a default file-type directory item. */
+        fileIconDefaultColour: string;
         /** The colour of a folder-type directory item. */
         directoryColour: string;
+        /** The colour of a folder-type directory item's icon. */
+        directoryIconColour: string;
         /** The foreground colour of a chosen item. */
         chosenColour: string;
         /** The background colour of a directory item. */

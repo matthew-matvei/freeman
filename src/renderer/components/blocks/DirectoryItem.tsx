@@ -7,6 +7,7 @@ import { IHandlers } from "models";
 import { IDirectoryItemProps } from "props/blocks";
 import Utils from "Utils";
 
+import { DirectoryItemIcon } from "components/blocks";
 import "styles/blocks/DirectoryItem.scss";
 
 /** A single directory item component. */
@@ -37,9 +38,8 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         const style: React.CSSProperties = {
             color: (this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour)) ||
-                "inherit",
-            backgroundColor: isSelected ? selectedColour : backgroundColour || "inherit",
+                (model.isDirectory && directoryColour)),
+            backgroundColor: isSelected ? selectedColour : backgroundColour,
             border: "none"
         };
 
@@ -48,6 +48,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
             ref={component => component && isSelected && Utils.autoFocus(component)}>
             <div
                 className={`DirectoryItem ${selectedClass}`}>
+                <DirectoryItemIcon directoryItem={this.props.model} theme={this.props.theme} />
                 <button
                     style={style}
                     onClick={this.select}
