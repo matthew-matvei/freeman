@@ -1,7 +1,7 @@
 import * as http from "http";
 import { inject, injectable } from "inversify";
 import * as pty from "node-pty";
-import { ITerminal } from "node-pty/lib/interfaces";
+import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 import * as WebSocket from "ws";
 
 import TYPES from "ioc/types";
@@ -83,7 +83,7 @@ class TerminalService implements ITerminalService {
             cols: parseInt(cols as string) || defaultCols,
             rows: parseInt(rows as string) || defaultRows,
             cwd: process.cwd(),
-            env: process.env
+            env: process.env as ProcessEnv
         });
 
         terminal.on("data", (data: string) => {

@@ -53,7 +53,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     };
 
     /** The input field for the QuickSelect. */
-    private input: HTMLInputElement | null;
+    private input?: HTMLInputElement | null;
 
     /**
      * Instantiates the QuickSelect component.

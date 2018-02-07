@@ -13,16 +13,16 @@ import "styles/panels/TerminalPane.scss";
 class Terminalpane extends React.PureComponent {
 
     /** The containing div element of the terminal. */
-    private container: HTMLDivElement | null;
+    private container?: HTMLDivElement | null;
 
     /** The xterm.js terminal frontend. */
-    private xterm: Terminal;
+    private xterm?: Terminal;
 
     /**
      * The socket handling communication between the xterm frontend and backend
      * terminal process.
      */
-    private socket: WebSocket;
+    private socket?: WebSocket;
 
     /**
      * Sets up the xterm frontend and websocket after loading the component.
@@ -48,7 +48,7 @@ class Terminalpane extends React.PureComponent {
      * Handles closing the socket in the event this component is unmounted.
      */
     public componentWillUnmount() {
-        this.socket.close();
+        this.socket && this.socket.close();
     }
 
     /**
@@ -72,7 +72,7 @@ class Terminalpane extends React.PureComponent {
      */
     @autobind
     private handleResize() {
-        if (this.xterm && this.xterm.fit) {
+        if (this.socket && this.xterm && this.xterm.fit) {
             this.xterm.fit();
             if (this.socket.readyState === WebSocket.OPEN) {
                 Utils.trace("Sending terminal resize request");

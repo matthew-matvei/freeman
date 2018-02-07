@@ -14,7 +14,7 @@ import Utils from "Utils";
 class KeysManager implements IKeysManager {
 
     /** The internally held key map for this manager. */
-    private _keyMap: IKeyMap;
+    private _keyMap?: IKeyMap;
 
     /** The directory manager used to read user-defined key map file. */
     private directoryManager: IDirectoryManager;

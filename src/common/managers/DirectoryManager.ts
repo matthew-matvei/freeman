@@ -1,9 +1,9 @@
-import { Promise, promisify } from "bluebird";
 import fs from "fs";
 import { injectable } from "inversify";
 import ncp from "ncp";
 import path from "path";
 import trash from "trash";
+import { promisify } from "util";
 
 import DirectoryError from "errors/DirectoryError";
 import { IDirectoryManager } from "managers";
@@ -13,11 +13,11 @@ import { ItemType } from "types";
 import Utils from "Utils";
 
 const lstatAsync = promisify(fs.lstat);
-const ncpAsync = promisify(ncp.ncp);
 const rmdirAsync = promisify(fs.rmdir);
 const unlinkAsync = promisify(fs.unlink);
 const renameAsync = promisify(fs.rename);
 const mkdirAsync = promisify(fs.mkdir);
+const copyFileAsync = promisify(ncp.ncp);
 const writeFileAsync = promisify(fs.writeFile);
 
 /** Provides methods for reading, writing and creating files and folders. */
@@ -25,7 +25,7 @@ const writeFileAsync = promisify(fs.writeFile);
 class DirectoryManager implements IDirectoryManager {
 
     /** A watcher that observes changes to a directory. */
-    private watcher: fs.FSWatcher;
+    private watcher?: fs.FSWatcher;
 
     /**
      * Returns a list of paths of all files in the directory given in path.
@@ -92,7 +92,7 @@ class DirectoryManager implements IDirectoryManager {
             }
         } else {
             try {
-                writeFileAsync(fullItemName);
+                await writeFileAsync(fullItemName, "");
             } catch {
                 throw new DirectoryError("Could not create file", fullItemName);
             }
@@ -210,7 +210,7 @@ class DirectoryManager implements IDirectoryManager {
         const destinationFileName = path.join(destinationDirectory, fileName);
 
         try {
-            await ncpAsync(itemPath, destinationFileName);
+            await copyFileAsync(itemPath, destinationFileName);
         } catch {
             throw new DirectoryError("Failed to copy item", itemPath, destinationFileName);
         }

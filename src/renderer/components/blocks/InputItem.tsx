@@ -19,7 +19,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     };
 
     /** A reference to this input element. */
-    private input: HTMLInputElement | null;
+    private input?: HTMLInputElement | null;
 
     /**
      * Instantiates the InputItem component.

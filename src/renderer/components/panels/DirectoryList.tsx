@@ -56,7 +56,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * A trapper that can be given focus in cases where focus on directory items
      * is lost.
      */
-    private keysTrapper: HotKeys | null;
+    private keysTrapper?: HotKeys | null;
 
     /** Gets the directory items that are not currently hidden. */
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
@@ -75,8 +75,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      *
      * @param props - the properties for the DirectoryList component
      */
-    public constructor(props: IDirectoryListProps) {
-        super(props);
+    public constructor(props: IDirectoryListProps, context: { scrollArea: any }) {
+        super(props, context);
+
+        this.context = context;
 
         this.state = {
             directoryItems: [],

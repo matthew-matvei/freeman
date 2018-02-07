@@ -14,7 +14,7 @@ import Utils from "Utils";
 class SettingsManager implements ISettingsManager {
 
     /** The internally held settings for this manager. */
-    private _settings: ICommonSettings;
+    private _settings?: ICommonSettings;
 
     /** The directory manager used to read user-defined settings file. */
     private directoryManager: IDirectoryManager;

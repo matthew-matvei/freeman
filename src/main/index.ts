@@ -12,7 +12,7 @@ import { FreemanWindow } from "widgets";
 let mainWindow: FreemanWindow | null = null;
 
 if (process.argv.includes("--verbose")) {
-    process.env.VERBOSE = 1;
+    process.env.VERBOSE = "1";
     Utils.trace("Running application in verbose mode");
 }
 

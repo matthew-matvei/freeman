@@ -23,7 +23,7 @@ installExtension(REACT_DEVELOPER_TOOLS)
     .catch(error => log.error(error));
 
 if (remote.process.env.VERBOSE) {
-    process.env.VERBOSE = 1;
+    process.env.VERBOSE = "1";
     Utils.trace("Running renderer in verbose mode");
 }
 

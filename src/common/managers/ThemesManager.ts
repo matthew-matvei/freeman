@@ -20,7 +20,7 @@ class ThemesManager implements IThemesManager {
     private directoryManager: IDirectoryManager;
 
     /** The internally held theme for this manager. */
-    private _theme: ITheme;
+    private _theme?: ITheme;
 
     /**
      * Initialises an instance of the KeysManager class.
