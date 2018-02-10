@@ -306,8 +306,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
 
         const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
-        const confirmDelete = this.confirmationDialog(
-            `Are you sure you want to permanently delete ${chosenItems}?`);
+        const confirmDelete = this.props.settingsManager.settings.confirmation.requiredBeforeDeletion ?
+            this.confirmationDialog(`Are you sure you want to permanently delete ${chosenItems}?`) :
+            true;
 
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
@@ -527,17 +528,20 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async sendToTrash() {
+        const { settingsManager, directoryManager, statusNotifier } = this.props;
+
         const chosenItems = this.selectedItems.length > 1 ? "the chosen items" : `'${this.selectedItems[0].name}'`;
-        const confirmTrash = this.confirmationDialog(
-            `Are you sure you want to send ${chosenItems} to the trash?`);
+        const confirmTrash = settingsManager.settings.confirmation.requiredBeforeTrash ?
+            this.confirmationDialog(`Are you sure you want to send ${chosenItems} to the trash?`) :
+            true;
 
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmTrash) {
             Utils.trace(`Requesting to trash ${this.selectedItems.map(item => item.path).join(", ")}`);
-            await this.props.directoryManager.sendItemsToTrash(this.selectedItems);
+            await directoryManager.sendItemsToTrash(this.selectedItems);
             this.refreshAfterDelete();
-            this.props.statusNotifier.notify("Sent items to trash");
+            statusNotifier.notify("Sent items to trash");
         }
     }
 

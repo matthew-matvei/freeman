@@ -1,4 +1,4 @@
-import { IUnixSettings, IWindowsSettings } from "models/settings";
+import { IConfirmationSettings, IUnixSettings, IWindowsSettings } from "models/settings";
 
 /** Describes settings for the application. */
 interface ICommonSettings {
@@ -14,6 +14,9 @@ interface ICommonSettings {
 
     /** The name of the theme the application uses. */
     themeName: string;
+
+    /** Confirmation-related settings. */
+    confirmation: IConfirmationSettings;
 }
 
 export default ICommonSettings;

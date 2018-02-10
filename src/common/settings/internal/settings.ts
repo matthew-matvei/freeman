@@ -9,5 +9,9 @@ export default {
         shell: "powershell.exe"
     },
     fullscreen: false,
-    themeName: "dark"
+    themeName: "dark",
+    confirmation: {
+        requiredBeforeTrash: true,
+        requiredBeforeDeletion: true
+    }
 } as ICommonSettings;
