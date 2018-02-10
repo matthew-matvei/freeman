@@ -1,3 +1,4 @@
+import merge from "deepmerge";
 import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
@@ -46,13 +47,14 @@ class KeysManager implements IKeysManager {
     /**
      * Retrieves application and user-specific key map settings files.
      *
-     * @returns - a fully-formed key map object, or null if no settings could
-     *      be read
+     * @returns - a fully-formed key map object
      */
     private retrieve(): IKeyMap {
         const userKeys = this.parseUserKeys();
 
-        return userKeys ? { ...applicationKeys, ...userKeys } : applicationKeys;
+        return userKeys ?
+            merge(applicationKeys, userKeys, { arrayMerge: (destination: any[], source: any[]) => source }) :
+            applicationKeys;
     }
 
     /**

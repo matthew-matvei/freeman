@@ -67,5 +67,23 @@ describe("ThemesManager's", () => {
             expect(result.directoryItem.backgroundColour).to.equal(userColour);
             expect(result.directoryItem.backgroundColour).to.not.equal(applicationTheme.directoryItem.backgroundColour);
         });
+
+        it("deeply merges theme settings together", () => {
+            const userColour = "user colour";
+            const minimalTheme: ITheme = {
+                directoryItem: {
+                    backgroundColour: userColour
+                }
+            } as any;
+            directoryManagerMock.setup(dm => dm.readFileSync(It.isAnyString()))
+                .returns(() => JSON.stringify(minimalTheme));
+
+            const result = themeManager.theme;
+
+            expect(result.directoryItem.backgroundColour).to.equal(userColour);
+            expect(result.directoryItem.selectedColour).to.not.be.undefined;
+            expect(result.directoryItem.selectedColour)
+                .to.equal(applicationTheme.directoryItem.selectedColour);
+        });
     });
 });

@@ -49,5 +49,24 @@ describe("SettingsManager's", () => {
             expect(result.linux.shell).to.equal(userShell);
             expect(result.linux.shell).to.not.equal(applicationSettings.linux.shell);
         });
+
+        it("deeply merges settings together", () => {
+            const userShell = "cmd.exe";
+            const minimalSettings: ICommonSettings = {
+                windows: {
+                    shell: userShell
+                }
+            } as any;
+
+            directoryManagerMock.setup(dm => dm.readFileSync(It.isAnyString()))
+                .returns(() => JSON.stringify(minimalSettings));
+
+            const result = settingsManager.settings;
+
+            expect(result.windows.shell).to.equal(userShell);
+            expect(result.windows.hideUnixStyleHiddenItems).to.not.be.undefined;
+            expect(result.windows.hideUnixStyleHiddenItems)
+                .to.equal(applicationSettings.windows.hideUnixStyleHiddenItems);
+        });
     });
 });
