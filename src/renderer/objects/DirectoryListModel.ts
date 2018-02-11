@@ -1,4 +1,4 @@
-import { IDirectoryItem, IItemClipboard, INavigationNode } from "models";
+import { IDirectoryItem, IItemClipboard } from "models";
 import { DirectoryTextFinder } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
@@ -10,8 +10,8 @@ class DirectoryListModel {
     /** An internally compatible clipboard object for copying files. */
     private _itemClipboard: IItemClipboard;
 
-    /** Stores navigation data in a simple stack structure. */
-    private navigationStack: INavigationNode[];
+    /** A stack of cached selected indices. */
+    private selectedIndexCache: number[];
 
     /** Finds directory items using simple text matching. */
     private _textFinder: DirectoryTextFinder;
@@ -21,7 +21,7 @@ class DirectoryListModel {
      */
     public constructor() {
         this._itemClipboard = {};
-        this.navigationStack = [];
+        this.selectedIndexCache = [];
         this._textFinder = new DirectoryTextFinder();
     }
 
@@ -116,26 +116,22 @@ class DirectoryListModel {
     }
 
     /**
-     * Returns a cached navigation node if the given path equals the one at the
-     * top of the navigation stack.
+     * Caches a given selected index value.
      *
-     * @param path - the path to a directory
-     *
-     * @returns - a cached navigation node, or undefined if the path is different
+     * @param value - a selected index to add to the cache
      */
-    public popCachedNavigation(path: string): INavigationNode | undefined {
-        return (this.navigationStack.length > 0 &&
-            this.navigationStack[this.navigationStack.length - 1].path === path) ?
-            this.navigationStack.pop()! : undefined;
+    public cacheSelectedIndex(value: number) {
+        this.selectedIndexCache.push(value);
     }
 
-    /**
-     * Caches the given navigation node to the navigation stack.
-     *
-     * @param navigationNode - the navigation node to cache
-     */
-    public cacheNavigation(navigationNode: INavigationNode) {
-        this.navigationStack.push(navigationNode);
+    /** Pops the top selected index off the cache and returns it, if any. */
+    public popSelectedIndex(): number | undefined {
+        return this.selectedIndexCache.pop();
+    }
+
+    /** Clears the selected index cache. */
+    public clearSelectedIndexCache() {
+        this.selectedIndexCache = [];
     }
 }
 

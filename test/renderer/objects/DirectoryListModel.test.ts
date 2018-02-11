@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { IMock, Mock } from "typemoq";
 
 import { IDirectoryManager, ISettingsManager } from "managers";
-import { IDirectoryItem, INavigationNode, IStatusNotifier } from "models";
+import { IDirectoryItem, IStatusNotifier } from "models";
 import { DirectoryListModel } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import applicationTheme from "settings/internal/themes/dark";
@@ -197,45 +197,6 @@ describe("DirectoryListModel's", () => {
             const result = directoryListModel.directoryItemsChanged(prevItems, nextItems);
 
             expect(result).to.be.true;
-        });
-    });
-
-    describe("popCachedNavigation method", () => {
-        let pathToCache: string;
-
-        let nodeToCache: INavigationNode;
-
-        before(() => {
-            pathToCache = "path/to/cache";
-        });
-
-        beforeEach(() => {
-            nodeToCache = {
-                path: "path/to/cache",
-                directoryItems: [],
-                selectedIndex: 0
-            };
-        });
-
-        it("returns undefined if navigationStack is empty", () => {
-            const result = directoryListModel.popCachedNavigation(pathToCache);
-
-            expect(result).to.be.undefined;
-        });
-
-        it("returns undefined if the top node's path is different", () => {
-            nodeToCache.path = "path/to/differentCache";
-            directoryListModel.cacheNavigation(nodeToCache);
-            const result = directoryListModel.popCachedNavigation(pathToCache);
-
-            expect(result).to.be.undefined;
-        });
-
-        it("returns navigation node if top node's path is same", () => {
-            directoryListModel.cacheNavigation(nodeToCache);
-            const result = directoryListModel.popCachedNavigation(pathToCache);
-
-            expect(result).to.deep.equal(nodeToCache);
         });
     });
 });

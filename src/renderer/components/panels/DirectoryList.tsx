@@ -179,28 +179,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             }
         }
 
-        const cachedNavigation = this.model.popCachedNavigation(this.props.path);
-
-        if (cachedNavigation) {
-            const remainingChosenItems = this.state.chosenItems
-                .filter(item => cachedNavigation.directoryItems.includes(item));
-            this.setState(
-                {
-                    directoryItems: cachedNavigation.directoryItems,
-                    selectedIndex: cachedNavigation.selectedIndex,
-                    chosenItems: remainingChosenItems
-                } as IDirectoryListState);
-        } else {
-            const directoryItems = await directoryManager.listDirectory(
-                this.props.path,
-                { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems });
-            const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
-            this.setState(
-                {
-                    directoryItems,
-                    chosenItems: remainingChosenItems
-                } as IDirectoryListState);
-        }
+        const directoryItems = await directoryManager.listDirectory(
+            this.props.path,
+            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems });
+        const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
+        this.setState(
+            {
+                directoryItems,
+                chosenItems: remainingChosenItems
+            } as IDirectoryListState);
     }
 
     /**
@@ -346,8 +333,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private goBack() {
         this.context.scrollArea.scrollTop();
+
+        const cachedSelectedIndex = this.model.popSelectedIndex();
+
         const parentDirectory = path.join(this.props.path, "..");
-        this.setState({ selectedIndex: 0 } as IDirectoryListState);
+        this.setState({ selectedIndex: cachedSelectedIndex || 0 } as IDirectoryListState);
         this.props.sendPathUp(parentDirectory);
     }
 
@@ -360,11 +350,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     private goIn(pathToDirectory: string) {
         this.context.scrollArea.scrollTop();
 
-        this.model.cacheNavigation({
-            path: this.props.path,
-            selectedIndex: this.state.selectedIndex,
-            directoryItems: this.state.directoryItems
-        });
+        this.model.cacheSelectedIndex(this.state.selectedIndex);
 
         this.setState({ selectedIndex: 0 } as IDirectoryListState);
         this.props.sendPathUp(pathToDirectory);
