@@ -2,17 +2,18 @@
     height: 100%;
     overflow: hidden;
     padding: 5px 0 0 5px;
-    background: black;
 
     .terminalContainer {
         height: 100%;
 
         .terminal {
             height: 100%;
+            background-color: inherit;
 
             .xterm-viewport {
                 overflow-y: auto;
                 height: 100%;
+                background-color: inherit;
             }
         }
     }

@@ -61,5 +61,8 @@
     ],
     "scrollToBottom": [
         "pagedown"
+    ],
+    "toggleIntegratedTerminal": [
+        "ctrl+`"
     ]
 }

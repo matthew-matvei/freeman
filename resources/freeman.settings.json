@@ -11,5 +11,8 @@
     "confirmation": {
         "requiredBeforeTrash": true,
         "requiredBeforeDeletion": true
+    },
+    "terminal": {
+        "displayAtStartup": false
     }
 }

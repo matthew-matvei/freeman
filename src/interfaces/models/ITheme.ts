@@ -48,6 +48,12 @@ interface ITheme {
         /** The background colour of the selected item in the QuickSelect component. */
         selectedColour: string;
     };
+
+    /** The colours of the TerminalPane component. */
+    terminalPane: {
+        /** The background colour of the TerminalPane component. */
+        backgroundColour: string;
+    };
 }
 
 export default ITheme;

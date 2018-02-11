@@ -5,7 +5,8 @@ import { HotKeys } from "react-hotkeys";
 import SplitPane from "react-split-pane";
 
 import { CommandPalette } from "components/modals";
-import { DirectoryWrapper, Status } from "components/panels";
+import { Status } from "components/panels";
+import { DirectoryWrapper } from "components/wrappers";
 import { IHandlers, IStatusNotifier } from "models";
 import { ApplicationCommander } from "objects";
 import { IAppProps } from "props";

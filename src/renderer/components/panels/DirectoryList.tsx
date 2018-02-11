@@ -58,6 +58,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     private keysTrapper?: HotKeys | null;
 
+    /** Gets the keys trapper to invoke manual focusing of this DirectoryList. */
+    public get KeysTrapper(): HotKeys | null | undefined {
+        return this.keysTrapper;
+    }
+
     /** Gets the directory items that are not currently hidden. */
     private get nonHiddenDirectoryItems(): IDirectoryItem[] {
         return this.state.directoryItems.filter(

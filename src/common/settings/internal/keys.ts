@@ -21,5 +21,6 @@ export default {
     chooseItem: ["space"],
     openGoto: ["ctrl+e"],
     scrollToTop: ["pageup"],
-    scrollToBottom: ["pagedown"]
+    scrollToBottom: ["pagedown"],
+    toggleIntegratedTerminal: ["ctrl+`"]
 } as IKeyMap;

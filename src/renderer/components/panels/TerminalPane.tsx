@@ -5,12 +5,13 @@ import ReactResizeDetector from "react-resize-detector";
 import Terminal from "xterm";
 
 import { ISocketMessage } from "models";
+import { ITerminalPaneProps } from "props/panels";
 import Utils from "Utils";
 
 import "styles/panels/TerminalPane.scss";
 
 /** The component for displaying a terminal frontend. */
-class Terminalpane extends React.PureComponent {
+class Terminalpane extends React.PureComponent<ITerminalPaneProps> {
 
     /** The containing div element of the terminal. */
     private container?: HTMLDivElement | null;
@@ -57,7 +58,11 @@ class Terminalpane extends React.PureComponent {
      * @returns - a JSX element representing the terminal view
      */
     public render(): JSX.Element {
-        return <div className="TerminalPane">
+        const terminalPaneStyle: React.CSSProperties = {
+            background: this.props.theme.terminalPane.backgroundColour
+        };
+
+        return <div className="TerminalPane" style={terminalPaneStyle}>
             <div
                 className="terminalContainer"
                 ref={element => this.container = element}>

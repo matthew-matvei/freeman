@@ -1,11 +1,13 @@
 import IDirectoryListProps from "./IDirectoryListProps";
-import IDirectoryWrapperProps from "./IDirectoryWrapperProps";
 import IPathPanelProps from "./IPathPanelProps";
 import IStatusProps from "./IStatusProps";
+import ITerminalHeaderProps from "./ITerminalHeaderProps";
+import ITerminalPaneProps from "./ITerminalPaneProps";
 
 export {
     IDirectoryListProps,
-    IDirectoryWrapperProps,
     IPathPanelProps,
-    IStatusProps
+    IStatusProps,
+    ITerminalHeaderProps,
+    ITerminalPaneProps
 };

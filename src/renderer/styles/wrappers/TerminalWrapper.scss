@@ -1,0 +1,13 @@
+.TerminalWrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.terminalScrollArea {
+    height: 100%;
+
+    .scrollarea-content {
+        height: 100%;
+    }
+}

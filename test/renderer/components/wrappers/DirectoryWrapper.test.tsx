@@ -1,24 +1,28 @@
 import { expect } from "chai";
-import Enzyme, { shallow } from "enzyme";
+import Enzyme, { mount, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import * as React from "react";
+import { HotKeys, HotKeysProps } from "react-hotkeys";
 import "reflect-metadata";
-import sinon, { SinonSpy } from "sinon";
+import sinon, { SinonSandbox } from "sinon";
 import { IMock, Mock } from "typemoq";
 
-import { DirectoryWrapper } from "components/panels";
+import { DirectoryWrapper } from "components/wrappers";
 import { IDirectoryManager, ISettingsManager } from "managers";
-import { IStatusNotifier } from "models";
-import { IDirectoryWrapperProps } from "props/panels";
+import { IHandlers, IStatusNotifier } from "models";
+import { IDirectoryWrapperProps } from "props/wrappers";
+import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
 import { IDirectoryWrapperState } from "states/panels";
+import Utils from "Utils";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("<DirectoryWrapper />", () => {
     let props: IDirectoryWrapperProps;
     let component: React.ReactElement<IDirectoryWrapperProps>;
-    let renderSpy: SinonSpy;
+
+    let sandbox: SinonSandbox;
 
     let directoryManager: IMock<IDirectoryManager>;
     let settingsManager: IMock<ISettingsManager>;
@@ -26,6 +30,7 @@ describe("<DirectoryWrapper />", () => {
     before(() => {
         directoryManager = Mock.ofType<IDirectoryManager>();
         settingsManager = Mock.ofType<ISettingsManager>();
+        settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
 
         const statusNotifier = {} as IStatusNotifier;
 
@@ -45,10 +50,11 @@ describe("<DirectoryWrapper />", () => {
 
     beforeEach(() => {
         component = <DirectoryWrapper {...props} />;
+        sandbox = sinon.createSandbox();
     });
 
     afterEach(() => {
-        renderSpy && renderSpy.restore();
+        sandbox && sandbox.restore();
     });
 
     it("contains a <div /> with the className 'DirectoryWrapper'", () => {
@@ -74,9 +80,36 @@ describe("<DirectoryWrapper />", () => {
 
     it("re-renders only once when updating path", () => {
         const wrapper = shallow(component);
-        renderSpy = sinon.spy(DirectoryWrapper.prototype, "render");
+        const renderSpy = sandbox.spy(DirectoryWrapper.prototype, "render");
         wrapper.setState({ updatePath: "/new/path" });
 
         expect(renderSpy.callCount).to.equal(1);
+    });
+
+    it("can toggle the display of the integrated terminal", () => {
+        const wrapper = shallow(component);
+        const hotkeys = wrapper.find(HotKeys);
+        const hotkeysProps = hotkeys.props() as HotKeysProps;
+        expect(hotkeysProps.handlers).to.exist;
+        const preState = wrapper.state() as IDirectoryWrapperState;
+        (hotkeysProps.handlers as IHandlers)
+            .toggleIntegratedTerminal();
+        const postState = wrapper.state() as IDirectoryWrapperState;
+
+        expect(postState.isTerminalOpen).to.not.equal(preState.isTerminalOpen);
+    });
+
+    it("sets focus when closing the integrated terminal", () => {
+        const wrapper = mount(component);
+        wrapper.setState({ isTerminalOpen: true } as IDirectoryWrapperState);
+        const autoFocusStub = sandbox.stub(Utils, "autoFocus");
+
+        const hotkeys = wrapper.find(HotKeys).first();
+        const hotkeysProps = hotkeys.props() as HotKeysProps;
+        expect(hotkeysProps.handlers).to.exist;
+        (hotkeysProps.handlers as IHandlers)
+            .toggleIntegratedTerminal();
+
+        expect(autoFocusStub.calledOnce).to.be.true;
     });
 });

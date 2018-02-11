@@ -13,5 +13,8 @@ export default {
     confirmation: {
         requiredBeforeTrash: true,
         requiredBeforeDeletion: true
+    },
+    terminal: {
+        displayAtStartup: false
     }
 } as ICommonSettings;
