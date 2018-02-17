@@ -4,7 +4,7 @@ declare module "react-resize-detector" {
 
     interface ReactResizeDetectorProps extends React.Props<ReactResizeDetector> {
         handleHeight?: boolean;
-        handleWeight?: boolean;
+        handleWidth?: boolean;
         onResize: (width: number, height: number) => void;
     }
 

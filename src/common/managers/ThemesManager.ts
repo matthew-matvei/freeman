@@ -45,7 +45,7 @@ class ThemesManager implements IThemesManager {
         this.directoryManager = directoryManager;
     }
 
-    /** Gets the theme retrieved by the keys manager. */
+    /** @inheritDoc */
     public get theme(): ITheme {
         if (!this._theme) {
             this._theme = this.retrieve(this.settingsManager.settings.themeName);

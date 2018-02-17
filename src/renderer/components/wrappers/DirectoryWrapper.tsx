@@ -7,6 +7,7 @@ import SplitPane from "react-split-pane";
 import { DirectoryList, PathPanel } from "components/panels";
 import { TerminalWrapper } from "components/wrappers";
 import { IHandlers } from "models";
+import { IIntegratedTerminal, IntegratedTerminal } from "objects";
 import { IDirectoryWrapperProps } from "props/wrappers";
 import { IDirectoryWrapperState } from "states/panels";
 import Utils from "Utils";
@@ -25,6 +26,9 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /** The directory list child of this wrapper. */
     private directoryList?: DirectoryList | null;
 
+    /** The terminal frontend. */
+    private integratedTerminal: IIntegratedTerminal;
+
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
         toggleIntegratedTerminal: this.toggleIntegratedTerminal
@@ -40,6 +44,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
 
         const { settingsManager, initialPath } = this.props;
 
+        this.integratedTerminal = new IntegratedTerminal(settingsManager);
+
         this.state = {
             path: initialPath,
             isTerminalOpen: settingsManager.settings.terminal.displayAtStartup
@@ -54,8 +60,11 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public render(): JSX.Element {
         const scrollAreaVertContainerStyle = { width: "20px" };
         const scrollAreaVertBarStyle = { width: "100%" };
-        const defaultDirectoryListHeight = this.state.isTerminalOpen ?
+        const directoryListHeight = this.state.isTerminalOpen ?
             this.prevScrollAreaHeight || "65vh" : "100%";
+        const resizerStyle: React.CSSProperties = {
+            display: this.state.isTerminalOpen ? "block" : "none"
+        };
 
         return <HotKeys
             handlers={this.handlers}>
@@ -64,7 +73,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 <div className="splitPaneWrapper">
                     <SplitPane
                         split="horizontal"
-                        defaultSize={defaultDirectoryListHeight}
+                        size={directoryListHeight}
+                        resizerStyle={resizerStyle}
                         onDragFinished={this.storeDirectoryListHeight}>
                         <div
                             className="scrollAreaWrapper"
@@ -91,7 +101,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         {this.state.isTerminalOpen &&
                             <TerminalWrapper
                                 settingsManager={this.props.settingsManager}
-                                theme={this.props.theme} />}
+                                theme={this.props.theme}
+                                integratedTerminal={this.integratedTerminal} />}
                     </SplitPane>
                 </div>
             </div>

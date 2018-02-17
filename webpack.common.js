@@ -51,11 +51,6 @@ const commonConfig = {
     node: { fs: "empty", __dirname: false },
     externals: [
         nodeExternals(),
-        {
-            "react": "React",
-            "react-dom": "ReactDOM",
-            "xterm": "Terminal"
-        },
         (ctx, req, done) => (/^node-pty$/.test(req) ? done(null, `commonjs ${req}`) : done())
     ]
 };

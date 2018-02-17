@@ -27,14 +27,7 @@ class DirectoryManager implements IDirectoryManager {
     /** A watcher that observes changes to a directory. */
     private watcher?: fs.FSWatcher;
 
-    /**
-     * Returns a list of paths of all files in the directory given in path.
-     *
-     * @param filePath - the path to the directory to list
-     * @param options - an object of options to use when invoking the method
-     *
-     * @returns - a list of all files in the given directory
-     */
+    /** @inheritDoc */
     public async listDirectory(
         filePath: string,
         options: IListDirectoryOptions
@@ -74,13 +67,7 @@ class DirectoryManager implements IDirectoryManager {
         return sort(files).filter(filterCondition);
     }
 
-    /**
-     * Creates an item with itemName of itemType at itemPath.
-     *
-     * @param itemName - the name of the item to be created
-     * @param itemPath - the path to the item to be created
-     * @param itemType - the type of the item to be created
-     */
+    /** @inheritDoc */
     public async createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<void> {
         const fullItemName = path.join(itemPath, itemName);
 
@@ -99,13 +86,7 @@ class DirectoryManager implements IDirectoryManager {
         }
     }
 
-    /**
-     * Renames an item with oldName to newName at itemPath.
-     *
-     * @param oldName - the previous name
-     * @param newName - the new name
-     * @param itemPath - the path to the item to be renamed
-     */
+    /** @inheritDoc */
     public async renameItem(oldName: string, newName: string, itemPath: string): Promise<void> {
         if (oldName === newName) {
             return;
@@ -121,11 +102,7 @@ class DirectoryManager implements IDirectoryManager {
         }
     }
 
-    /**
-     * Deletes the given itemsToDelete.
-     *
-     * @param itemsToDelete - an array of all directory items to delete
-     */
+    /** @inheritDoc */
     public async deleteItems(itemsToDelete: IDirectoryItem[]): Promise<void> {
         const itemDeletions = itemsToDelete.map(async item => {
             await DirectoryManager.deleteItem(item.path, Utils.parseItemType(item));
@@ -134,11 +111,7 @@ class DirectoryManager implements IDirectoryManager {
         await Promise.all(itemDeletions);
     }
 
-    /**
-     * Sends the given itemsToTrash to the system-dependent trash.
-     *
-     * @param itemsToTrash - the items to send to trash
-     */
+    /** @inheritDoc */
     public async sendItemsToTrash(itemsToTrash: IDirectoryItem[]): Promise<void> {
         const itemSoftDeletions = itemsToTrash.map(async item => {
             await DirectoryManager.sendItemToTrash(item.path);
@@ -147,12 +120,7 @@ class DirectoryManager implements IDirectoryManager {
         await Promise.all(itemSoftDeletions);
     }
 
-    /**
-     * Copies the given itemsToCopy to the destinationDirectory.
-     *
-     * @param itemsToCopy - the items to copy to destinationDirectory
-     * @param destinationDirectory - the directory to copy the items to
-     */
+    /** @inheritDoc */
     public async copyItems(itemsToCopy: IDirectoryItem[], destinationDirectory: string): Promise<void> {
         const itemCopies = itemsToCopy.map(async item => {
             await DirectoryManager.copyItem(item.path, destinationDirectory);
@@ -161,12 +129,7 @@ class DirectoryManager implements IDirectoryManager {
         await Promise.all(itemCopies);
     }
 
-    /**
-     * Moves the given itemsToCopy to the destinationDirectory.
-     *
-     * @param itemsToMove - the items to move to destinationDirectory
-     * @param destinationDirectory - the directory to move the items to
-     */
+    /** @inheritDoc */
     public async moveItems(itemsToMove: IDirectoryItem[], destinationDirectory: string): Promise<void> {
         const itemMoves = itemsToMove.map(async item => {
             await DirectoryManager.moveItem(item.path, destinationDirectory, Utils.parseItemType(item));
@@ -175,26 +138,17 @@ class DirectoryManager implements IDirectoryManager {
         await Promise.all(itemMoves);
     }
 
-    /**
-     * Reads the contents of the given file synchronously.
-     *
-     * @param filePath - the path to the file to read
-     */
+    /** @inheritDoc */
     public readFileSync(filePath: string): string {
         return fs.readFileSync(filePath, "utf-8");
     }
 
-    /**
-     * Starts watching pathToWatch, attaching listener to any change events.
-     *
-     * @param pathToWatch - the path to begin watching
-     * @param listener - a callback function to invoke when pathToWatch changes
-     */
+    /** @inheritDoc */
     public startWatching(pathToWatch: string, listener: () => void) {
         this.watcher = fs.watch(pathToWatch, listener);
     }
 
-    /** Stops watching any directory. */
+    /** @inheritDoc */
     public stopWatching() {
         this.watcher && this.watcher.close();
     }

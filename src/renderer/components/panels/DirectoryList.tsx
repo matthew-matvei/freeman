@@ -21,13 +21,13 @@ import Utils from "Utils";
 /** The component for displaying a directory's list of items. */
 class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListState> {
 
+    /** Context available within a ScrollArea. */
+    public context: { scrollArea: any };
+
     /** Validation for context types. */
     public static contextTypes = {
         scrollArea: PropTypes.object
     };
-
-    /** Context available within a ScrollArea. */
-    public context: { scrollArea: any };
 
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {

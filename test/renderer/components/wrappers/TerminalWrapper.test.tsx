@@ -8,6 +8,7 @@ import { IMock, Mock } from "typemoq";
 import { TerminalWrapper } from "components/wrappers";
 import { ISettingsManager } from "managers";
 import { ITheme } from "models";
+import { IIntegratedTerminal } from "objects";
 import { ITerminalWrapperProps } from "props/wrappers";
 import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
@@ -17,6 +18,7 @@ Enzyme.configure({ adapter: new Adapter() });
 describe("<TerminalWrapper />", () => {
     let settingsManager: IMock<ISettingsManager>;
     let theme: ITheme;
+    let integratedTerminal: IMock<IIntegratedTerminal>;
 
     let props: ITerminalWrapperProps;
     let component: React.ReactElement<ITerminalWrapperProps>;
@@ -25,9 +27,11 @@ describe("<TerminalWrapper />", () => {
         theme = applicationTheme;
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
+        integratedTerminal = Mock.ofType<IIntegratedTerminal>();
         props = {
             settingsManager: settingsManager.object,
-            theme
+            theme,
+            integratedTerminal: integratedTerminal.object
         };
 
         component = <TerminalWrapper {...props} />;

@@ -15,10 +15,10 @@ class TerminalWrapper extends React.PureComponent<ITerminalWrapperProps> {
      *
      * @returns - a JSX element representing the terminal wrapper view
      */
-    public render(): JSX.Element {
+    public render(): JSX.Element | null {
         return <div className="TerminalWrapper">
             <TerminalHeader shellName={this.ShellName} />
-            <TerminalPane theme={this.props.theme} />
+            <TerminalPane theme={this.props.theme} integratedTerminal={this.props.integratedTerminal} />
         </div>;
     }
 

@@ -35,7 +35,7 @@ class SettingsManager implements ISettingsManager {
         this.directoryManager = directoryManager;
     }
 
-    /** Gets the settings retrieved by the settings manager. */
+    /** @inheritDoc */
     public get settings(): ICommonSettings {
         if (!this._settings) {
             this._settings = this.retrieve();

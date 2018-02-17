@@ -8,8 +8,7 @@
         "arrow-parens": false,
         "arrow-return-shorthand": true,
         "await-promise": [
-            true,
-            "Bluebird"
+            true
         ],
         "class-name": true,
         "comment-format": [
@@ -50,7 +49,24 @@
         "member-access": true,
         "member-ordering": [
             true,
-            "statics-first"
+            {
+                "order": [
+                    "public-instance-field",
+                    "public-static-field",
+                    "protected-instance-field",
+                    "protected-static-field",
+                    "private-instance-field",
+                    "private-static-field",
+                    "public-constructor",
+                    "private-constructor",
+                    "public-instance-method",
+                    "public-static-method",
+                    "protected-instance-method",
+                    "protected-static-method",
+                    "private-instance-method",
+                    "private-static-method"
+                ]
+            }
         ],
         "new-parens": true,
         "newline-before-return": true,
@@ -136,6 +152,7 @@
         "trailing-comma": false,
         "triple-equals": true,
         "switch-final-break": true,
+        "typedef": true,
         "typedef-whitespace": true,
         "typeof-compare": true,
         "unified-signatures": true,

@@ -5,7 +5,6 @@ require("electron-debug")({ enabled: true });
 import container from "ioc/container";
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
-import { ITerminalService } from "services";
 import Utils from "Utils";
 import { FreemanWindow } from "widgets";
 
@@ -17,7 +16,7 @@ if (process.argv.includes("--verbose")) {
 }
 
 const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
-const terminalService = container.get<ITerminalService>(TYPES.ITerminalService);
+
 buildWindow();
 
 /** Handles constructing the main window. */
@@ -53,7 +52,6 @@ function buildWindow() {
         Menu.setApplicationMenu(menu);
 
         mainWindow.on("closed", () => {
-            terminalService.close();
             Utils.trace("Main window closing");
             mainWindow = null;
         });

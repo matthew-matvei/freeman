@@ -35,7 +35,7 @@ class KeysManager implements IKeysManager {
         this.directoryManager = directoryManager;
     }
 
-    /** Gets the key map retrieved by the keys manager. */
+    /** @inheritDoc */
     public get keyMap(): IKeyMap {
         if (!this._keyMap) {
             this._keyMap = this.retrieve();
