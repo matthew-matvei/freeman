@@ -5,16 +5,26 @@
 
     .splitPaneWrapper {
         position: absolute;
-        height: 94vh;
+        height: 93vh;
         width: 100%;
 
         .scrollAreaWrapper {
             width: 100%;
+
+            .directoryScrollArea {
+                width: 100%;
+                height: 100%;
+            }
+
+            .scrollbar-container {
+                position: absolute;
+                background-color: inherit;
+
+                &.vertical {
+                    right: 0;
+                    top: 0;
+                }
+            }
         }
     }
-}
-
-.directoryScrollArea {
-    width: 100%;
-    height: 100%;
 }

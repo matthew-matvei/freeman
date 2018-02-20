@@ -18,6 +18,8 @@ import { IDirectoryListState } from "states/panels";
 import { ClipboardAction, DirectoryDirection, ItemType, ScrollToDirection } from "types";
 import Utils from "Utils";
 
+import "styles/panels/DirectoryList.scss";
+
 /** The component for displaying a directory's list of items. */
 class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListState> {
 
@@ -221,7 +223,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     return <InputItem
                         thisItem={thisItem}
                         otherItems={otherItems}
-                        sendUpRenameItem={this.renameItem} />;
+                        sendUpRenameItem={this.renameItem}
+                        theme={this.props.theme} />;
                 } else {
                     return <DirectoryItem
                         key={item.path}
@@ -236,7 +239,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             });
 
         return (
-            <div>
+            <div className="DirectoryList">
                 <HotKeys
                     handlers={this.handlers}
                     ref={component => {
@@ -251,7 +254,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                             <InputItem
                                 creatingItemType={this.state.creatingNewItem}
                                 sendUpCreateItem={this.createNewItem}
-                                otherItems={this.state.directoryItems} />}
+                                otherItems={this.state.directoryItems}
+                                theme={this.props.theme} />}
                     </ul>
                 </HotKeys>
                 <Goto

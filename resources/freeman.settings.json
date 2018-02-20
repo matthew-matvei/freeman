@@ -13,6 +13,7 @@
         "requiredBeforeDeletion": true
     },
     "terminal": {
-        "displayAtStartup": false
+        "displayAtStartup": false,
+        "cursorBlink": true
     }
 }

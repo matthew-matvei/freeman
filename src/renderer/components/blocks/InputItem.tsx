@@ -1,12 +1,14 @@
 import autobind from "autobind-decorator";
-import log from "electron-log";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
+import { DirectoryItemIcon } from "components/blocks";
 import LoggedError from "errors/LoggedError";
 import { IHandlers } from "models";
 import { IInputItemProps } from "props/blocks";
 import { IInputItemState } from "states/blocks";
+
+import "styles/blocks/InputItem.scss";
 
 /** The input component to create a new directory item. */
 class InputItem extends React.Component<IInputItemProps, IInputItemState> {
@@ -58,15 +60,25 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      */
     public render(): JSX.Element {
         const inputStyle: React.CSSProperties = {
-            borderColor: this.state.isInvalid && "red"
+            border: this.state.isInvalid ?
+                `2px solid ${this.props.theme.inputItem.invalidInput}` :
+                `2px solid ${this.props.theme.primaryBackgroundColour}`
         };
+
+        const icon = this.props.creatingItemType &&
+            <DirectoryItemIcon
+                directoryItemType={this.props.creatingItemType}
+                theme={this.props.theme} />;
 
         return (
             <HotKeys handlers={this.handlers}>
-                <input type="text"
-                    style={inputStyle}
-                    ref={input => this.input = input}
-                    onKeyUp={this.handleKeyUp} />
+                <div className="Item InputItem">
+                    {icon}
+                    <input type="text"
+                        style={inputStyle}
+                        ref={input => this.input = input}
+                        onKeyUp={this.handleKeyUp} />
+                </div>
             </HotKeys>);
     }
 
@@ -95,7 +107,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
             return this.handleRename(event);
         }
 
-        log.error("No callback function passed to InputItem component");
+        throw new LoggedError("No callback function passed to InputItem component");
     }
 
     /**

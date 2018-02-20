@@ -15,6 +15,7 @@ export default {
         requiredBeforeDeletion: true
     },
     terminal: {
-        displayAtStartup: false
+        displayAtStartup: false,
+        cursorBlink: true
     }
 } as ICommonSettings;

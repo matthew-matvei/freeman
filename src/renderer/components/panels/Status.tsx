@@ -18,6 +18,7 @@ class Status extends React.PureComponent<IStatusProps> {
     public render(): JSX.Element {
         const { backgroundColour, foregroundColour } = this.props.theme.statusBar;
         const statusBarStyle: React.CSSProperties = { backgroundColor: backgroundColour, color: foregroundColour };
+        const githubIconStyle: React.CSSProperties = { verticalAlign: "top" };
 
         return <div
             style={statusBarStyle}
@@ -28,7 +29,7 @@ class Status extends React.PureComponent<IStatusProps> {
             <div className="rightGroup">
                 <span>{`${this.props.itemCount} items`}</span>
                 <span>{`${this.props.chosenCount} chosen`}</span>
-                <span><FaGithub color={foregroundColour} onClick={this.openGithub} /></span>
+                <span><FaGithub style={githubIconStyle} color={foregroundColour} onClick={this.openGithub} /></span>
             </div>
         </div>;
     }

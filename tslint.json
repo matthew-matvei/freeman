@@ -15,7 +15,16 @@
             true,
             "check-space"
         ],
-        "completed-docs": true,
+        "completed-docs": [
+            true,
+            {
+                "tags": {
+                    "exists": [
+                        "inheritDoc"
+                    ]
+                }
+            }
+        ],
         "curly": true,
         "cyclomatic-complexity": [
             true,

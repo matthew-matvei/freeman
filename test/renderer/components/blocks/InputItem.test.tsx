@@ -7,6 +7,7 @@ import sinon, { SinonSandbox } from "sinon";
 
 import { InputItem } from "components/blocks";
 import { IInputItemProps } from "props/blocks";
+import applicationTheme from "settings/internal/themes/dark";
 import { IInputItemState } from "states/blocks";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -19,7 +20,8 @@ describe("<InputItem />", () => {
 
     before(() => {
         props = {
-            otherItems: []
+            otherItems: [],
+            theme: applicationTheme
         };
 
         sandbox = sinon.createSandbox();
@@ -37,6 +39,12 @@ describe("<InputItem />", () => {
         const wrapper = shallow(component);
 
         expect(wrapper.find("input")).to.have.length(1);
+    });
+
+    it("renders a <div /> with className 'InputItem'", () => {
+        const wrapper = shallow(component);
+
+        expect(wrapper.findWhere(n => n.type() === "div" && n.hasClass("InputItem")));
     });
 
     it("begins with 'isInvalid' as false", () => {

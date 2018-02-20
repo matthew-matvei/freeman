@@ -1,24 +1,17 @@
 import { IDirectoryItem } from "models";
+import { IThemeableProps } from "props/common";
 import { ItemType } from "types";
 
-/**
- * Describes the properties of a directory input item component.
- */
-interface IInputItemProps {
+/** Describes the properties of a directory input item component. */
+interface IInputItemProps extends IThemeableProps {
 
-    /**
-     * The type of item being created, if any.
-     */
+    /** The type of item being created, if any. */
     creatingItemType?: ItemType;
 
-    /**
-     * The other items within this directory.
-     */
+    /** The other items within this directory. */
     otherItems: IDirectoryItem[];
 
-    /**
-     * This directory item, if renaming item.
-     */
+    /** This directory item, if renaming item. */
     thisItem?: IDirectoryItem;
 
     /**

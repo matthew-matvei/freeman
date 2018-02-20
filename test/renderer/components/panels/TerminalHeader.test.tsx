@@ -6,16 +6,21 @@ import "reflect-metadata";
 
 import { TerminalHeader } from "components/panels";
 import { ITerminalHeaderProps } from "props/panels";
+import applicationTheme from "settings/internal/themes/dark";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("<TerminalHeader />", () => {
-    let shellName: string;
+    let props: ITerminalHeaderProps;
     let component: React.ReactElement<ITerminalHeaderProps>;
 
     beforeEach(() => {
-        shellName = "bash";
-        component = <TerminalHeader shellName={shellName} />;
+        props = {
+            shellName: "bash",
+            theme: applicationTheme
+        };
+
+        component = <TerminalHeader {...props} />;
     });
 
     it("renders a <div /> with the className 'TerminalHeader'", () => {

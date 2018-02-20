@@ -13,7 +13,11 @@ class TerminalHeader extends React.PureComponent<ITerminalHeaderProps> {
      * @returns - a JSX element representing the terminal header view
      */
     public render(): JSX.Element {
-        return <div className="TerminalHeader">
+        const style: React.CSSProperties = {
+            background: this.props.theme.terminalHeader.backgroundColour
+        };
+
+        return <div className="TerminalHeader" style={style}>
             <span>{this.props.shellName}</span>
         </div>;
     }

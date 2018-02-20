@@ -1,5 +1,10 @@
 @import "normalize-scss/sass/normalize/import-now";
 
+body {
+    font-size: 1em;
+    font-family: "Ubuntu", sans-serif
+}
+
 ul {
     list-style-type: none;
     margin: 0;
@@ -19,4 +24,13 @@ ul {
 }
 input, button, textarea, :focus {
     outline: none;
+}
+
+::-webkit-scrollbar {
+    background-color: inherit;
+    width: 0.9em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(65, 67, 57);
 }

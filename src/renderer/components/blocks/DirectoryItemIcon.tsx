@@ -2,6 +2,7 @@ import FileIcons from "file-icons-js";
 import * as React from "react";
 import { FaFileO, FaFolderO } from "react-icons/lib/fa";
 
+import LoggedError from "errors/LoggedError";
 import { IDirectoryItemIconProps } from "props/blocks";
 
 import "styles/blocks/DirectoryItemIcon.scss";
@@ -15,16 +16,22 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
      * @returns - a JSX element representing the directory item icon
      */
     public render(): JSX.Element {
-        const { directoryItem, theme } = this.props;
+        const { directoryItem, directoryItemType, theme } = this.props;
 
-        if (directoryItem.isDirectory) {
+        if (directoryItem && directoryItem.isDirectory ||
+            directoryItemType === "folder") {
+
             return <FaFolderO color={theme.directoryItem.directoryIconColour} />;
-        } else {
-            const className = FileIcons.getClassWithColor(directoryItem.path);
+        } else if (directoryItem && !directoryItem.isDirectory ||
+            directoryItemType === "file") {
 
-            return className === null ? <FaFileO color={theme.directoryItem.fileIconDefaultColour} /> :
-                <i className={className}></i>;
+            const className = directoryItem && FileIcons.getClassWithColor(directoryItem.path);
+
+            return className ? <i className={className}></i> :
+                <FaFileO color={theme.directoryItem.fileIconDefaultColour} />;
         }
+
+        throw new LoggedError("Tried to render directory item icon with no valid prop");
     }
 }
 

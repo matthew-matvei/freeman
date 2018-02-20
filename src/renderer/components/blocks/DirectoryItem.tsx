@@ -35,22 +35,26 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
             chosenColour,
             selectedColour
         } = this.props.theme.directoryItem;
-        const style: React.CSSProperties = {
+
+        const backgroundColourStyle: React.CSSProperties = {
+            backgroundColor: isSelected ? selectedColour : backgroundColour
+        };
+
+        const foregroundColourStyle: React.CSSProperties = {
             color: (this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour)),
-            backgroundColor: isSelected ? selectedColour : backgroundColour,
-            border: "none"
+                (model.isDirectory && directoryColour))
         };
 
         return <HotKeys
             handlers={this.handlers}
             ref={component => component && isSelected && Utils.autoFocus(component)}>
             <div
-                className={`DirectoryItem ${selectedClass}`}>
+                className={`Item DirectoryItem ${selectedClass}`}
+                style={backgroundColourStyle}>
                 <DirectoryItemIcon directoryItem={this.props.model} theme={this.props.theme} />
                 <button
-                    style={style}
+                    style={foregroundColourStyle}
                     onClick={this.select}
                     onDoubleClick={this.activate}>
                     {model.name}

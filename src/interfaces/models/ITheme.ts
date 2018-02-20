@@ -39,6 +39,12 @@ interface ITheme {
         selectedColour: string;
     };
 
+    /** The colours of the InputItem component. */
+    inputItem: {
+        /** The colour to show a warning of invalid input. */
+        invalidInput: string;
+    };
+
     /** The colours of the QuickSelect component. */
     quickSelect: {
         /** The foreground colour of an item in the QuickSelect component. */
@@ -49,10 +55,22 @@ interface ITheme {
         selectedColour: string;
     };
 
+    /** The colours of the TerminalHeader component. */
+    terminalHeader: {
+        /** The backgroun colour of the TerminalHeader component. */
+        backgroundColour: string;
+    };
+
     /** The colours of the TerminalPane component. */
     terminalPane: {
         /** The background colour of the TerminalPane component. */
         backgroundColour: string;
+    };
+
+    /** The colours of the resizer bars. */
+    resizers: {
+        /** The primary colour of the resizer bars. */
+        colour: string;
     };
 }
 

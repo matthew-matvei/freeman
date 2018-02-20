@@ -11,6 +11,7 @@ import { IDirectoryManager, IKeysManager, ISettingsManager, IThemesManager } fro
 import { IHandlers } from "models";
 import { IAppProps } from "props";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
+import applicationTheme from "settings/internal/themes/dark";
 import { IAppState } from "states";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -32,6 +33,7 @@ describe("<App />", () => {
         keysManager = Mock.ofType<IKeysManager>();
         settingsManager = Mock.ofType<ISettingsManager>();
         themeManager = Mock.ofType<IThemesManager>();
+        themeManager.setup(tm => tm.theme).returns(() => applicationTheme);
 
         props = {
             directoryManager: directoryManager.object,
@@ -40,7 +42,7 @@ describe("<App />", () => {
             themeManager: themeManager.object
         };
 
-        component = <App { ...props } />;
+        component = <App {...props} />;
 
         sandbox = sinon.createSandbox();
     });

@@ -65,7 +65,10 @@ class App extends React.Component<IAppProps, IAppState> {
     public render(): JSX.Element {
         const { directoryManager, keysManager, settingsManager, themeManager } = this.props;
         const appStyle = { color: themeManager.theme.primaryColour };
-        const splitPaneStyle = { height: "97vh" };
+        const splitPaneStyle: React.CSSProperties = { height: "97vh" };
+        const resizerStyle: React.CSSProperties = {
+            backgroundColor: this.props.themeManager.theme.resizers.colour
+        };
 
         return <div>
             <HotKeys keyMap={keysManager.keyMap} handlers={this.handlers}>
@@ -73,7 +76,8 @@ class App extends React.Component<IAppProps, IAppState> {
                     <SplitPane
                         split="vertical"
                         defaultSize="50vw"
-                        style={splitPaneStyle}>
+                        style={splitPaneStyle}
+                        resizerStyle={resizerStyle}>
                         <DirectoryWrapper
                             id="left"
                             initialPath={os.homedir()}

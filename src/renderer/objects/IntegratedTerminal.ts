@@ -36,7 +36,9 @@ class IntegratedTerminal implements IIntegratedTerminal {
         });
 
         (Terminal as any).loadAddon("fit");
-        this.xterm = new Terminal();
+        this.xterm = new Terminal({
+            cursorBlink: this.settingsManager.settings.terminal.cursorBlink
+        });
 
         this.xterm.on("data", data => {
             this.ptyProcess.write(data);

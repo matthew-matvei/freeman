@@ -1,9 +1,10 @@
 .DirectoryItem {
-    display: flex;
-    padding: 0.13em 0.3em;
+    padding: 0.13em 1em;
 
     button {
         width: 100%;
         text-align: left;
+        background: inherit;
+        border: none;
     }
 }

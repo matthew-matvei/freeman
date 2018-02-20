@@ -2,8 +2,15 @@ const webpack = require("webpack");
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const GoogleFontsPlugin = require("google-fonts-webpack-plugin");
 
 const extractSass = new ExtractTextPlugin({ filename: "[name].css" });
+const googleFonts = new GoogleFontsPlugin({
+    fonts: [
+        { family: "Ubuntu" },
+        { family: "Ubuntu Mono" }
+    ]
+});
 
 const commonConfig = {
     output: { path: path.resolve(__dirname, "app"), filename: "[name].js" },
@@ -65,6 +72,6 @@ module.exports = [
         {
             target: "electron-renderer",
             entry: { renderer: "./src/renderer/index.tsx" },
-            plugins: [extractSass]
+            plugins: [extractSass, googleFonts]
         }, commonConfig)
 ];

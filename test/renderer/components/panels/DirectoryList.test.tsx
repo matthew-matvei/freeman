@@ -93,6 +93,12 @@ describe("<DirectoryList />", () => {
         sandbox.restore();
     });
 
+    it("renders a <div /> with className 'DirectoryList'", () => {
+        const wrapper = shallow(component);
+
+        expect(wrapper.findWhere(n => n.type() === "div" && n.hasClass("DirectoryList")));
+    });
+
     it("begins with no 'directoryItems'", () => {
         const wrapper = shallow(component);
         const state = wrapper.state() as IDirectoryListState;
@@ -181,7 +187,7 @@ describe("<DirectoryList />", () => {
 
     it("focuses the component when 'isSelectedPane' becomes set", () => {
         props.isSelectedPane = false;
-        component = <DirectoryList { ...props } />;
+        component = <DirectoryList {...props} />;
         const wrapper = shallow(component);
         wrapper.setProps({ isSelectedPane: true } as IDirectoryListProps);
         const state = wrapper.state() as IDirectoryListState;
@@ -199,7 +205,7 @@ describe("<DirectoryList />", () => {
 
     it("focus sets 'isFocused'", () => {
         props.isSelectedPane = false;
-        component = <DirectoryList { ...props } />;
+        component = <DirectoryList {...props} />;
         const wrapper = shallow(component);
         const hotkeys = wrapper.find(HotKeys);
         const hotkeysProps = hotkeys.props() as HotKeysProps;

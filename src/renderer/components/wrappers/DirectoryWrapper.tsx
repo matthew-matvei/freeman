@@ -1,7 +1,7 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
-import ScrollArea from "react-scrollbar";
+import ScrollArea from "react-scrollbar/dist/no-css";
 import SplitPane from "react-split-pane";
 
 import { DirectoryList, PathPanel } from "components/panels";
@@ -58,12 +58,19 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
      * @returns - a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const scrollAreaVertContainerStyle = { width: "20px" };
-        const scrollAreaVertBarStyle = { width: "100%" };
+        const scrollAreaVertContainerStyle: React.CSSProperties = {
+            width: "0.9em",
+            backgroundColor: "inherit"
+        };
+        const scrollAreaVertBarStyle: React.CSSProperties = {
+            width: "100%",
+            backgroundColor: "rgb(65, 67, 57)"
+        };
         const directoryListHeight = this.state.isTerminalOpen ?
             this.prevScrollAreaHeight || "65vh" : "100%";
         const resizerStyle: React.CSSProperties = {
-            display: this.state.isTerminalOpen ? "block" : "none"
+            display: this.state.isTerminalOpen ? "block" : "none",
+            backgroundColor: this.props.theme.resizers.colour
         };
 
         return <HotKeys
