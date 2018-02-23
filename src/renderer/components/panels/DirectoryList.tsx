@@ -12,7 +12,7 @@ import { Goto } from "components/modals";
 import DirectoryError from "errors/DirectoryError";
 import LoggedError from "errors/LoggedError";
 import { IDirectoryItem, IHandlers } from "models";
-import { DirectoryListModel } from "objects";
+import { DirectoryListModel, INavigator, Navigator } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
 import { ClipboardAction, DirectoryDirection, ItemType, ScrollToDirection } from "types";
@@ -60,6 +60,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     private keysTrapper?: HotKeys | null;
 
+    private navigator: INavigator;
+
     /** Gets the keys trapper to invoke manual focusing of this DirectoryList. */
     public get KeysTrapper(): HotKeys | null | undefined {
         return this.keysTrapper;
@@ -96,14 +98,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             renamingItem: false,
             itemDeleted: false,
             isGotoOpen: false,
-            isFocused: this.props.isSelectedPane
+            isFocused: props.isSelectedPane
         };
 
         this.model = new DirectoryListModel();
+        this.navigator = new Navigator(props.path, props.directoryManager, props.settingsManager);
     }
 
     /** Updates the directory contents after loading the component. */
-    public async componentDidMount() {
+    public componentDidMount() {
         const { directoryManager, settingsManager } = this.props;
 
         try {
@@ -119,11 +122,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             throw new DirectoryError("Could not set watcher", this.props.path);
         }
 
-        const items = await directoryManager.listDirectory(
-            this.props.path,
-            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems });
-
-        this.setState({ directoryItems: items } as IDirectoryListState);
+        this.navigator.retrieveDirectoryItems()
+            .then(items => this.setState({ directoryItems: items } as IDirectoryListState));
     }
 
     /** Handles closing the watcher on unmounting the directory list. */
@@ -148,7 +148,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param prevProps - the previous props object
      * @param prevState - the previous state object
      */
-    public async componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
+    public componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
         const { directoryManager, settingsManager } = this.props;
 
         this.props.statusNotifier.setItemCount(this.nonHiddenDirectoryItems.length);
@@ -181,15 +181,11 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             }
         }
 
-        const directoryItems = await directoryManager.listDirectory(
-            this.props.path,
-            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems });
-        const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
-        this.setState(
-            {
-                directoryItems,
-                chosenItems: remainingChosenItems
-            } as IDirectoryListState);
+        this.navigator.retrieveDirectoryItems()
+            .then(items => {
+                const remainingChosenItems = this.state.chosenItems.filter(item => items.includes(item));
+                this.setState({ directoryItems: items, chosenItems: remainingChosenItems } as IDirectoryListState);
+            });
     }
 
     /**
@@ -357,7 +353,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.model.cacheSelectedIndex(this.state.selectedIndex);
 
         this.setState({ selectedIndex: 0 } as IDirectoryListState);
-        this.props.sendPathUp(pathToDirectory);
+        this.navigator.toChild(pathToDirectory).then(onResolved => this.props.sendPathUp(pathToDirectory));
     }
 
     /**

@@ -82,6 +82,8 @@ interface IDirectoryManager {
 
     /** Stops watching any directory. */
     stopWatching(): void;
+
+    exists(filePath: string): Promise<boolean>;
 }
 
 export default IDirectoryManager;

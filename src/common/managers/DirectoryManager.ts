@@ -153,6 +153,10 @@ class DirectoryManager implements IDirectoryManager {
         this.watcher && this.watcher.close();
     }
 
+    public async exists(filePath: string): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
+
     /**
      * Copies an item at itemPath to the destinationDirectory.
      *
