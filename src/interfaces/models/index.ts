@@ -4,6 +4,7 @@ import IHandlers from "./IHandlers";
 import IItemClipboard from "./IItemClipboard";
 import IKeyMap from "./IKeyMap";
 import IListDirectoryOptions from "./IListDirectoryOptions";
+import INavigatorDirectoryItem from "./INavigatorDirectoryItem";
 import IStatus from "./IStatus";
 import IStatusNotifier from "./IStatusNotifier";
 import ITheme from "./ITheme";
@@ -15,6 +16,7 @@ export {
     IItemClipboard,
     IKeyMap,
     IListDirectoryOptions,
+    INavigatorDirectoryItem,
     IStatus,
     IStatusNotifier,
     ITheme
