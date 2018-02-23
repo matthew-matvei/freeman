@@ -9,7 +9,8 @@ const googleFonts = new GoogleFontsPlugin({
     fonts: [
         { family: "Ubuntu" },
         { family: "Ubuntu Mono" }
-    ]
+    ],
+    formats: ["woff2"]
 });
 
 const commonConfig = {

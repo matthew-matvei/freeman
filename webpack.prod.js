@@ -5,7 +5,7 @@ const merge = require("webpack-merge");
 const common = require("./webpack.common");
 
 const commonProduction = {
-    devtool: "source-map",
+    devtool: false,
     plugins: [
         new UglifyJsPlugin({ sourceMap: true }),
         new webpack.DefinePlugin({
