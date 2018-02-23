@@ -3,7 +3,9 @@ import DirectoryListModel from "./DirectoryListModel";
 import DirectorySorter from "./DirectorySorter";
 import DirectoryTextFinder from "./DirectoryTextFinder";
 import IIntegratedTerminal from "./IIntegratedTerminal";
+import INavigator from "./INavigator";
 import IntegratedTerminal from "./IntegratedTerminal";
+import Navigator from "./Navigator";
 
 export {
     ApplicationCommander,
@@ -11,5 +13,7 @@ export {
     DirectorySorter,
     DirectoryTextFinder,
     IIntegratedTerminal,
-    IntegratedTerminal
+    INavigator,
+    IntegratedTerminal,
+    Navigator
 };
