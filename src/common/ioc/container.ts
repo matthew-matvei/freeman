@@ -2,7 +2,9 @@ import { Container } from "inversify";
 
 import TYPES from "ioc/types";
 import {
+    AttributesManager,
     DirectoryManager,
+    IAttributesManager,
     IDirectoryManager,
     IKeysManager,
     ISettingsManager,
@@ -19,5 +21,6 @@ container.bind<IDirectoryManager>(TYPES.IDirectoryManager)
 container.bind<ISettingsManager>(TYPES.ISettingsManager).to(SettingsManager);
 container.bind<IKeysManager>(TYPES.IKeysManager).to(KeysManager);
 container.bind<IThemesManager>(TYPES.IThemesManager).to(ThemesManager);
+container.bind<IAttributesManager>(TYPES.IAttributesManager).to(AttributesManager);
 
 export default container;

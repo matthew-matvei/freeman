@@ -1,7 +1,7 @@
 {
   "name": "freeman",
   "productName": "FreeMAN",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "description": "A free, extensible, cross-platform file manager for power users",
   "main": "app/main.js",
   "build": {
@@ -9,9 +9,6 @@
     "copyright": "Copyright © 2018 Matthew James",
     "linux": {
       "category": "System"
-    },
-    "win": {
-      "asar": false
     }
   },
   "repository": {
@@ -32,7 +29,7 @@
     "build": "webpack --config webpack.common.js",
     "prebuild:test": "rimraf __tests__/*",
     "build:test": "webpack --config webpack.test.js",
-    "prebuild:prod": "concurrently 'rimraf app/font/' 'rimraf app/*.woff2' 'rimraf app/*.css' 'rimraf app/*.js'",
+    "prebuild:prod": "concurrently \"rimraf app/font/\" \"rimraf app/*.woff2\" \"rimraf app/*.css\" \"rimraf app/*.js\"",
     "build:prod": "webpack --config webpack.prod.js",
     "pretest": "npm run build:test",
     "test": "electron-mocha --renderer __tests__",
@@ -43,8 +40,7 @@
     "prepackage:windows": "npm run build:prod",
     "package:windows": "electron-builder --windows",
     "postinstall": "electron-builder install-app-deps",
-    "lint": "tslint --project tsconfig.json",
-    "lint:fix": "tslint --project tsconfig.json --fix"
+    "lint": "tslint --project tsconfig.json --fix"
   },
   "homepage": "https://github.com/matthew-matvei/freeman#readme",
   "devDependencies": {
@@ -127,5 +123,8 @@
     "winattr": "^2.0.0",
     "ws": "^3.3.2",
     "xterm": "2.9.2"
+  },
+  "optionalDependencies": {
+    "electron-fswin": "^2.18.0"
   }
 }

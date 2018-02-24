@@ -17,9 +17,7 @@ The core application is ready for beta use, supporting Linux and Windows OS's. F
 
 ## Getting started
 
-Ideally, after cloning, you can just:
-
-    npm install  # if not yet done
+    npm install
     npm start
 
 If you want, you can add user-specific settings files, e.g. `freeman.keys.json`
@@ -31,39 +29,26 @@ like so:
 depends on whether the application is running in a development or production
 environment)*. Example files can be found in the `./resources/` folder.
 
-### `node-pty` on Windows
-
-Before installing dependencies, ensure you:
-
-    npm install --global node-gyp
-    npm install --global --production windows-build-tools
-
-Which will allow you to build `node-pty` on Windows
-
-If you have any problems building
-it, see its [issues page](https://github.com/Tyriar/node-pty/issues).
-
 ## Packaging
 
-If you would like to package / install the program, on Windows and Linux
-currently you can:
+If you would like to package / install the program, on Windows and Linux you can:
 
-    npm run package:linux  # if on Linux
-    npm run package:windows  # if on Windows
+    npm run package:linux
+    npm run package:windows
 
 ## Running
 
 During development, after compiling you can:
 
-    ./node_modules/.bin/electron app/main.js
+    npm run start
 
 After packaging, you can run the system-dependent executable outputted by
-`electron-builder` in the `./dist/` folder. 
+`electron-builder` in the `./dist/` folder.
 
 ## Debugging
 
-Providing the `--verbose` command-lineargument will make the application log 
-in more detail, helping trace execution when using the packaged app. Logs of 
+Providing the `--verbose` command-line argument will make the application log
+in more detail, helping trace execution when using the packaged app. Logs of
 warnings and errors can be found at `{appData}/log.log`.
 
 ## Can I contribute?

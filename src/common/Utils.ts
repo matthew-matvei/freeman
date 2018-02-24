@@ -1,12 +1,9 @@
 import log from "electron-log";
 import fuzzysearch from "fuzzysearch";
-import os from "os";
 import path from "path";
 import * as ReactDOM from "react-dom";
 import { HotKeys } from "react-hotkeys";
-import winattr, { Attributes } from "winattr";
 
-import DirectoryError from "errors/DirectoryError";
 import { IDirectoryItem } from "models";
 import { ItemType } from "types";
 
@@ -83,57 +80,6 @@ class Utils {
      */
     public static trace = (message: string) => {
         process.env.VERBOSE && log.verbose(message);
-    }
-
-    /**
-     * Returns whether a given file or folder is hidden.
-     *
-     * @param pathToItem - the path to the file or folder
-     * @param hideUnixStyleHiddenItems - whether Unix-style hidden items should be hidden on Windows
-     *
-     * @returns whether the file at pathToItem is hidden
-     */
-    public static isHidden = async (pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> => {
-        if (!pathToItem) {
-            throw new ReferenceError("pathToItem must contain characters");
-        }
-
-        const itemName = path.basename(pathToItem);
-
-        if (os.platform() === "linux") {
-            return itemName.startsWith(".");
-        } else if (os.platform() === "win32") {
-            if (hideUnixStyleHiddenItems && itemName.startsWith(".")) {
-                return true;
-            }
-
-            try {
-                const attributes = await Utils.getAsync(pathToItem);
-
-                return attributes.hidden;
-            } catch {
-                throw new DirectoryError("Could not determine attributes", pathToItem);
-            }
-        }
-
-        log.warn("Only linux and win32 platforms currently supported");
-
-        return false;
-    }
-
-    /**
-     * Returns a promisified version of the winattr.get function.
-     *
-     * @param path - the path to a file or folder
-     */
-    public static getAsync = async (pathToItem: string): Promise<Attributes> => {
-        return new Promise<Attributes>((resolve, reject) => {
-            winattr.get(pathToItem, (err, attrs) => {
-                err && reject(err);
-
-                resolve(attrs);
-            });
-        });
     }
 }
 
