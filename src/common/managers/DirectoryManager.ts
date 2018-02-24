@@ -19,6 +19,7 @@ const renameAsync = promisify(fs.rename);
 const mkdirAsync = promisify(fs.mkdir);
 const copyFileAsync = promisify(ncp.ncp);
 const writeFileAsync = promisify(fs.writeFile);
+const accessAsync = promisify(fs.access);
 
 /** Provides methods for reading, writing and creating files and folders. */
 @injectable()
@@ -154,7 +155,13 @@ class DirectoryManager implements IDirectoryManager {
     }
 
     public async exists(filePath: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        try {
+            await accessAsync(filePath);
+        } catch (error) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

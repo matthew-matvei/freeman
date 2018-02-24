@@ -2,7 +2,7 @@ import { IDirectoryItem } from "models";
 
 interface INavigator {
 
-    toParent(): void;
+    toParent(): Promise<void>;
 
     toChild(folderPath: string): Promise<void>;
 

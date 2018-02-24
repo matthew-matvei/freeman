@@ -336,9 +336,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         const cachedSelectedIndex = this.model.popSelectedIndex();
 
-        const parentDirectory = path.join(this.props.path, "..");
+        const parentDirectory = path.dirname(this.props.path);
         this.setState({ selectedIndex: cachedSelectedIndex || 0 } as IDirectoryListState);
-        this.props.sendPathUp(parentDirectory);
+        this.navigator.toParent().then(onResolved => this.props.sendPathUp(parentDirectory));
     }
 
     /**
