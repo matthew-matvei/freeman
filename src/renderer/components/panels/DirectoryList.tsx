@@ -400,9 +400,12 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param filePath - the path to navigate to
      */
     @autobind
-    private navigateToPath(filePath: string) {
+    private async navigateToPath(filePath: string) {
         if (filePath !== this.props.path) {
-            this.props.sendPathUp(filePath);
+            this.setState({ selectedIndex: 0 } as IDirectoryListState);
+
+            return this.props.navigator.toDirectory(filePath)
+                .then(onResolved => this.props.sendPathUp(filePath));
         }
     }
 

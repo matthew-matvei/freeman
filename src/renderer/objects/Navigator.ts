@@ -36,7 +36,10 @@ class Navigator implements INavigator {
         this.currentPath = initialPath;
 
         this.retrieveDirectoryItems()
-            .then(items => this.currentDirectoryItems = items)
+            .then(items => {
+                this.retrieveGrandChildren(items);
+                this.currentDirectoryItems = items;
+            })
             .catch(error => {
                 throw new LoggedError(`Could not retrieve directory items for ${this.currentPath}`, error);
             });
@@ -93,6 +96,36 @@ class Navigator implements INavigator {
         this.parentDirectoryItems = Promise.resolve(this.currentDirectoryItems);
         this.currentDirectoryItems = grandChildItems;
         this.retrieveGrandChildren(this.currentDirectoryItems);
+    }
+
+    public async toDirectory(folderPath: string): Promise<void> {
+        if (folderPath === await this.parentDirectoryPath) {
+            return this.toParent();
+        }
+
+        const potentialChild = this.currentDirectoryItems &&
+            this.currentDirectoryItems.find(item => item.path === folderPath);
+
+        if (potentialChild) {
+            return this.toChild(potentialChild.path);
+        }
+
+        this.currentPath = folderPath;
+        this.currentDirectoryItems = await this.directoryManager.listDirectory(folderPath, this.retrieveOptions);
+        this.retrieveGrandChildren(this.currentDirectoryItems);
+
+        return this.retrieveParentDirectoryPath(this.currentPath)
+            .then(parentPath => {
+                this.parentDirectoryPath = Promise.resolve(parentPath);
+                parentPath && this.directoryManager.listDirectory(parentPath, this.retrieveOptions)
+                    .then(async items => {
+                        this.parentDirectoryItems = Promise.resolve(items);
+                        this.retrieveGrandChildren(await this.parentDirectoryItems);
+                    });
+            })
+            .catch(error => {
+                throw new LoggedError(`Could not determine parent path for ${this.currentPath}`, error);
+            });
     }
 
     public async retrieveDirectoryItems(): Promise<IDirectoryItem[]> {

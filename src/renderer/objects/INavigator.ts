@@ -7,6 +7,8 @@ interface INavigator {
     toChild(folderPath: string): Promise<void>;
 
     retrieveDirectoryItems(): Promise<IDirectoryItem[]>;
+
+    toDirectory(folderPath: string): Promise<void>;
 }
 
 export default INavigator;
