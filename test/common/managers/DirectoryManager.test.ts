@@ -5,10 +5,11 @@ import mockfs from "mock-fs";
 import path from "path";
 import "reflect-metadata";
 import sinon, { SinonSandbox } from "sinon";
+import { IMock, It, Mock } from "typemoq";
 
 import DirectoryError from "errors/DirectoryError";
-import { DirectoryManager, IDirectoryManager } from "managers";
-import { IDirectoryItem, IListDirectoryOptions } from "models";
+import { DirectoryManager, IAttributesManager, IDirectoryManager } from "managers";
+import { IAttributes, IDirectoryItem, IListDirectoryOptions } from "models";
 
 chai.use(chaiAsPromised);
 
@@ -21,6 +22,7 @@ describe("directoryManager's", () => {
     let newFileName: string;
     let newFolderName: string;
 
+    let attributesManager: IMock<IAttributesManager>;
     let directoryManager: IDirectoryManager;
     let options: IListDirectoryOptions;
 
@@ -38,7 +40,13 @@ describe("directoryManager's", () => {
         newFileName = "newItem.txt";
         newFolderName = "newItem";
 
-        directoryManager = new DirectoryManager();
+        attributesManager = Mock.ofType<IAttributesManager>();
+        const attributes: IAttributes = {
+            hidden: false
+        };
+        attributesManager.setup(async am => am.getAttributesAsync(It.isAnyString()))
+            .returns(sinon.stub().resolves(attributes));
+        directoryManager = new DirectoryManager(attributesManager.object);
         options = {
             hideUnixStyleHiddenItems: false
         };

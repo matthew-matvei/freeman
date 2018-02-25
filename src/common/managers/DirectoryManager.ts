@@ -1,12 +1,15 @@
+import log from "electron-log";
 import fs from "fs";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import ncp from "ncp";
+import os from "os";
 import path from "path";
 import trash from "trash";
 import { promisify } from "util";
 
 import DirectoryError from "errors/DirectoryError";
-import { IDirectoryManager } from "managers";
+import TYPES from "ioc/types";
+import { IAttributesManager, IDirectoryManager } from "managers";
 import { IDirectoryItem, IListDirectoryOptions } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
@@ -27,6 +30,12 @@ class DirectoryManager implements IDirectoryManager {
 
     /** A watcher that observes changes to a directory. */
     private watcher?: fs.FSWatcher;
+
+    private attributesManager: IAttributesManager;
+
+    public constructor(@inject(TYPES.IAttributesManager) attributesManager: IAttributesManager) {
+        this.attributesManager = attributesManager;
+    }
 
     /** @inheritDoc */
     public async listDirectory(
@@ -59,7 +68,7 @@ class DirectoryManager implements IDirectoryManager {
                 name: fileName,
                 path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: await Utils.isHidden(fullPath, options.hideUnixStyleHiddenItems)
+                isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems)
             } as IDirectoryItem;
         });
 
@@ -162,6 +171,42 @@ class DirectoryManager implements IDirectoryManager {
         }
 
         return true;
+    }
+
+    /**
+     * Returns whether a given file or folder is hidden.
+     *
+     * @param pathToItem - the path to the file or folder
+     * @param hideUnixStyleHiddenItems - whether Unix-style hidden items should be hidden on Windows
+     *
+     * @returns whether the file at pathToItem is hidden
+     */
+    private async isHidden(pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> {
+        if (!pathToItem) {
+            throw new ReferenceError("pathToItem must contain characters");
+        }
+
+        const itemName = path.basename(pathToItem);
+
+        if (os.platform() === "linux") {
+            return itemName.startsWith(".");
+        } else if (os.platform() === "win32") {
+            if (hideUnixStyleHiddenItems && itemName.startsWith(".")) {
+                return true;
+            }
+
+            try {
+                const attributes = await this.attributesManager.getAttributesAsync(pathToItem);
+
+                return attributes.hidden;
+            } catch {
+                throw new DirectoryError("Could not determine attributes", pathToItem);
+            }
+        }
+
+        log.warn("Only linux and win32 platforms currently supported");
+
+        return false;
     }
 
     /**

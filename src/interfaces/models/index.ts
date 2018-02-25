@@ -1,4 +1,5 @@
 import IApplicationCommands from "./IApplicationCommands";
+import IAttributes from "./IAttributes";
 import IDirectoryItem from "./IDirectoryItem";
 import IHandlers from "./IHandlers";
 import IItemClipboard from "./IItemClipboard";
@@ -11,6 +12,7 @@ import ITheme from "./ITheme";
 
 export {
     IApplicationCommands,
+    IAttributes,
     IDirectoryItem,
     IHandlers,
     IItemClipboard,
