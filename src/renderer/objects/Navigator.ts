@@ -6,22 +6,37 @@ import { IDirectoryManager, ISettingsManager } from "managers";
 import { IDirectoryItem, IListDirectoryOptions, INavigatorDirectoryItem } from "models";
 import { INavigator } from "objects";
 
+/** Handles navigating the file system. */
 class Navigator implements INavigator {
 
-    private currentPath!: string;
+    /** The current path. */
+    private currentPath: string;
 
+    /** The directory items at the current path. */
     private currentDirectoryItems?: INavigatorDirectoryItem[];
 
+    /** A manager to handle directory operations. */
     private directoryManager: IDirectoryManager;
 
+    /** A manager to handle application settings. */
     private settingsManager: ISettingsManager;
 
+    /** The parent directory path, or null if one cannot be accessed. */
     private parentDirectoryPath?: Promise<string | null>;
 
+    /** The parent directory's items, which exist only if parentDirectoryPath is not null. */
     private parentDirectoryItems?: Promise<INavigatorDirectoryItem[]>;
 
+    /** Options to use with the directory manager's listDirectory method. */
     private retrieveOptions: IListDirectoryOptions;
 
+    /**
+     * Initialises a new instance of the Navigator class.
+     *
+     * @param initialPath - the initial path the navigator is set to
+     * @param directoryManager - a manager to handle directory operations
+     * @param settingsManager - a manager to handle application settings
+     */
     public constructor(
         initialPath: string,
         directoryManager: IDirectoryManager,
@@ -58,6 +73,7 @@ class Navigator implements INavigator {
             });
     }
 
+    /** @inheritDoc */
     public async toParent(): Promise<void> {
         if (await this.parentDirectoryPath === null) {
             throw new LoggedError(`Could not navigate to parent from ${this.currentPath}`);
@@ -78,6 +94,7 @@ class Navigator implements INavigator {
             });
     }
 
+    /** @inheritDoc */
     public async toChild(folderPath: string): Promise<void> {
         if (!this.currentDirectoryItems) {
             return;
@@ -98,6 +115,7 @@ class Navigator implements INavigator {
         this.retrieveGrandChildren(this.currentDirectoryItems);
     }
 
+    /** @inheritDoc */
     public async toDirectory(folderPath: string): Promise<void> {
         if (folderPath === await this.parentDirectoryPath) {
             return this.toParent();
@@ -128,6 +146,7 @@ class Navigator implements INavigator {
             });
     }
 
+    /** @inheritDoc */
     public async retrieveDirectoryItems(): Promise<IDirectoryItem[]> {
         if (!this.currentDirectoryItems) {
             const items = await this.directoryManager.listDirectory(this.currentPath, this.retrieveOptions);
