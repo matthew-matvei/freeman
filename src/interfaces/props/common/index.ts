@@ -1,6 +1,7 @@
 import ICloseableProps from "./ICloseableProps";
 import IDirectoryCommonProps from "./IDirectoryCommonProps";
 import IDirectoryManageableProps from "./IDirectoryManageableProps";
+import INavigableProps from "./INavigableProps";
 import IOpenableProps from "./IOpenableProps";
 import ISettingsManageableProps from "./ISettingsManageableProps";
 import IStatusNotifiableProps from "./IStatusNotifiableProps";
@@ -10,6 +11,7 @@ export {
     ICloseableProps,
     IDirectoryCommonProps,
     IDirectoryManageableProps,
+    INavigableProps,
     IOpenableProps,
     ISettingsManageableProps,
     IStatusNotifiableProps,

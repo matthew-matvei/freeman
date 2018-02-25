@@ -7,7 +7,7 @@ import SplitPane from "react-split-pane";
 import { DirectoryList, PathPanel } from "components/panels";
 import { TerminalWrapper } from "components/wrappers";
 import { IHandlers } from "models";
-import { IIntegratedTerminal, IntegratedTerminal } from "objects";
+import { IIntegratedTerminal, INavigator, IntegratedTerminal, Navigator } from "objects";
 import { IDirectoryWrapperProps } from "props/wrappers";
 import { IDirectoryWrapperState } from "states/panels";
 import Utils from "Utils";
@@ -29,6 +29,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /** The terminal frontend. */
     private integratedTerminal: IIntegratedTerminal;
 
+    private navigator: INavigator;
+
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
         toggleIntegratedTerminal: this.toggleIntegratedTerminal
@@ -42,7 +44,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
 
-        const { settingsManager, initialPath } = this.props;
+        const { settingsManager, initialPath, directoryManager } = this.props;
 
         this.integratedTerminal = new IntegratedTerminal(settingsManager);
 
@@ -50,6 +52,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
             path: initialPath,
             isTerminalOpen: settingsManager.settings.terminal.displayAtStartup
         };
+
+        this.navigator = new Navigator(initialPath, directoryManager, settingsManager);
     }
 
     /**
@@ -102,7 +106,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                                     directoryManager={this.props.directoryManager}
                                     statusNotifier={this.props.statusNotifier}
                                     settingsManager={this.props.settingsManager}
-                                    theme={this.props.theme} />
+                                    theme={this.props.theme}
+                                    navigator={this.navigator} />
                             </ScrollArea>
                         </div>
                         {this.state.isTerminalOpen &&

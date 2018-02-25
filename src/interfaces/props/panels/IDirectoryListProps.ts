@@ -1,6 +1,7 @@
 import {
     IDirectoryCommonProps,
     IDirectoryManageableProps,
+    INavigableProps,
     ISettingsManageableProps,
     IStatusNotifiableProps,
     IThemeableProps
@@ -12,7 +13,8 @@ interface IDirectoryListProps extends
     IDirectoryManageableProps,
     IStatusNotifiableProps,
     ISettingsManageableProps,
-    IThemeableProps {
+    IThemeableProps,
+    INavigableProps {
 
     /** The path to the directory the pane displays. */
     path: string;

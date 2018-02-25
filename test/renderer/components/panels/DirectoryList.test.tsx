@@ -15,6 +15,7 @@ import {
     IListDirectoryOptions,
     IStatusNotifier
 } from "models";
+import { INavigator } from "objects";
 import { IDirectoryItemProps } from "props/blocks";
 import { IDirectoryListProps } from "props/panels";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
@@ -31,6 +32,7 @@ describe("<DirectoryList />", () => {
 
     let mockDirectoryManager: IMock<IDirectoryManager>;
     let mockSettingsManager: IMock<ISettingsManager>;
+    let mockNavigator: IMock<INavigator>;
 
     let listDirectoryOptions: IListDirectoryOptions;
     let statusNotifier: IStatusNotifier;
@@ -46,6 +48,7 @@ describe("<DirectoryList />", () => {
 
         mockDirectoryManager = Mock.ofType<IDirectoryManager>();
         mockSettingsManager = Mock.ofType<ISettingsManager>();
+        mockNavigator = Mock.ofType<INavigator>();
 
         statusNotifier = {
             notify: () => { },
@@ -83,7 +86,8 @@ describe("<DirectoryList />", () => {
             directoryManager: mockDirectoryManager.object,
             statusNotifier,
             settingsManager: mockSettingsManager.object,
-            theme: applicationTheme
+            theme: applicationTheme,
+            navigator: mockNavigator.object
         };
 
         component = <DirectoryList {...props} />;

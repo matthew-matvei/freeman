@@ -4,7 +4,7 @@ import { IMock, Mock } from "typemoq";
 
 import { IDirectoryManager, ISettingsManager } from "managers";
 import { IDirectoryItem, IStatusNotifier } from "models";
-import { DirectoryListModel } from "objects";
+import { DirectoryListModel, INavigator } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import applicationTheme from "settings/internal/themes/dark";
 import { IDirectoryListState } from "states/panels";
@@ -103,12 +103,14 @@ describe("DirectoryListModel's", () => {
         let prevProps: IDirectoryListProps;
         let nextProps: IDirectoryListProps;
 
+        let navigator: IMock<INavigator>;
         let directoryManager: IMock<IDirectoryManager>;
 
         const statusNotifier = {} as IStatusNotifier;
 
         beforeEach(() => {
             directoryManager = Mock.ofType<IDirectoryManager>();
+            navigator = Mock.ofType<INavigator>();
 
             const commonProps: IDirectoryListProps = {
                 id: "left",
@@ -119,7 +121,8 @@ describe("DirectoryListModel's", () => {
                 directoryManager: directoryManager.object,
                 statusNotifier,
                 settingsManager: settingsManager.object,
-                theme: applicationTheme
+                theme: applicationTheme,
+                navigator: navigator.object
             };
 
             prevProps = { ...commonProps };

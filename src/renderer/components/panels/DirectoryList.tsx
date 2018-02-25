@@ -12,7 +12,7 @@ import { Goto } from "components/modals";
 import DirectoryError from "errors/DirectoryError";
 import LoggedError from "errors/LoggedError";
 import { IDirectoryItem, IHandlers } from "models";
-import { DirectoryListModel, INavigator, Navigator } from "objects";
+import { DirectoryListModel } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
 import { ClipboardAction, DirectoryDirection, ItemType, ScrollToDirection } from "types";
@@ -60,8 +60,6 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     private keysTrapper?: HotKeys | null;
 
-    private navigator: INavigator;
-
     /** Gets the keys trapper to invoke manual focusing of this DirectoryList. */
     public get KeysTrapper(): HotKeys | null | undefined {
         return this.keysTrapper;
@@ -102,7 +100,6 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         };
 
         this.model = new DirectoryListModel();
-        this.navigator = new Navigator(props.path, props.directoryManager, props.settingsManager);
     }
 
     /** Updates the directory contents after loading the component. */
@@ -122,7 +119,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             throw new DirectoryError("Could not set watcher", this.props.path);
         }
 
-        return this.navigator.retrieveDirectoryItems()
+        return this.props.navigator.retrieveDirectoryItems()
             .then(items => this.setState({ directoryItems: items } as IDirectoryListState));
     }
 
@@ -181,7 +178,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             }
         }
 
-        return this.navigator.retrieveDirectoryItems()
+        return this.props.navigator.retrieveDirectoryItems()
             .then(items => {
                 const remainingChosenItems = this.state.chosenItems.filter(item => items.includes(item));
                 this.setState({ directoryItems: items, chosenItems: remainingChosenItems } as IDirectoryListState);
@@ -339,7 +336,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         const parentDirectory = path.dirname(this.props.path);
         this.setState({ selectedIndex: cachedSelectedIndex || 0 } as IDirectoryListState);
 
-        return this.navigator.toParent().then(onResolved => this.props.sendPathUp(parentDirectory));
+        return this.props.navigator.toParent()
+            .then(onResolved => this.props.sendPathUp(parentDirectory));
     }
 
     /**
@@ -355,7 +353,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         this.setState({ selectedIndex: 0 } as IDirectoryListState);
 
-        return this.navigator.toChild(pathToDirectory).then(onResolved => this.props.sendPathUp(pathToDirectory));
+        return this.props.navigator.toChild(pathToDirectory)
+            .then(onResolved => this.props.sendPathUp(pathToDirectory));
     }
 
     /**
