@@ -100,6 +100,7 @@
     "deepmerge": "^2.0.1",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.3",
+    "electron-fswin": "^2.18.2",
     "electron-log": "^2.2.13",
     "file-icons-js": "github:websemantics/file-icons-js",
     "fuzzysearch": "^1.0.3",
@@ -122,8 +123,5 @@
     "tslib": "^1.9.0",
     "ws": "^3.3.2",
     "xterm": "2.9.2"
-  },
-  "optionalDependencies": {
-    "electron-fswin": "^2.18.0"
   }
 }
