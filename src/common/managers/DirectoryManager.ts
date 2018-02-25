@@ -163,6 +163,7 @@ class DirectoryManager implements IDirectoryManager {
         this.watcher && this.watcher.close();
     }
 
+    /** @inheritDoc */
     public async exists(filePath: string): Promise<boolean> {
         try {
             await accessAsync(filePath);

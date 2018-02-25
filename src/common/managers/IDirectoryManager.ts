@@ -83,7 +83,12 @@ interface IDirectoryManager {
     /** Stops watching any directory. */
     stopWatching(): void;
 
-    exists(filePath: string): Promise<boolean>;
+    /**
+     * Returns whether a directory item at itemPath exists.
+     *
+     * @param itemPath - the path to the file to examine
+     */
+    exists(itemPath: string): Promise<boolean>;
 }
 
 export default IDirectoryManager;
