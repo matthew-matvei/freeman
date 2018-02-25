@@ -49,28 +49,7 @@ class Navigator implements INavigator {
         };
 
         this.currentPath = initialPath;
-
-        this.retrieveDirectoryItems()
-            .then(items => {
-                this.retrieveGrandChildren(items);
-                this.currentDirectoryItems = items;
-            })
-            .catch(error => {
-                throw new LoggedError(`Could not retrieve directory items for ${this.currentPath}`, error);
-            });
-
-        this.retrieveParentDirectoryPath(this.currentPath)
-            .then(parentPath => {
-                this.parentDirectoryPath = Promise.resolve(parentPath);
-                parentPath && this.directoryManager.listDirectory(parentPath, this.retrieveOptions)
-                    .then(async items => {
-                        this.parentDirectoryItems = Promise.resolve(items);
-                        this.retrieveGrandChildren(await this.parentDirectoryItems);
-                    });
-            })
-            .catch(error => {
-                throw new LoggedError(`Could not determine parent path for ${this.currentPath}`, error);
-            });
+        this.instantiateDirectory(initialPath);
     }
 
     /** @inheritDoc */
@@ -81,7 +60,6 @@ class Navigator implements INavigator {
 
         this.currentPath = await this.parentDirectoryPath! as string;
         this.currentDirectoryItems = await this.parentDirectoryItems!;
-        this.retrieveGrandChildren(this.currentDirectoryItems);
 
         return this.retrieveParentDirectoryPath(this.currentPath)
             .then(parentPath => {
@@ -129,7 +107,28 @@ class Navigator implements INavigator {
         }
 
         this.currentPath = folderPath;
-        this.currentDirectoryItems = await this.directoryManager.listDirectory(folderPath, this.retrieveOptions);
+        this.instantiateDirectory(folderPath);
+    }
+
+    /** @inheritDoc */
+    public async retrieveDirectoryItems(): Promise<IDirectoryItem[]> {
+        if (!this.currentDirectoryItems) {
+            this.currentDirectoryItems = await this.directoryManager
+                .listDirectory(this.currentPath, this.retrieveOptions);
+            this.retrieveGrandChildren(this.currentDirectoryItems);
+        }
+
+        return this.currentDirectoryItems;
+    }
+
+    /**
+     * Instantiates directory at pathToDirectory by retrieving its children, grandchildren,
+     *      parent and siblings.
+     *
+     * @param pathToDirectory - path to the directory to instantiate
+     */
+    private async instantiateDirectory(pathToDirectory: string) {
+        this.currentDirectoryItems = await this.directoryManager.listDirectory(pathToDirectory, this.retrieveOptions);
         this.retrieveGrandChildren(this.currentDirectoryItems);
 
         return this.retrieveParentDirectoryPath(this.currentPath)
@@ -144,17 +143,6 @@ class Navigator implements INavigator {
             .catch(error => {
                 throw new LoggedError(`Could not determine parent path for ${this.currentPath}`, error);
             });
-    }
-
-    /** @inheritDoc */
-    public async retrieveDirectoryItems(): Promise<IDirectoryItem[]> {
-        if (!this.currentDirectoryItems) {
-            const items = await this.directoryManager.listDirectory(this.currentPath, this.retrieveOptions);
-            this.currentDirectoryItems = items;
-            this.retrieveGrandChildren(this.currentDirectoryItems);
-        }
-
-        return this.currentDirectoryItems;
     }
 
     private retrieveGrandChildren(childItems: INavigatorDirectoryItem[]) {
