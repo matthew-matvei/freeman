@@ -1,7 +1,7 @@
 {
   "name": "freeman",
   "productName": "FreeMAN",
-  "version": "0.6.11",
+  "version": "0.6.12",
   "description": "A free, extensible, cross-platform file manager for power users",
   "main": "app/main.js",
   "build": {
