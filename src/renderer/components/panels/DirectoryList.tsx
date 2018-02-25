@@ -106,7 +106,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     }
 
     /** Updates the directory contents after loading the component. */
-    public componentDidMount() {
+    public async componentDidMount() {
         const { directoryManager, settingsManager } = this.props;
 
         try {
@@ -122,7 +122,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             throw new DirectoryError("Could not set watcher", this.props.path);
         }
 
-        this.navigator.retrieveDirectoryItems()
+        return this.navigator.retrieveDirectoryItems()
             .then(items => this.setState({ directoryItems: items } as IDirectoryListState));
     }
 
@@ -148,7 +148,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param prevProps - the previous props object
      * @param prevState - the previous state object
      */
-    public componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
+    public async componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
         const { directoryManager, settingsManager } = this.props;
 
         this.props.statusNotifier.setItemCount(this.nonHiddenDirectoryItems.length);
@@ -181,7 +181,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             }
         }
 
-        this.navigator.retrieveDirectoryItems()
+        return this.navigator.retrieveDirectoryItems()
             .then(items => {
                 const remainingChosenItems = this.state.chosenItems.filter(item => items.includes(item));
                 this.setState({ directoryItems: items, chosenItems: remainingChosenItems } as IDirectoryListState);
@@ -331,14 +331,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** Navigates back to the parent directory. */
     @autobind
-    private goBack() {
+    private async goBack() {
         this.context.scrollArea.scrollTop();
 
         const cachedSelectedIndex = this.model.popSelectedIndex();
 
         const parentDirectory = path.dirname(this.props.path);
         this.setState({ selectedIndex: cachedSelectedIndex || 0 } as IDirectoryListState);
-        this.navigator.toParent().then(onResolved => this.props.sendPathUp(parentDirectory));
+
+        return this.navigator.toParent().then(onResolved => this.props.sendPathUp(parentDirectory));
     }
 
     /**
@@ -347,13 +348,14 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @param pathToDirectory - the path to update to
      */
     @autobind
-    private goIn(pathToDirectory: string) {
+    private async goIn(pathToDirectory: string) {
         this.context.scrollArea.scrollTop();
 
         this.model.cacheSelectedIndex(this.state.selectedIndex);
 
         this.setState({ selectedIndex: 0 } as IDirectoryListState);
-        this.navigator.toChild(pathToDirectory).then(onResolved => this.props.sendPathUp(pathToDirectory));
+
+        return this.navigator.toChild(pathToDirectory).then(onResolved => this.props.sendPathUp(pathToDirectory));
     }
 
     /**

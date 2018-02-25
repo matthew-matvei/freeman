@@ -63,7 +63,8 @@ class Navigator implements INavigator {
         this.currentPath = await this.parentDirectoryPath! as string;
         this.currentDirectoryItems = await this.parentDirectoryItems!;
         this.retrieveGrandChildren(this.currentDirectoryItems);
-        this.retrieveParentDirectoryPath(this.currentPath)
+
+        return this.retrieveParentDirectoryPath(this.currentPath)
             .then(parentPath => {
                 this.parentDirectoryPath = Promise.resolve(parentPath);
                 parentPath && this.directoryManager.listDirectory(parentPath, this.retrieveOptions)
@@ -105,10 +106,10 @@ class Navigator implements INavigator {
     }
 
     private retrieveGrandChildren(childItems: INavigatorDirectoryItem[]) {
-        childItems.forEach(item => {
-            item.isDirectory && this.directoryManager.listDirectory(item.path, this.retrieveOptions)
-                .then(grandChildItems =>
-                    item.childItems = new Promise<IDirectoryItem[]>(resolve => { resolve(grandChildItems); }))
+        childItems.forEach(async item => {
+            return item.isDirectory && this.directoryManager.listDirectory(item.path, this.retrieveOptions)
+                .then(async grandChildItems =>
+                    item.childItems = Promise.resolve(grandChildItems))
                 .catch(error => log.warn(`Could not retrieve grand children for ${item.path}`));
         });
     }
