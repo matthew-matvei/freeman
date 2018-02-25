@@ -1,3 +1,4 @@
+import * as fswin from "electron-fswin";
 import { injectable } from "inversify";
 
 import LoggedError from "errors/LoggedError";
@@ -10,14 +11,12 @@ class AttributesManager implements IAttributesManager {
 
     /** @inheritDoc */
     public async getAttributesAsync(pathToItem: string): Promise<IAttributes> {
-        const fswin = require("electron-fswin");
-
         if (!fswin) {
             throw new LoggedError("Could not import electron-fswin module");
         }
 
         return new Promise<IAttributes>((resolve, reject) => {
-            fswin.getAttributes(pathToItem, (result: any) => {
+            fswin.getAttributes(pathToItem, result => {
                 if (!result) {
                     reject(`Could not retrieve attributes for ${pathToItem}`);
                 }
