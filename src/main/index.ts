@@ -43,7 +43,7 @@ function buildWindow() {
             minWidth: 700,
             minHeight: 400,
             disableAutoHideCursor: true,
-            backgroundColor: "#272822",
+            backgroundColor: "#272822"
         };
 
         mainWindow = new FreemanWindow(windowOptions);
