@@ -23,8 +23,10 @@ interface IDirectoryManager {
      * @param itemName - the name of the item to be created
      * @param itemPath - the path to the item to be created
      * @param itemType - the type of the item to be created
+     *
+     * @returns the created directory item
      */
-    createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<void>;
+    createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<IDirectoryItem>;
 
     /**
      * Renames an item with oldName to newName at itemPath.

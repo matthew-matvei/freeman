@@ -78,18 +78,22 @@ class DirectoryManager implements IDirectoryManager {
     }
 
     /** @inheritDoc */
-    public async createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<void> {
+    public async createItem(itemName: string, itemPath: string, itemType: ItemType): Promise<IDirectoryItem> {
         const fullItemName = path.join(itemPath, itemName);
 
         if (itemType === "folder") {
             try {
                 await mkdirAsync(fullItemName);
+
+                return await this.parseDirectoryItem(fullItemName, itemType);
             } catch {
                 throw new DirectoryError("Could not create directory", fullItemName);
             }
         } else {
             try {
                 await writeFileAsync(fullItemName, "");
+
+                return await this.parseDirectoryItem(fullItemName, itemType);
             } catch {
                 throw new DirectoryError("Could not create file", fullItemName);
             }
@@ -208,6 +212,15 @@ class DirectoryManager implements IDirectoryManager {
         log.warn("Only linux and win32 platforms currently supported");
 
         return false;
+    }
+
+    private async parseDirectoryItem(itemPath: string, itemType: ItemType): Promise<IDirectoryItem> {
+        return {
+            path: itemPath,
+            name: path.basename(itemPath),
+            isDirectory: itemType === "folder",
+            isHidden: await this.isHidden(itemPath, false)
+        };
     }
 
     /**
