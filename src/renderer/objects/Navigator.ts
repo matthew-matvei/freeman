@@ -121,6 +121,12 @@ class Navigator implements INavigator {
         return this.currentDirectoryItems;
     }
 
+    /** @inheritDoc */
+    public removeFromCache(itemsToRemove: IDirectoryItem[]): void {
+        this.currentDirectoryItems = this.currentDirectoryItems &&
+            this.currentDirectoryItems.filter(item => !itemsToRemove.includes(item));
+    }
+
     /**
      * Instantiates directory at pathToDirectory by retrieving its children, grandchildren,
      *      parent and siblings.

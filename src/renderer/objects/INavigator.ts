@@ -22,6 +22,13 @@ interface INavigator {
      * @param folderPath - the folder path to navigate to
      */
     toDirectory(folderPath: string): Promise<void>;
+
+    /**
+     * Removes itemsToRemove from the current cache of directory items.
+     *
+     * @param itemsToRemove - the items to remove from the cache of directory items
+     */
+    removeFromCache(itemsToRemove: IDirectoryItem[]): void;
 }
 
 export default INavigator;
