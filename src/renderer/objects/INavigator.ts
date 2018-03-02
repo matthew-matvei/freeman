@@ -24,6 +24,13 @@ interface INavigator {
     toDirectory(folderPath: string): Promise<void>;
 
     /**
+     * Adds itemToAdd to the current cache of directory items.
+     *
+     * @param itemToAdd - the item to add to the cache of directory items
+     */
+    addToCache(itemToAdd: IDirectoryItem): void;
+
+    /**
      * Removes itemsToRemove from the current cache of directory items.
      *
      * @param itemsToRemove - the items to remove from the cache of directory items

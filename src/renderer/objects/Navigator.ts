@@ -80,11 +80,7 @@ class Navigator implements INavigator {
 
         const childItem = this.currentDirectoryItems.find(item => item.path === folderPath)!;
 
-        if (!childItem.childItems) {
-            throw new LoggedError(`Child items for ${childItem.path} have not begun retrieval`);
-        }
-
-        const grandChildItems = await childItem.childItems;
+        const grandChildItems = await childItem.childItems || [];
 
         this.parentDirectoryPath = Promise.resolve(this.currentPath);
         this.currentPath = childItem.path;
@@ -122,7 +118,12 @@ class Navigator implements INavigator {
     }
 
     /** @inheritDoc */
-    public removeFromCache(itemsToRemove: IDirectoryItem[]): void {
+    public addToCache(itemToAdd: IDirectoryItem) {
+        this.currentDirectoryItems && this.currentDirectoryItems.push(itemToAdd);
+    }
+
+    /** @inheritDoc */
+    public removeFromCache(itemsToRemove: IDirectoryItem[]) {
         this.currentDirectoryItems = this.currentDirectoryItems &&
             this.currentDirectoryItems.filter(item => !itemsToRemove.includes(item));
     }
