@@ -291,22 +291,21 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async delete() {
-        const selectedItems = this.state.chosenItems.length > 0 ?
-            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
+        const { directoryManager, navigator, settingsManager, statusNotifier } = this.props;
 
-        const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
-        const confirmDelete = this.props.settingsManager.settings.confirmation.requiredBeforeDeletion ?
+        const chosenItems = this.selectedItems.length > 1 ? "the chosen items" : `'${this.selectedItems[0].name}'`;
+        const confirmDelete = settingsManager.settings.confirmation.requiredBeforeDeletion ?
             this.confirmationDialog(`Are you sure you want to permanently delete ${chosenItems}?`) :
             true;
 
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmDelete) {
-            Utils.trace(`Requesting to delete ${selectedItems.map(item => item.path).join(", ")}`);
-            await this.props.directoryManager.deleteItems(selectedItems);
-
+            Utils.trace(`Requesting to delete ${this.selectedItems.map(item => item.path).join(", ")}`);
+            await directoryManager.deleteItems(this.selectedItems);
+            navigator.removeFromCache(this.selectedItems);
             this.refreshAfterDelete();
-            this.props.statusNotifier.notify("Deleted items");
+            statusNotifier.notify("Deleted items");
         }
     }
 
@@ -535,6 +534,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (confirmTrash) {
             Utils.trace(`Requesting to trash ${this.selectedItems.map(item => item.path).join(", ")}`);
             await directoryManager.sendItemsToTrash(this.selectedItems);
+            this.props.navigator.removeFromCache(this.selectedItems);
             this.refreshAfterDelete();
             statusNotifier.notify("Sent items to trash");
         }

@@ -264,4 +264,7 @@ describe("<DirectoryList />", () => {
 
         expect(scrollTopStub.calledOnce).to.be.true;
     });
+
+    it("removes items from navigator cache on delete");
+    it("removes items from navigator cache on sending to trash");
 });
