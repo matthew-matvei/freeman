@@ -32,13 +32,11 @@
     "prebuild:prod": "concurrently \"rimraf app/font/\" \"rimraf app/*.woff2\" \"rimraf app/*.css\" \"rimraf app/*.js\"",
     "build:prod": "webpack --config webpack.prod.js",
     "pretest": "npm run build:test",
-    "test": "electron-mocha --renderer __tests__",
+    "test": "xvfb-maybe electron-mocha --renderer __tests__",
     "prestart": "npm run build",
     "start": "electron app/main.js",
-    "prepackage:linux": "concurrently \"rimraf dist\" \"npm run build:prod\"",
-    "package:linux": "electron-builder --linux",
-    "prepackage:windows": "concurrently \"rimraf dist\" \"npm run build:prod\"",
-    "package:windows": "electron-builder --windows",
+    "prepackage": "concurrently \"rimraf dist\" \"npm run build:prod\"",
+    "package": "electron-builder",
     "postinstall": "electron-builder install-app-deps",
     "lint": "tslint --project tsconfig.json --fix"
   },
@@ -93,7 +91,8 @@
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",
     "webpack-merge": "^4.1.1",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.6.0",
+    "xvfb-maybe": "^0.2.1"
   },
   "dependencies": {
     "autobind-decorator": "^2.1.0",
