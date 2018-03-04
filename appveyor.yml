@@ -1,0 +1,16 @@
+pull_requests:
+  do_not_increment_build_number: true
+
+branches:
+  only:
+  - master
+  - develop
+  - appveyor-ci
+
+install:
+  - ps: Install-Product node 8.9.1 x64
+
+build_script: npm install
+
+test_script: npm run test
+
