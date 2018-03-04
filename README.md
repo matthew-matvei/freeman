@@ -1,8 +1,26 @@
 # FreeMAN
 
+<img src="./resources/freeManLogo.png" alt="FreeMAN logo" style="width:32px;">
 A free, extensible, cross-platform file manager for power users
 
 ---
+
+![FreeMAN with open integrated terminal](./resources/freeManScreenshot.png)
+
+## Features
+
+* Quick, clean, dual-paned file-system navigation with a strong keyboard-led
+    focus
+* Integrated terminal per navigation pane for those things a file explorer just
+    can't do
+* Focus on customisability to tailor it to the user's whims
+* Quick navigation with a *Go To* box
+
+### Future
+
+* Tighter integration between navigation and integrated terminals
+* Further behaviour to be customisable
+* Extending usefulness of the *Go To* and *Commands* boxes
 
 ## Roadmap
 
