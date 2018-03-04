@@ -26,7 +26,6 @@ A free, extensible, cross-platform file manager for power users
 
 ## Roadmap
 
-* ~~Application suitable for development only~~
 * Core application ready for beta use
 * Out-of-the-box plugins ready for beta use
 * Core application ready for production use
