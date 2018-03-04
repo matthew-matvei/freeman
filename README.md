@@ -1,6 +1,5 @@
 # FreeMAN
 
-<img src="./resources/freeManLogo.png" alt="FreeMAN logo" style="width:32px;">
 A free, extensible, cross-platform file manager for power users
 
 ---
