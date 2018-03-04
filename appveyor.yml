@@ -11,5 +11,16 @@ install:
 
 build_script: npm install
 
-test_script: npm run test
+test_script:
+  - npm run lint
+  - npm run test
+  - npm run package
 
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: Ab/w3iQMUX8pfCvE8fRT5pUPZTYNeOxfH1fgHSo0XQ44OhjfBJaqwRshOQnYv8g7xMCnSxEjMtBXiI3RgpSaOC0cihIBFCq9fKKg2lt08qfWvHgslC6ajK6jJ1+w9VlOcHJbjy3uxivaSelRVqu+xZCDk70wYZ64sNhw4QB/me7OqoVLv6m57fg9DXon2GDiGFGuKdkyYn0DbQihUsN/2zIX5NXD1VYiS0QOjD6fVRORrRZDvcCP8eY3ZseULr56P/A/e95BCBtAdE1jxmMCOZjkcdXvU7+2FK5cWeiWpR7Z6q52nGvpOpGnMQNLHnFOZyiNn/1geDJsQ4iUXlyQYUL3ScGwZ9Y1mRj3/oRvsPx6VMOlKWXACR7VGcK2dZ0rVhl40Oa7SEzNfwN1k2F9tbPQilZsn03q/vz4rfOWnOj7yAfwBb1sPHlF3I81XEvrItmIxV1jHiRecJwb7dNTe9WoOyoBaFpP2ikw8u2t8nE/M1spgv2Rw0h13kx0rPoIlgSCE3SQMunbSEi0uBB2Cx1OmCwMY+Un9IqcT/aAR+IdgeYdHbQVAWiCl3Jf3vgsf/ECZaY+ARAxsFSpHIufc1l6aly/k9b4YWulqCmRla8eKq3FUOcM1/hk9wA0rdNn8B53VDImDgsCglSLgapSkowM0QSlLh4IjZlhVUz4bak=
+  artifact: /.*\.exe/
+  on:
+    branch: master
+    appveyor_repo_tag: true
