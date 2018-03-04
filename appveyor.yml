@@ -19,7 +19,7 @@ test_script:
 deploy:
   provider: GitHub
   auth_token:
-    secure: wVuEFe8aedCSPeg261afek1xyAYb67Ep76jsUtiPaAf07LHbyQzG9ZqF11mElmqC
+    secure: 'wVuEFe8aedCSPeg261afek1xyAYb67Ep76jsUtiPaAf07LHbyQzG9ZqF11mElmqC'
   artifact: /.*\.exe/
   on:
     branch: master
@@ -27,4 +27,4 @@ deploy:
 
 environment:
   GH_TOKEN:
-    secure: wVuEFe8aedCSPeg261afek1xyAYb67Ep76jsUtiPaAf07LHbyQzG9ZqF11mElmqC
+    secure: 'wVuEFe8aedCSPeg261afek1xyAYb67Ep76jsUtiPaAf07LHbyQzG9ZqF11mElmqC'
