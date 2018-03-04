@@ -2,13 +2,13 @@ language: javascript
 
 branches:
   only:
-  - master
-  - develop
+    - master
+    - develop
 
 addons:
   apt:
     packages:
-    - xvfb
+      - xvfb
 
 install:
   - export DISPLAY=':99.0'
@@ -23,7 +23,7 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: Mcz37S0VXcoQiC/LElPhUwPHY2Cc6mWwuZKmnpT/PvOxVeutbDcfL94ReU2Bx06kU5K54RvOVQyuVBfVFLuaSkPeNs3scdutIHmUNXHN43/ICZ9NgADlA9Nfif7p8kTc+QJqlSC4EN0mQqstYBI6pBmwfg3LH6fJXiwg5VenYe1wYsO6iJlDmO5Fp3X+DGE/jqs3vmsTTweiM625YUmpSQImIycP2H6UmfQbTSBztKLKqSDw6h7FTwUyuEghlfSLr19c0ZT4R616jHRYlqCjYTraibuEiXiB/eozBs9uhA5ELdgwZt1lalP/2MyA9AXTKFC6Vlj8BobCa7Q5UeJy/nVgsJRTslOnzG3GQK902B7AYtf5T0hYZ3ZB4UU37ThY1DIvL/agYN7i/TC7k7Z5Yi1liKUcvXCLFei7baTJgqhoJI6JeE3DpMOIc3ZTGjtO8LzLl9fxOw5VySC3c98R40lSM+64KZWD5fbEzb17IATtSrvrrNXLM8+JPoiV0sjXROTyN7vDjRyFpeC8SGnbs+yFaNBs7M3bnkM0eXFCvVjWP5WZOGnCunAmrmX3ADhDnp7Dn3Fit6YprYoV5xTBraso8X302JK4IO4nhltBVMxME53yNND9043CayAJZg9Qn1bIgE5QsKOiMcb9Z6FOjOWQk1BYwzxNh93NuKvCD+g=
+    secure: Ab/w3iQMUX8pfCvE8fRT5pUPZTYNeOxfH1fgHSo0XQ44OhjfBJaqwRshOQnYv8g7xMCnSxEjMtBXiI3RgpSaOC0cihIBFCq9fKKg2lt08qfWvHgslC6ajK6jJ1+w9VlOcHJbjy3uxivaSelRVqu+xZCDk70wYZ64sNhw4QB/me7OqoVLv6m57fg9DXon2GDiGFGuKdkyYn0DbQihUsN/2zIX5NXD1VYiS0QOjD6fVRORrRZDvcCP8eY3ZseULr56P/A/e95BCBtAdE1jxmMCOZjkcdXvU7+2FK5cWeiWpR7Z6q52nGvpOpGnMQNLHnFOZyiNn/1geDJsQ4iUXlyQYUL3ScGwZ9Y1mRj3/oRvsPx6VMOlKWXACR7VGcK2dZ0rVhl40Oa7SEzNfwN1k2F9tbPQilZsn03q/vz4rfOWnOj7yAfwBb1sPHlF3I81XEvrItmIxV1jHiRecJwb7dNTe9WoOyoBaFpP2ikw8u2t8nE/M1spgv2Rw0h13kx0rPoIlgSCE3SQMunbSEi0uBB2Cx1OmCwMY+Un9IqcT/aAR+IdgeYdHbQVAWiCl3Jf3vgsf/ECZaY+ARAxsFSpHIufc1l6aly/k9b4YWulqCmRla8eKq3FUOcM1/hk9wA0rdNn8B53VDImDgsCglSLgapSkowM0QSlLh4IjZlhVUz4bak=
   file_glob: true
   file: dist/freeman*AppImage
   skip_cleanup: true
@@ -31,3 +31,6 @@ deploy:
     repo: matthew-matvei/freeman
     branch: master
     tags: true
+env:
+  global:
+    secure: Ab/w3iQMUX8pfCvE8fRT5pUPZTYNeOxfH1fgHSo0XQ44OhjfBJaqwRshOQnYv8g7xMCnSxEjMtBXiI3RgpSaOC0cihIBFCq9fKKg2lt08qfWvHgslC6ajK6jJ1+w9VlOcHJbjy3uxivaSelRVqu+xZCDk70wYZ64sNhw4QB/me7OqoVLv6m57fg9DXon2GDiGFGuKdkyYn0DbQihUsN/2zIX5NXD1VYiS0QOjD6fVRORrRZDvcCP8eY3ZseULr56P/A/e95BCBtAdE1jxmMCOZjkcdXvU7+2FK5cWeiWpR7Z6q52nGvpOpGnMQNLHnFOZyiNn/1geDJsQ4iUXlyQYUL3ScGwZ9Y1mRj3/oRvsPx6VMOlKWXACR7VGcK2dZ0rVhl40Oa7SEzNfwN1k2F9tbPQilZsn03q/vz4rfOWnOj7yAfwBb1sPHlF3I81XEvrItmIxV1jHiRecJwb7dNTe9WoOyoBaFpP2ikw8u2t8nE/M1spgv2Rw0h13kx0rPoIlgSCE3SQMunbSEi0uBB2Cx1OmCwMY+Un9IqcT/aAR+IdgeYdHbQVAWiCl3Jf3vgsf/ECZaY+ARAxsFSpHIufc1l6aly/k9b4YWulqCmRla8eKq3FUOcM1/hk9wA0rdNn8B53VDImDgsCglSLgapSkowM0QSlLh4IjZlhVUz4bak=
