@@ -1,5 +1,7 @@
 # FreeMAN
 
+![Travis-CI build status](https://travis-ci.org/matthew-matvei/freeman.svg?branch=develop)
+
 A free, extensible, cross-platform file manager for power users
 
 ---
