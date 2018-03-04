@@ -5,7 +5,6 @@ branches:
   only:
   - master
   - develop
-  - appveyor-ci
 
 install:
   - ps: Install-Product node 8.9.1 x64

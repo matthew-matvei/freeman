@@ -2,17 +2,32 @@ language: javascript
 
 branches:
   only:
-    - master
-    - develop
+  - master
+  - develop
 
 addons:
   apt:
     packages:
-      - xvfb
+    - xvfb
 
 install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - npm install
 
-script: npm run test
+script:
+  - npm run lint
+  - npm run test
+  - npm run package
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Mcz37S0VXcoQiC/LElPhUwPHY2Cc6mWwuZKmnpT/PvOxVeutbDcfL94ReU2Bx06kU5K54RvOVQyuVBfVFLuaSkPeNs3scdutIHmUNXHN43/ICZ9NgADlA9Nfif7p8kTc+QJqlSC4EN0mQqstYBI6pBmwfg3LH6fJXiwg5VenYe1wYsO6iJlDmO5Fp3X+DGE/jqs3vmsTTweiM625YUmpSQImIycP2H6UmfQbTSBztKLKqSDw6h7FTwUyuEghlfSLr19c0ZT4R616jHRYlqCjYTraibuEiXiB/eozBs9uhA5ELdgwZt1lalP/2MyA9AXTKFC6Vlj8BobCa7Q5UeJy/nVgsJRTslOnzG3GQK902B7AYtf5T0hYZ3ZB4UU37ThY1DIvL/agYN7i/TC7k7Z5Yi1liKUcvXCLFei7baTJgqhoJI6JeE3DpMOIc3ZTGjtO8LzLl9fxOw5VySC3c98R40lSM+64KZWD5fbEzb17IATtSrvrrNXLM8+JPoiV0sjXROTyN7vDjRyFpeC8SGnbs+yFaNBs7M3bnkM0eXFCvVjWP5WZOGnCunAmrmX3ADhDnp7Dn3Fit6YprYoV5xTBraso8X302JK4IO4nhltBVMxME53yNND9043CayAJZg9Qn1bIgE5QsKOiMcb9Z6FOjOWQk1BYwzxNh93NuKvCD+g=
+  file_glob: true
+  file: dist/freeman*AppImage
+  skip_cleanup: true
+  on:
+    repo: matthew-matvei/freeman
+    branch: master
+    tags: true
