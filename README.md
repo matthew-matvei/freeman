@@ -2,6 +2,7 @@
 
 ![Travis-CI build status](https://travis-ci.org/matthew-matvei/freeman.svg?branch=develop)
 ![AppVeyor build status](https://ci.appveyor.com/api/projects/status/a919pf573a0tv0fg/branch/develop?svg=true)
+![First contributions welcome](http://img.shields.io/badge/first--contributions-welcome-green.svg?style=flat-square)
 
 A free, extensible, cross-platform file manager for power users
 
