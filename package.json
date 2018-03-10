@@ -1,7 +1,7 @@
 {
   "name": "freeman",
   "productName": "FreeMAN",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A free, extensible, cross-platform file manager for power users",
   "main": "app/main.js",
   "build": {
@@ -88,7 +88,7 @@
     "tslint": "^5.8.0",
     "typemoq": "^2.1.0",
     "typescript": "^2.7.1",
-    "uglifyjs-webpack-plugin": "^1.1.5",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",
     "webpack-merge": "^4.1.1",
@@ -100,6 +100,7 @@
     "deepmerge": "^2.0.1",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.3",
+    "electron-fswin": "^2.18.2",
     "electron-log": "^2.2.13",
     "file-icons-js": "github:websemantics/file-icons-js",
     "fuzzysearch": "^1.0.3",
@@ -123,8 +124,5 @@
     "winattr": "^2.0.0",
     "ws": "^3.3.2",
     "xterm": "2.9.2"
-  },
-  "optionalDependencies": {
-    "electron-fswin": "^2.18.0"
   }
 }
