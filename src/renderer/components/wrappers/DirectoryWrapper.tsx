@@ -44,7 +44,14 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
 
         const { settingsManager, initialPath } = this.props;
 
-        this.integratedTerminal = new IntegratedTerminal(settingsManager);
+        try {
+            // Try to construct a terminal using shell path given in settings
+            this.integratedTerminal = new IntegratedTerminal(settingsManager);
+        } catch {
+            // Fallback to a pre-defined, system-dependent shell
+            const useFallbackShell = true;
+            this.integratedTerminal = new IntegratedTerminal(settingsManager, useFallbackShell);
+        }
 
         this.state = {
             isTerminalOpen: settingsManager.settings.terminal.displayAtStartup,

@@ -23,14 +23,18 @@ class IntegratedTerminal implements IIntegratedTerminal {
     /**
      * Initialises a new instance of the IntegratedTerminal class.
      *
-     * @param settingsManager - a settings manager for terminal configuration
+     * @param settingsManager a settings manager for terminal configuration
+     * @param useFallbackShell whether to use a safe, fallback shell, defaults to false
      */
     public constructor(
-        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager
+        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
+        useFallbackShell = false
     ) {
         this.settingsManager = settingsManager;
 
-        this.ptyProcess = pty.spawn(this.shell, [], {
+        const shell = useFallbackShell ? this.shell : this.fallbackShell;
+
+        this.ptyProcess = pty.spawn(shell, [], {
             cwd: process.cwd(),
             env: process.env as ProcessEnv
         });
@@ -58,6 +62,10 @@ class IntegratedTerminal implements IIntegratedTerminal {
         } else {
             return linux.shell;
         }
+    }
+
+    private get fallbackShell(): string {
+        return process.platform === "win32" ? "powershell.exe" : "bash";
     }
 
     /** @inheritDoc */
