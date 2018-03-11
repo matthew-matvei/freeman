@@ -1,4 +1,3 @@
-import autobind from "autobind-decorator";
 import { shell } from "electron";
 import * as React from "react";
 import FaGithub from "react-icons/lib/fa/github";
@@ -29,16 +28,15 @@ class Status extends React.PureComponent<IStatusProps> {
             <div className="rightGroup">
                 <span>{`${this.props.itemCount} items`}</span>
                 <span>{`${this.props.chosenCount} chosen`}</span>
-                <span><FaGithub style={githubIconStyle} color={foregroundColour} onClick={this.openGithub} /></span>
+                <span><FaGithub style={githubIconStyle} color={foregroundColour} onClick={openGithub} /></span>
             </div>
         </div>;
     }
+}
 
-    /** Handles opening the Github page for this project in the user's browser. */
-    @autobind
-    private openGithub() {
-        shell.openExternal("https://github.com/matthew-matvei/freeman");
-    }
+/** Handles opening the Github page for this project in the user's browser. */
+function openGithub() {
+    shell.openExternal("https://github.com/matthew-matvei/freeman");
 }
 
 export default Status;

@@ -20,8 +20,8 @@ class App extends React.Component<IAppProps, IAppState> {
 
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
-        switchPane: this.switchPane,
-        openCommandPalette: this.openCommandPalette
+        openCommandPalette: this.openCommandPalette,
+        switchPane: this.switchPane
     };
 
     /** Notifies the status component of current application state. */
@@ -42,17 +42,17 @@ class App extends React.Component<IAppProps, IAppState> {
 
         this.statusNotifier = {
             notify: (payload: string) => this.updateStatus("notification", payload),
-            setItemCount: (payload: number) => this.updateStatus("itemCount", payload),
-            setChosenCount: (payload: number) => this.updateStatus("chosenCount", payload)
+            setChosenCount: (payload: number) => this.updateStatus("chosenCount", payload),
+            setItemCount: (payload: number) => this.updateStatus("itemCount", payload)
         };
 
         this.state = {
-            selectedPane: "left",
             isCommandPaletteOpen: false,
+            selectedPane: "left",
             status: {
-                message: "",
+                chosenCount: 0,
                 itemCount: 0,
-                chosenCount: 0
+                message: ""
             }
         };
     }

@@ -1,18 +1,18 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
-import FileIcons from "file-icons-js";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
+import fileIcons from "file-icons-js";
 import * as React from "react";
 import { FaFileO, FaFolderO } from "react-icons/lib/fa";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 
 import { DirectoryItemIcon } from "components/blocks";
 import { IDirectoryItem } from "models";
 
 import applicationTheme from "settings/internal/themes/dark";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<DirectoryItemIcon />", () => {
     let directoryItem: IDirectoryItem;
@@ -21,13 +21,13 @@ describe("<DirectoryItemIcon />", () => {
 
     beforeEach(() => {
         directoryItem = {
-            name: "Some directory item",
-            path: "/path/to/Some directory item",
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: "Some directory item",
+            path: "/path/to/Some directory item"
         };
 
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
     });
 
     afterEach(() => {
@@ -43,7 +43,7 @@ describe("<DirectoryItemIcon />", () => {
     });
 
     it("renders an <FaFileO /> when file type unsresolvable", () => {
-        sandbox.stub(FileIcons, "getClassWithColor").returns(null);
+        sandbox.stub(fileIcons, "getClassWithColor").returns(null);
         const component = <DirectoryItemIcon directoryItem={directoryItem} theme={applicationTheme} />;
         const wrapper = shallow(component);
 
@@ -52,7 +52,7 @@ describe("<DirectoryItemIcon />", () => {
 
     it("renders an <i /> with retrieved className when file type resolvable", () => {
         const className = "some-class";
-        sandbox.stub(FileIcons, "getClassWithColor").returns(className);
+        sandbox.stub(fileIcons, "getClassWithColor").returns(className);
         const component = <DirectoryItemIcon directoryItem={directoryItem} theme={applicationTheme} />;
         const wrapper = shallow(component);
 

@@ -1,11 +1,11 @@
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
-import { IMock, Mock } from "typemoq";
+import Sinon, { SinonSandbox } from "sinon";
+import { IMock, It, Mock } from "typemoq";
 
 import { DirectoryWrapper } from "components/wrappers";
 import { IDirectoryManager, ISettingsManager } from "managers";
@@ -16,7 +16,7 @@ import applicationTheme from "settings/internal/themes/dark";
 import { IDirectoryWrapperState } from "states/panels";
 import Utils from "Utils";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<DirectoryWrapper />", () => {
     let props: IDirectoryWrapperProps;
@@ -37,20 +37,22 @@ describe("<DirectoryWrapper />", () => {
         directoryManager = Mock.ofType<IDirectoryManager>();
 
         props = {
+            directoryManager: directoryManager.object,
             id: "left",
             initialPath: "path/to/initial",
             isSelectedPane: true,
             sendSelectedPaneUp: () => { },
-            directoryManager: directoryManager.object,
-            statusNotifier,
             settingsManager: settingsManager.object,
+            statusNotifier,
             theme: applicationTheme
         };
     });
 
     beforeEach(() => {
         component = <DirectoryWrapper {...props} />;
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
+        directoryManager.setup(async dm => dm.listDirectory(It.isAnyString(), It.isAny()))
+            .returns(sandbox.stub().resolves([]));
     });
 
     afterEach(() => {

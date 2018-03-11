@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import "reflect-metadata";
-import sinon from "sinon";
+import Sinon from "sinon";
 
 import { IDirectoryItem } from "models";
 import { DirectoryTextFinder } from "objects";
 
 describe("DirectoryTextFinder's", () => {
-    let clock: sinon.SinonFakeTimers;
+    let clock: Sinon.SinonFakeTimers;
 
     let directoryTextFinder: DirectoryTextFinder;
     let directoryItems: IDirectoryItem[];
@@ -16,36 +16,36 @@ describe("DirectoryTextFinder's", () => {
     let item4: IDirectoryItem;
 
     beforeEach(() => {
-        clock = sinon.useFakeTimers();
+        clock = Sinon.useFakeTimers();
 
         directoryTextFinder = new DirectoryTextFinder();
 
         item1 = {
-            name: "A item",
-            path: "path/to/A item",
             isDirectory: true,
-            isHidden: false
+            isHidden: false,
+            name: "A item",
+            path: "path/to/A item"
         };
 
         item2 = {
-            name: "B item",
-            path: "path/to/B item",
             isDirectory: false,
-            isHidden: true
+            isHidden: true,
+            name: "B item",
+            path: "path/to/B item"
         };
 
         item3 = {
-            name: "BA item",
-            path: "path/to/BA item",
             isDirectory: false,
-            isHidden: true
+            isHidden: true,
+            name: "BA item",
+            path: "path/to/BA item"
         };
 
         item4 = {
-            name: "B-A item",
-            path: "path/to/B-A item",
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: "B-A item",
+            path: "path/to/B-A item"
         };
 
         directoryItems = [item1, item2, item3, item4];

@@ -1,7 +1,7 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
-import Modal from "react-modal";
+import ReactModal from "react-modal";
 
 import { IHandlers, IKeyMap } from "models";
 import { IQuickSelectProps } from "props/modals";
@@ -18,37 +18,37 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     /** A keymap for hot keys when QuickSelect focused. */
     private keyMap: IKeyMap = {
         close: ["esc"],
-        previousItem: ["up"],
+        complete: ["tab"],
         nextItem: ["down"],
-        selectItem: ["enter"],
-        complete: ["tab"]
+        previousItem: ["up"],
+        selectItem: ["enter"]
     };
 
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
         close: this.closeQuickSelect,
-        previousItem: this.selectPreviousItem,
+        complete: this.completeInput,
         nextItem: this.selectNextItem,
-        selectItem: this.handleSelectItem,
-        complete: this.completeInput
+        previousItem: this.selectPreviousItem,
+        selectItem: this.handleSelectItem
     };
 
-    /** Styles for the Modal component this QuickSelect utilises. */
+    /** Styles for the ReactModal component this QuickSelect utilises. */
     private styles = {
-        overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0)",
-        },
         content: {
             backgroundColor: this.props.theme.quickSelect.backgroundColour,
-            borderRadius: "1px",
-            padding: "20px 10px",
             border: undefined,
-            boxShadow: "0 5px 15px black",
-            top: "0",
-            right: "25%",
+            borderRadius: "1px",
             bottom: undefined,
+            boxShadow: "0 5px 15px black",
+            color: this.props.theme.quickSelect.colour,
             left: "25%",
-            color: this.props.theme.quickSelect.colour
+            padding: "20px 10px",
+            right: "25%",
+            top: "0"
+        },
+        overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0)"
         }
     };
 
@@ -82,7 +82,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
                 : <li key={item} style={{ backgroundColor: backgroundColour }}>{item}</li>;
         });
 
-        return <Modal
+        return <ReactModal
             isOpen={this.props.isOpen}
             style={this.styles}
             contentLabel="Quick Select">
@@ -98,7 +98,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
                     {items}
                 </ul>
             </HotKeys>
-        </Modal>;
+        </ReactModal>;
     }
 
     /** Handles closing the quick select component. */

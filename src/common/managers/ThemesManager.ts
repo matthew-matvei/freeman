@@ -1,4 +1,4 @@
-import merge from "deepmerge";
+import deepmerge from "deepmerge";
 import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
@@ -64,7 +64,7 @@ class ThemesManager implements IThemesManager {
     private retrieve(themeName: string): ITheme {
         const userTheme = this.parseUserTheme("dark");
 
-        return userTheme ? merge(applicationTheme, userTheme) : applicationTheme;
+        return userTheme ? deepmerge(applicationTheme, userTheme) : applicationTheme;
     }
 
     /**

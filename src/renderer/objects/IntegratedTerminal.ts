@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import * as pty from "node-pty";
 import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
-import Terminal from "xterm";
+import Xterm from "xterm";
 
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
@@ -15,7 +15,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
     private settingsManager: ISettingsManager;
 
     /** A private instance of the xterm terminal emulator. */
-    private xterm: Terminal;
+    private xterm: Xterm;
 
     /** A spawned terminal process for shell execution. */
     private ptyProcess: ITerminal;
@@ -35,8 +35,8 @@ class IntegratedTerminal implements IIntegratedTerminal {
             env: process.env as ProcessEnv
         });
 
-        (Terminal as any).loadAddon("fit");
-        this.xterm = new Terminal({
+        (Xterm as any).loadAddon("fit");
+        this.xterm = new Xterm({
             cursorBlink: this.settingsManager.settings.terminal.cursorBlink
         });
 

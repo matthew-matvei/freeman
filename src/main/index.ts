@@ -37,14 +37,14 @@ function buildWindow() {
 
     app.on("ready", () => {
         const windowOptions: Electron.BrowserWindowConstructorOptions = {
-            title: "FreeMAN",
-            width: 1400,
-            height: 800,
-            minWidth: 700,
-            minHeight: 400,
-            disableAutoHideCursor: true,
             backgroundColor: "#272822",
-            show: false
+            disableAutoHideCursor: true,
+            height: 800,
+            minHeight: 400,
+            minWidth: 700,
+            show: false,
+            title: "FreeMAN",
+            width: 1400
         };
 
         mainWindow = new FreemanWindow(windowOptions);
@@ -62,12 +62,12 @@ function buildWindow() {
             const killIndex = 0;
             const cancelIndex = 1;
             const kill = dialog.showMessageBox(mainWindow!, {
-                type: "warning",
                 buttons: ["OK", "Wait"],
-                defaultId: killIndex,
                 cancelId: cancelIndex,
+                defaultId: killIndex,
+                message: "Would you like to kill the process?",
                 title: "FreeMAN unresponsive",
-                message: "Would you like to kill the process?"
+                type: "warning"
             });
 
             if (kill === killIndex) {

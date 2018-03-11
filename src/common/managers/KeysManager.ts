@@ -1,4 +1,4 @@
-import merge from "deepmerge";
+import deepmerge from "deepmerge";
 import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
@@ -53,7 +53,7 @@ class KeysManager implements IKeysManager {
         const userKeys = this.parseUserKeys();
 
         return userKeys ?
-            merge(applicationKeys, userKeys, { arrayMerge: (destination: any[], source: any[]) => source }) :
+            deepmerge(applicationKeys, userKeys, { arrayMerge: (destination: any[], source: any[]) => source }) :
             applicationKeys;
     }
 

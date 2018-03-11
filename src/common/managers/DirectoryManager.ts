@@ -64,10 +64,10 @@ class DirectoryManager implements IDirectoryManager {
             const fileStats = await lstatAsync(fullPath);
 
             return {
-                name: fileName,
-                path: fullPath,
                 isDirectory: fileStats.isDirectory(),
-                isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems)
+                isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems),
+                name: fileName,
+                path: fullPath
             } as IDirectoryItem;
         });
 

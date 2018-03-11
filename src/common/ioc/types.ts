@@ -1,10 +1,10 @@
 /** An object of globally registerable, injectable types. */
 const TYPES = {
+    IAttributesManager: Symbol.for("IAttributesManager"),
     IDirectoryManager: Symbol.for("IDirectoryManager"),
-    ISettingsManager: Symbol.for("ISettingsManager"),
     IKeysManager: Symbol.for("IKeysManager"),
-    IThemesManager: Symbol.for("IThemesManager"),
-    IAttributesManager: Symbol.for("IAttributesManager")
+    ISettingsManager: Symbol.for("ISettingsManager"),
+    IThemesManager: Symbol.for("IThemesManager")
 };
 
 export default TYPES;

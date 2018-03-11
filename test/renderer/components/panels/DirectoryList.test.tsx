@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 import { IMock, It, Mock, Times } from "typemoq";
 
 import { DirectoryItem, InputItem } from "components/blocks";
@@ -21,7 +21,7 @@ import { HotKeys, HotKeysProps } from "react-hotkeys";
 import applicationTheme from "settings/internal/themes/dark";
 import { IDirectoryListState } from "states/panels";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<DirectoryList />", () => {
     let props: IDirectoryListProps;
@@ -38,7 +38,7 @@ describe("<DirectoryList />", () => {
     let items: IDirectoryItem[];
 
     before(() => {
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
 
         listDirectoryOptions = {
             hideUnixStyleHiddenItems: true
@@ -49,22 +49,22 @@ describe("<DirectoryList />", () => {
 
         statusNotifier = {
             notify: () => { },
-            setItemCount: () => { },
-            setChosenCount: () => { }
+            setChosenCount: () => { },
+            setItemCount: () => { }
         };
 
         items = [
             {
-                name: "item1.txt",
-                path: "/path/to/item1.txt",
                 isDirectory: false,
-                isHidden: false
+                isHidden: false,
+                name: "item1.txt",
+                path: "/path/to/item1.txt"
             },
             {
-                name: "item2.txt",
-                path: "/path/to/item2.txt",
                 isDirectory: false,
-                isHidden: false
+                isHidden: false,
+                name: "item2.txt",
+                path: "/path/to/item2.txt"
             }
         ];
     });
@@ -75,14 +75,14 @@ describe("<DirectoryList />", () => {
             .returns(sandbox.stub().resolves());
 
         props = {
+            directoryManager: mockDirectoryManager.object,
             id: "left",
             isSelectedPane: true,
             path: "/path/to",
             sendPathUp: (path: string) => { },
             sendSelectedPaneUp: () => { },
-            directoryManager: mockDirectoryManager.object,
-            statusNotifier,
             settingsManager: mockSettingsManager.object,
+            statusNotifier,
             theme: applicationTheme
         };
 

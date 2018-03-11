@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
-import sinon, { SinonSandbox, SinonSpy } from "sinon";
+import Sinon, { SinonSandbox, SinonSpy } from "sinon";
 import { IMock, It, Mock } from "typemoq";
 
 import { Goto } from "components/modals";
@@ -14,7 +14,7 @@ import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
 import { IGotoState } from "states/modals";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<Goto />", () => {
     let props: IGotoProps;
@@ -30,20 +30,20 @@ describe("<Goto />", () => {
     let settingsManager: IMock<ISettingsManager>;
 
     before(() => {
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
 
         item1 = {
-            name: "Item 1",
-            path: "/path/to/Item 1",
             isDirectory: true,
-            isHidden: false
+            isHidden: false,
+            name: "Item 1",
+            path: "/path/to/Item 1"
         };
 
         item2 = {
-            name: "Item 2",
-            path: "/path/to/Item 2",
             isDirectory: true,
-            isHidden: false
+            isHidden: false,
+            name: "Item 2",
+            path: "/path/to/Item 2"
         };
 
         directoryManager = Mock.ofType<IDirectoryManager>();
@@ -54,11 +54,11 @@ describe("<Goto />", () => {
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
 
         props = {
-            isOpen: false,
-            onClose: () => { },
-            initialPath: "/path/to/initial",
-            navigateTo: () => { },
             directoryManager: directoryManager.object,
+            initialPath: "/path/to/initial",
+            isOpen: false,
+            navigateTo: () => { },
+            onClose: () => { },
             settingsManager: settingsManager.object,
             theme: applicationTheme
         };
@@ -119,7 +119,7 @@ describe("<Goto />", () => {
 
     it("updating 'items' re-renders the component once", async () => {
         shallow(component);
-        renderSpy = sinon.spy(Goto.prototype, "render");
+        renderSpy = Sinon.spy(Goto.prototype, "render");
 
         return directoryManager.object.listDirectory("/path/to", {} as any)
             .then(() => {

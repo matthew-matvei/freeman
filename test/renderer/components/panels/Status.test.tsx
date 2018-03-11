@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
 
@@ -8,7 +8,7 @@ import { Status } from "components/panels";
 import { IStatusProps } from "props/panels";
 import applicationTheme from "settings/internal/themes/dark";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<Status />", () => {
     let props: IStatusProps;
@@ -17,9 +17,9 @@ describe("<Status />", () => {
 
     before(() => {
         props = {
-            message: "test message",
-            itemCount: 0,
             chosenCount: 0,
+            itemCount: 0,
+            message: "test message",
             theme: applicationTheme
         };
     });

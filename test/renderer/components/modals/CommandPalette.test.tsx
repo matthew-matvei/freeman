@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 
 import { CommandPalette, QuickSelect } from "components/modals";
 import { ICommandPaletteProps, IQuickSelectProps } from "props/modals";
 import applicationTheme from "settings/internal/themes/dark";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<CommandPalette />", () => {
     let props: ICommandPaletteProps;
@@ -18,13 +18,13 @@ describe("<CommandPalette />", () => {
 
     before(() => {
         props = {
-            isOpen: false,
             applicationCommands: { reloadWindow: () => { } },
+            isOpen: false,
             onClose: () => { },
             theme: applicationTheme
         };
 
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
     });
 
     beforeEach(() => {

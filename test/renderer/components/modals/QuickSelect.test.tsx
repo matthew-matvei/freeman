@@ -1,10 +1,10 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 
 import { QuickSelect } from "components/modals";
 import { IHandlers } from "models";
@@ -12,7 +12,7 @@ import { IQuickSelectProps } from "props/modals";
 import applicationTheme from "settings/internal/themes/dark";
 import { IQuickSelectState } from "states/modals";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<QuickSelect />", () => {
     let props: IQuickSelectProps;
@@ -23,14 +23,14 @@ describe("<QuickSelect />", () => {
     beforeEach(() => {
         props = {
             initialItems: ["item1", "item2"],
-            onSelect: () => { },
-            onClose: () => { },
             isOpen: false,
+            onClose: () => { },
+            onSelect: () => { },
             theme: applicationTheme
         };
 
         component = <QuickSelect {...props} />;
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
     });
 
     afterEach(() => {
@@ -86,7 +86,7 @@ describe("<QuickSelect />", () => {
     it("can request to be closed", () => {
         const onCloseStub = sandbox.stub();
         props.onClose = onCloseStub;
-        component = <QuickSelect { ...props } />;
+        component = <QuickSelect {...props} />;
         const wrapper = shallow(component);
         const hotkeys = wrapper.find(HotKeys);
         const hotkeysProps = hotkeys.props() as HotKeysProps;

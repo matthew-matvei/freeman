@@ -19,9 +19,9 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
         super(props);
 
         this.state = {
-            searchTerm: this.props.initialPath,
             currentDirectory: this.props.initialPath,
-            directoryItems: []
+            directoryItems: [],
+            searchTerm: this.props.initialPath
         };
     }
 
@@ -101,8 +101,8 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
             this.setState(
                 {
                     currentDirectory: basePath,
-                    searchTerm: newPath,
-                    directoryItems: nonHiddenDirectoryItems
+                    directoryItems: nonHiddenDirectoryItems,
+                    searchTerm: newPath
                 });
             /*
              * If path.sep is entered, the search term becomes the new current
@@ -120,8 +120,8 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
             this.setState(
                 {
                     currentDirectory: newPath,
-                    searchTerm: newPath,
-                    directoryItems: nonHiddenDirectoryItems
+                    directoryItems: nonHiddenDirectoryItems,
+                    searchTerm: newPath
                 });
         } else {
             this.setState({ searchTerm: newPath });

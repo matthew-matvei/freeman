@@ -1,4 +1,4 @@
-import merge from "deepmerge";
+import deepmerge from "deepmerge";
 import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
@@ -52,7 +52,7 @@ class SettingsManager implements ISettingsManager {
     private retrieve(): ICommonSettings {
         const userSettings = this.parseUserSettings();
 
-        return userSettings ? merge(applicationSettings, userSettings) : applicationSettings;
+        return userSettings ? deepmerge(applicationSettings, userSettings) : applicationSettings;
     }
 
     /**
