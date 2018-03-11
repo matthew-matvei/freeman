@@ -33,22 +33,22 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
-        moveUp: () => this.move("up"),
-        moveDown: () => this.move("down"),
-        moveBack: this.goBack,
-        toggleShowHidden: this.toggleShowHidden,
-        newFile: () => this.inputNewItem("file"),
-        newFolder: () => this.inputNewItem("folder"),
-        rename: this.inputRenameItem,
+        chooseItem: this.toggleItemChosen,
         copy: () => this.storeItemInClipboard("copy"),
         cut: () => this.storeItemInClipboard("cut"),
-        paste: this.pasteFromClipboard,
-        chooseItem: this.toggleItemChosen,
-        sendToTrash: this.sendToTrash,
         delete: this.delete,
+        moveBack: this.goBack,
+        moveDown: () => this.move("down"),
+        moveUp: () => this.move("up"),
+        newFile: () => this.inputNewItem("file"),
+        newFolder: () => this.inputNewItem("folder"),
         openGoto: this.openGoto,
+        paste: this.pasteFromClipboard,
+        rename: this.inputRenameItem,
+        scrollToBottom: () => this.scrollTo("bottom"),
         scrollToTop: () => this.scrollTo("top"),
-        scrollToBottom: () => this.scrollTo("bottom")
+        sendToTrash: this.sendToTrash,
+        toggleShowHidden: this.toggleShowHidden
     };
 
     /** The internal model of this DirectoryList. */
@@ -88,15 +88,15 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.context = context;
 
         this.state = {
-            directoryItems: [],
             chosenItems: [],
-            selectedIndex: 0,
-            showHiddenItems: false,
             creatingNewItem: false,
-            renamingItem: false,
-            itemDeleted: false,
+            directoryItems: [],
+            isFocused: this.props.isSelectedPane,
             isGotoOpen: false,
-            isFocused: this.props.isSelectedPane
+            itemDeleted: false,
+            renamingItem: false,
+            selectedIndex: 0,
+            showHiddenItems: false
         };
 
         this.model = new DirectoryListModel();
@@ -187,8 +187,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         const remainingChosenItems = this.state.chosenItems.filter(item => directoryItems.includes(item));
         this.setState(
             {
-                directoryItems,
-                chosenItems: remainingChosenItems
+                chosenItems: remainingChosenItems,
+                directoryItems
             } as IDirectoryListState);
     }
 
@@ -303,7 +303,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
         const confirmDelete = this.props.settingsManager.settings.confirmation.requiredBeforeDeletion ?
-            this.confirmationDialog(`Are you sure you want to permanently delete ${chosenItems}?`) :
+            confirmationDialog(`Are you sure you want to permanently delete ${chosenItems}?`) :
             true;
 
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
@@ -527,7 +527,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 
         const chosenItems = this.selectedItems.length > 1 ? "the chosen items" : `'${this.selectedItems[0].name}'`;
         const confirmTrash = settingsManager.settings.confirmation.requiredBeforeTrash ?
-            this.confirmationDialog(`Are you sure you want to send ${chosenItems} to the trash?`) :
+            confirmationDialog(`Are you sure you want to send ${chosenItems} to the trash?`) :
             true;
 
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
@@ -560,8 +560,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private storeItemInClipboard(action: ClipboardAction) {
         this.model.itemClipboard = {
-            directoryItems: this.selectedItems,
-            clipboardAction: action
+            clipboardAction: action,
+            directoryItems: this.selectedItems
         };
 
         if (action === "copy") {
@@ -601,29 +601,29 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                 showHiddenItems: !prevState.showHiddenItems
             } as IDirectoryListState));
     }
+}
 
-    /**
-     * Displays a dialog and returns whether the user confirmed the action described
-     * in the given message.
-     *
-     * @param message - the message to display to the user
-     *
-     * @returns - whether the user confirmed the described action
-     */
-    private confirmationDialog(message: string): boolean {
-        const confirmIndex = 0;
-        const cancelIndex = 1;
-        const confirmation = dialog.showMessageBox({
-            type: "warning",
-            buttons: ["OK", "Cancel"],
-            defaultId: cancelIndex,
-            cancelId: cancelIndex,
-            title: "Confirm deletion",
-            message
-        });
+/**
+ * Displays a dialog and returns whether the user confirmed the action described
+ * in the given message.
+ *
+ * @param message - the message to display to the user
+ *
+ * @returns - whether the user confirmed the described action
+ */
+function confirmationDialog(message: string): boolean {
+    const confirmIndex = 0;
+    const cancelIndex = 1;
+    const confirmation = dialog.showMessageBox({
+        buttons: ["OK", "Cancel"],
+        cancelId: cancelIndex,
+        defaultId: cancelIndex,
+        message,
+        title: "Confirm deletion",
+        type: "warning"
+    });
 
-        return confirmation === confirmIndex;
-    }
+    return confirmation === confirmIndex;
 }
 
 export default DirectoryList;

@@ -3,19 +3,17 @@ import { ipcRenderer } from "electron";
 import { IApplicationCommands } from "models";
 
 /** Provides static application-level commands. */
-class ApplicationCommander {
+export default {
 
     /** Gets the commands this commander handles. */
-    public static get commands(): IApplicationCommands {
+    get commands(): IApplicationCommands {
         return {
-            reloadWindow: ApplicationCommander.reloadWindow
+            reloadWindow
         };
     }
+};
 
-    /** Reloads the window by sending a reload-request to the main process. */
-    private static reloadWindow() {
-        ipcRenderer.send("reload-request");
-    }
+/** Reloads the window by sending a reload-request to the main process. */
+function reloadWindow() {
+    ipcRenderer.send("reload-request");
 }
-
-export default ApplicationCommander;

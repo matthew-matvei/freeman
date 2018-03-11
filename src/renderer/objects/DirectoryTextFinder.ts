@@ -23,8 +23,8 @@ class DirectoryTextFinder {
      * matches the text finder's current search term. Handles clearing expired search
      * terms.
      *
-     * @param char - the character to add to the search string
-     * @param items - the items to find the search term in
+     * @param char the character to add to the search string
+     * @param items the items to find the search term in
      */
     public addCharAndSearch(char: string, items: IDirectoryItem[]): number {
         const timeout = 500;

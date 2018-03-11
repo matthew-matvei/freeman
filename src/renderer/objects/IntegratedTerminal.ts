@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import * as pty from "node-pty";
 import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
-import Terminal from "xterm";
+import Xterm from "xterm";
 
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
@@ -15,7 +15,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
     private settingsManager: ISettingsManager;
 
     /** A private instance of the xterm terminal emulator. */
-    private xterm: Terminal;
+    private xterm: Xterm;
 
     /** A spawned terminal process for shell execution. */
     private ptyProcess: ITerminal;
@@ -23,20 +23,24 @@ class IntegratedTerminal implements IIntegratedTerminal {
     /**
      * Initialises a new instance of the IntegratedTerminal class.
      *
-     * @param settingsManager - a settings manager for terminal configuration
+     * @param settingsManager a settings manager for terminal configuration
+     * @param useFallbackShell whether to use a safe, fallback shell, defaults to false
      */
     public constructor(
-        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager
+        @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
+        useFallbackShell = false
     ) {
         this.settingsManager = settingsManager;
 
-        this.ptyProcess = pty.spawn(this.shell, [], {
+        const shell = useFallbackShell ? this.shell : this.fallbackShell;
+
+        this.ptyProcess = pty.spawn(shell, [], {
             cwd: process.cwd(),
             env: process.env as ProcessEnv
         });
 
-        (Terminal as any).loadAddon("fit");
-        this.xterm = new Terminal({
+        (Xterm as any).loadAddon("fit");
+        this.xterm = new Xterm({
             cursorBlink: this.settingsManager.settings.terminal.cursorBlink
         });
 
@@ -58,6 +62,10 @@ class IntegratedTerminal implements IIntegratedTerminal {
         } else {
             return linux.shell;
         }
+    }
+
+    private get fallbackShell(): string {
+        return process.platform === "win32" ? "powershell.exe" : "bash";
     }
 
     /** @inheritDoc */

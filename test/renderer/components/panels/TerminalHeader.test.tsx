@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
 
@@ -8,7 +8,7 @@ import { TerminalHeader } from "components/panels";
 import { ITerminalHeaderProps } from "props/panels";
 import applicationTheme from "settings/internal/themes/dark";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<TerminalHeader />", () => {
     let props: ITerminalHeaderProps;

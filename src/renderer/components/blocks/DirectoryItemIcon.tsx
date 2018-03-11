@@ -1,4 +1,4 @@
-import FileIcons from "file-icons-js";
+import fileIcons from "file-icons-js";
 import * as React from "react";
 import { FaFileO, FaFolderO } from "react-icons/lib/fa";
 
@@ -25,7 +25,7 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
         } else if (directoryItem && !directoryItem.isDirectory ||
             directoryItemType === "file") {
 
-            const className = directoryItem && FileIcons.getClassWithColor(directoryItem.path);
+            const className = directoryItem && fileIcons.getClassWithColor(directoryItem.path);
 
             return className ? <i className={className}></i> :
                 <FaFileO color={theme.directoryItem.fileIconDefaultColour} />;

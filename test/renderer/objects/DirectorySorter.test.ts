@@ -14,22 +14,22 @@ describe("DirectorySorter's", () => {
     beforeEach(() => {
         items = [];
         testItem1 = {
-            name: "test",
-            path: "path/to/",
             isDirectory: true,
-            isHidden: false
+            isHidden: false,
+            name: "test",
+            path: "path/to/"
         };
         testItem2 = {
-            name: "test.jpg",
-            path: "/path/to/",
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: "test.jpg",
+            path: "/path/to/"
         };
         testItem3 = {
-            name: "another test.jpg",
-            path: "/path/to/",
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: "another test.jpg",
+            path: "/path/to/"
         };
     });
 

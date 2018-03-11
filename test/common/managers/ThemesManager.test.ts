@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 import { IMock, It, Mock } from "typemoq";
 
 import {
@@ -27,7 +27,7 @@ describe("ThemesManager's", () => {
 
         userTheme = JSON.parse(JSON.stringify(applicationTheme));
 
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
     });
 
     afterEach(() => {

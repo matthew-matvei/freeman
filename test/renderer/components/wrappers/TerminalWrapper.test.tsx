@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
 import { IMock, Mock } from "typemoq";
@@ -13,7 +13,7 @@ import { ITerminalWrapperProps } from "props/wrappers";
 import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<TerminalWrapper />", () => {
     let settingsManager: IMock<ISettingsManager>;
@@ -29,9 +29,9 @@ describe("<TerminalWrapper />", () => {
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
         integratedTerminal = Mock.ofType<IIntegratedTerminal>();
         props = {
+            integratedTerminal: integratedTerminal.object,
             settingsManager: settingsManager.object,
-            theme,
-            integratedTerminal: integratedTerminal.object
+            theme
         };
 
         component = <TerminalWrapper {...props} />;

@@ -6,7 +6,7 @@ class LoggedError extends Error {
     /**
      * Initialises a new instance of the LoggedError class.
      *
-     * @param args - any arguments to send to the super constructor
+     * @param args any arguments to send to the super constructor
      */
     constructor(...args: any[]) {
         super(...args);

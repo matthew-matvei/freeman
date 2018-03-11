@@ -8,26 +8,26 @@ import { IDirectoryItem } from "models";
 import { ItemType } from "types";
 
 /** Provides several static helper functions. */
-class Utils {
+export default {
 
     /**
      * Handles focusing the appropriate directory item automatically.
      *
-     * @param component - the HotKeys wrapper component to call focus on
+     * @param component the HotKeys wrapper component to call focus on
      */
-    public static autoFocus = (component: HotKeys | HTMLInputElement) => {
+    autoFocus(component: HotKeys | HTMLInputElement) {
         (ReactDOM.findDOMNode(component) as HTMLElement).focus();
-    }
+    },
 
     /**
      * Returns all items where pathToFind's basename is fuzzy found in the item's basename.
      *
-     * @param pathToFind - the path whose basename is to be found within items
-     * @param items - an array of paths
+     * @param pathToFind the path whose basename is to be found within items
+     * @param items an array of paths
      *
-     * @returns - all items in which pathToFind is fuzzy found
+     * @returns all items in which pathToFind is fuzzy found
      */
-    public static fuzzySearchItems = (pathToFind: string, items: string[]): string[] => {
+    fuzzySearchItems(pathToFind: string, items: string[]): string[] {
         if (!pathToFind || pathToFind.endsWith(path.sep)) {
             return items;
         }
@@ -38,17 +38,17 @@ class Utils {
 
             return fuzzysearch(searchTermSuffix, itemSuffix);
         });
-    }
+    },
 
     /**
      * Tries to JSON parse a given string. Method returns the object if successful,
      * or false if not.
      *
-     * @param JSONString - the string to attempt to parse
+     * @param JSONString the string to attempt to parse
      *
-     * @returns - the parsed object if successful, or false if not
+     * @returns the parsed object if successful, or false if not
      */
-    public static tryParseJSON = (JSONString: string): any | false => {
+    tryParseJSON(JSONString: string): any | false {
         try {
             const obj = JSON.parse(JSONString);
 
@@ -60,27 +60,25 @@ class Utils {
         }
 
         return false;
-    }
+    },
 
     /**
      * Returns the ItemType of a given directoryItem.
      *
-     * @param directoryItem - the directory item who's type is to be interpreted
+     * @param directoryItem the directory item who's type is to be interpreted
      *
-     * @returns - the type of the given item
+     * @returns the type of the given item
      */
-    public static parseItemType = (directoryItem: IDirectoryItem): ItemType => {
+    parseItemType(directoryItem: IDirectoryItem): ItemType {
         return directoryItem.isDirectory ? "folder" : "file";
-    }
+    },
 
     /**
      * Logs the given message when process.env.VERBOSE is truthy
      *
-     * @param message - the verbose message to log
+     * @param message the verbose message to log
      */
-    public static trace = (message: string) => {
+    trace(message: string) {
         process.env.VERBOSE && log.verbose(message);
     }
-}
-
-export default Utils;
+};

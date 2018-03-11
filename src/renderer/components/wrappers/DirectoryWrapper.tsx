@@ -44,11 +44,18 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
 
         const { settingsManager, initialPath } = this.props;
 
-        this.integratedTerminal = new IntegratedTerminal(settingsManager);
+        try {
+            // Try to construct a terminal using shell path given in settings
+            this.integratedTerminal = new IntegratedTerminal(settingsManager);
+        } catch {
+            // Fallback to a pre-defined, system-dependent shell
+            const useFallbackShell = true;
+            this.integratedTerminal = new IntegratedTerminal(settingsManager, useFallbackShell);
+        }
 
         this.state = {
-            path: initialPath,
-            isTerminalOpen: settingsManager.settings.terminal.displayAtStartup
+            isTerminalOpen: settingsManager.settings.terminal.displayAtStartup,
+            path: initialPath
         };
     }
 
@@ -59,18 +66,18 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
      */
     public render(): JSX.Element {
         const scrollAreaVertContainerStyle: React.CSSProperties = {
-            width: "0.9em",
-            backgroundColor: "inherit"
+            backgroundColor: "inherit",
+            width: "0.9em"
         };
         const scrollAreaVertBarStyle: React.CSSProperties = {
-            width: "100%",
-            backgroundColor: "rgb(65, 67, 57)"
+            backgroundColor: "rgb(65, 67, 57)",
+            width: "100%"
         };
         const directoryListHeight = this.state.isTerminalOpen ?
             this.prevScrollAreaHeight || "65vh" : "100%";
         const resizerStyle: React.CSSProperties = {
-            display: this.state.isTerminalOpen ? "block" : "none",
-            backgroundColor: this.props.theme.resizers.colour
+            backgroundColor: this.props.theme.resizers.colour,
+            display: this.state.isTerminalOpen ? "block" : "none"
         };
 
         return <HotKeys

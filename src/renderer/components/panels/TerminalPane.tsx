@@ -8,7 +8,7 @@ import { ITerminalPaneProps } from "props/panels";
 import "styles/panels/TerminalPane.scss";
 
 /** The component for displaying a terminal frontend. */
-class Terminalpane extends React.PureComponent<ITerminalPaneProps> {
+class TerminalPane extends React.PureComponent<ITerminalPaneProps> {
 
     /** The containing div element of the terminal. */
     private container?: HTMLDivElement | null;
@@ -55,4 +55,4 @@ class Terminalpane extends React.PureComponent<ITerminalPaneProps> {
     }
 }
 
-export default Terminalpane;
+export default TerminalPane;

@@ -23,10 +23,10 @@ describe("DirectoryListModel's", () => {
 
     beforeEach(() => {
         directoryItem1 = {
-            name: "Item 1",
-            path: "path/to/Item 1",
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: "Item 1",
+            path: "path/to/Item 1"
         };
     });
 
@@ -36,15 +36,15 @@ describe("DirectoryListModel's", () => {
 
         beforeEach(() => {
             const commonState: IDirectoryListState = {
+                chosenItems: [],
                 creatingNewItem: false,
+                directoryItems: [],
+                isFocused: false,
+                isGotoOpen: false,
                 itemDeleted: false,
                 renamingItem: false,
                 selectedIndex: 0,
-                showHiddenItems: false,
-                isGotoOpen: false,
-                directoryItems: [],
-                chosenItems: [],
-                isFocused: false
+                showHiddenItems: false
             };
 
             prevState = { ...commonState };
@@ -111,14 +111,14 @@ describe("DirectoryListModel's", () => {
             directoryManager = Mock.ofType<IDirectoryManager>();
 
             const commonProps: IDirectoryListProps = {
+                directoryManager: directoryManager.object,
                 id: "left",
                 isSelectedPane: false,
                 path: "/path/to/directory",
                 sendPathUp: (path: string) => { },
                 sendSelectedPaneUp: (paneToSelect: DirectoryPaneSide) => { },
-                directoryManager: directoryManager.object,
-                statusNotifier,
                 settingsManager: settingsManager.object,
+                statusNotifier,
                 theme: applicationTheme
             };
 

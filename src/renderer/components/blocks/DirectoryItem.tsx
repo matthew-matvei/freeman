@@ -15,8 +15,8 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
-        openDirectory: this.openDirectory,
         activate: this.activate,
+        openDirectory: this.openDirectory,
         openInNativeExplorer: this.openInNativeExplorer
     };
 

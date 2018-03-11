@@ -1,17 +1,17 @@
 import { expect } from "chai";
 import { shell } from "electron";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
-import sinon, { SinonSandbox, SinonSpy } from "sinon";
+import Sinon, { SinonSandbox, SinonSpy } from "sinon";
 
 import { DirectoryItem } from "components/blocks";
 import { IDirectoryItem } from "models";
 import { IDirectoryItemProps } from "props/blocks";
 import applicationTheme from "settings/internal/themes/dark";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<DirectoryItem />", () => {
     let props: IDirectoryItemProps;
@@ -24,23 +24,23 @@ describe("<DirectoryItem />", () => {
 
     beforeEach(() => {
         directoryModel = {
-            name: "item.txt",
-            path: "/path/to/",
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: "item.txt",
+            path: "/path/to/"
         };
 
         props = {
-            model: directoryModel,
-            isSelected: false,
             isChosen: false,
+            isSelected: false,
+            model: directoryModel,
+            sendDeletionUp: () => { },
             sendPathUp: (path: string) => { },
             sendSelectedItemUp: (selectedItem: IDirectoryItem) => { },
-            sendDeletionUp: () => { },
             theme: applicationTheme
         };
 
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
 
         component = <DirectoryItem {...props} />;
     });
@@ -101,7 +101,7 @@ describe("<DirectoryItem />", () => {
     it("requests selecting the item when clicked", () => {
         const sendSelectionUp = sandbox.stub();
         props.sendSelectedItemUp = sendSelectionUp;
-        component = <DirectoryItem { ...props } />;
+        component = <DirectoryItem {...props} />;
         const wrapper = shallow(component).find("button");
         wrapper.simulate("click");
 

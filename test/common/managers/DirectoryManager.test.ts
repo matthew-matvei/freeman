@@ -1,10 +1,10 @@
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import fs from "fs";
-import mockfs from "mock-fs";
+import mock from "mock-fs";
 import path from "path";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 import { IMock, It, Mock } from "typemoq";
 
 import DirectoryError from "errors/DirectoryError";
@@ -45,7 +45,7 @@ describe("directoryManager's", () => {
             hidden: false
         };
         attributesManager.setup(async am => am.getAttributesAsync(It.isAnyString()))
-            .returns(sinon.stub().resolves(attributes));
+            .returns(Sinon.stub().resolves(attributes));
         directoryManager = new DirectoryManager(attributesManager.object);
         options = {
             hideUnixStyleHiddenItems: false
@@ -53,52 +53,52 @@ describe("directoryManager's", () => {
     });
 
     beforeEach(() => {
-        mockfs({
+        mock({
             "/path/to/fake/dir": {
-                fakeFolder: {},
-                fakeFolder2: {},
                 anotherFakeFolder: {},
                 "fakeFile.txt": "With fake news",
-                "fakeFile2.txt": "And fake media"
+                "fakeFile2.txt": "And fake media",
+                fakeFolder: {},
+                fakeFolder2: {}
             }
         });
 
         testFile = {
-            path: path.join(fakeDirPath, fakeFile),
-            name: fakeFile,
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: fakeFile,
+            path: path.join(fakeDirPath, fakeFile)
         };
 
         testFile2 = {
-            path: path.join(fakeDirPath, fakeFile2),
-            name: fakeFile2,
             isDirectory: false,
-            isHidden: false
+            isHidden: false,
+            name: fakeFile2,
+            path: path.join(fakeDirPath, fakeFile2)
         };
 
         testFolder = {
-            path: path.join(fakeDirPath, fakeFolder),
-            name: fakeFolder,
             isDirectory: true,
-            isHidden: false
+            isHidden: false,
+            name: fakeFolder,
+            path: path.join(fakeDirPath, fakeFolder)
         };
 
         testFolder2 = {
-            path: path.join(fakeDirPath, fakeFolder2),
-            name: fakeFolder2,
             isDirectory: true,
-            isHidden: false
+            isHidden: false,
+            name: fakeFolder2,
+            path: path.join(fakeDirPath, fakeFolder2)
         };
     });
 
-    afterEach(mockfs.restore);
+    afterEach(mock.restore);
 
     describe("listDirectory method", () => {
         let sandbox: SinonSandbox;
 
         before(() => {
-            sandbox = sinon.createSandbox();
+            sandbox = Sinon.createSandbox();
         });
 
         after(() => {
@@ -122,14 +122,23 @@ describe("directoryManager's", () => {
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === "fakeFile.txt" &&
-                !item.isDirectory));
+                !item.isDirectory)).to.be.true;
         });
 
         it("can return a child folder of the given path", async () => {
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === fakeFolder &&
-                item.isDirectory));
+                item.isDirectory)).to.be.true;
+        });
+
+        it("returns false if attributes manager throws getting file attributes", async () => {
+            attributesManager.setup(async am => am.getAttributesAsync(It.isAnyString()))
+                .returns(sandbox.stub().rejects());
+
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
+
+            expect(result.every(item => !item.isHidden)).to.be.true;
         });
     });
 
@@ -254,10 +263,10 @@ describe("directoryManager's", () => {
         it("rejects when given an invalid path", () => {
             const invalidFileName = "invalidFileName.txt";
             testFile = {
-                path: path.join(fakeDirPath, invalidFileName),
-                name: invalidFileName,
                 isDirectory: false,
-                isHidden: false
+                isHidden: false,
+                name: invalidFileName,
+                path: path.join(fakeDirPath, invalidFileName)
             };
 
             expect(directoryManager.deleteItems([testFile]))
@@ -368,10 +377,10 @@ describe("directoryManager's", () => {
         it("rejects when given an invalid itemPath", () => {
             const invalidFileName = "invalidFileName.txt";
             testFile = {
-                path: path.join(fakeDirPath, invalidFileName),
-                name: invalidFileName,
                 isDirectory: false,
-                isHidden: false
+                isHidden: false,
+                name: invalidFileName,
+                path: path.join(fakeDirPath, invalidFileName)
             };
 
             expect(directoryManager.moveItems([testFile], fakeDirPath))

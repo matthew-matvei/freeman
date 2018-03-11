@@ -15,9 +15,9 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
 
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
-        moveUp: () => { },
+        moveBack: () => { },
         moveDown: () => { },
-        moveBack: () => { }
+        moveUp: () => { }
     };
 
     /** A reference to this input element. */

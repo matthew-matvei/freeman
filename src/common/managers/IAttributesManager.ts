@@ -6,7 +6,7 @@ interface IAttributesManager {
     /**
      * Gets pathToItem's file attributes.
      *
-     * @param pathToItem - the path to the directory item to get attributes for
+     * @param pathToItem the path to the directory item to get attributes for
      */
     getAttributesAsync(pathToItem: string): Promise<IAttributes>;
 }

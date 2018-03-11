@@ -1,4 +1,4 @@
-import merge from "deepmerge";
+import deepmerge from "deepmerge";
 import { inject, injectable } from "inversify";
 import path from "path";
 const electron = require("electron");
@@ -23,7 +23,7 @@ class SettingsManager implements ISettingsManager {
     /**
      * Initialises an instance of the SettingsManager class.
      *
-     * @param directoryManager - a directory manager for reading user-defined key map files
+     * @param directoryManager a directory manager for reading user-defined key map files
      */
     public constructor(
         @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
@@ -47,18 +47,18 @@ class SettingsManager implements ISettingsManager {
     /**
      * Retrieves application and user-specific settings.
      *
-     * @returns - a fully-formed settings object
+     * @returns a fully-formed settings object
      */
     private retrieve(): ICommonSettings {
         const userSettings = this.parseUserSettings();
 
-        return userSettings ? merge(applicationSettings, userSettings) : applicationSettings;
+        return userSettings ? deepmerge(applicationSettings, userSettings) : applicationSettings;
     }
 
     /**
      * Parses user-specific settings file.
      *
-     * @returns - a fully-formed settings object, or null if no settings could
+     * @returns a fully-formed settings object, or null if no settings could
      *      be read
      */
     private parseUserSettings(): ICommonSettings | null {

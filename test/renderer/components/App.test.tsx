@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import Enzyme, { shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
-import sinon, { SinonSandbox } from "sinon";
+import Sinon, { SinonSandbox } from "sinon";
 import { IMock, Mock } from "typemoq";
 
 import { App } from "components";
@@ -14,7 +14,7 @@ import { HotKeys, HotKeysProps } from "react-hotkeys";
 import applicationTheme from "settings/internal/themes/dark";
 import { IAppState } from "states";
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
 describe("<App />", () => {
     let props: IAppProps;
@@ -44,7 +44,7 @@ describe("<App />", () => {
 
         component = <App {...props} />;
 
-        sandbox = sinon.createSandbox();
+        sandbox = Sinon.createSandbox();
     });
 
     afterEach(() => {
