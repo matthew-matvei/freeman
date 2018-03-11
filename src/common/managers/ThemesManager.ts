@@ -26,8 +26,8 @@ class ThemesManager implements IThemesManager {
     /**
      * Initialises an instance of the KeysManager class.
      *
-     * @param settingsManager - the settings manager providing application settings
-     * @param directoryManager - a directory manager for reading user-defined key map files
+     * @param settingsManager the settings manager providing application settings
+     * @param directoryManager a directory manager for reading user-defined key map files
      */
     public constructor(
         @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
@@ -57,9 +57,9 @@ class ThemesManager implements IThemesManager {
     /**
      * Retrieves application and user-specific theme settings files.
      *
-     * @param themeName - the name of the theme the application is using
+     * @param themeName the name of the theme the application is using
      *
-     * @returns - the application theme settings file
+     * @returns the application theme settings file
      */
     private retrieve(themeName: string): ITheme {
         const userTheme = this.parseUserTheme("dark");
@@ -70,9 +70,9 @@ class ThemesManager implements IThemesManager {
     /**
      * Parses user-specific theme settings file.
      *
-     * @param themeName - the name of the theme the application is using
+     * @param themeName the name of the theme the application is using
      *
-     * @returns - a fully-formed theme object, or null if no settings could
+     * @returns a fully-formed theme object, or null if no settings could
      *      be read
      */
     private parseUserTheme(themeName: string): ITheme | null {

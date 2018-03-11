@@ -49,10 +49,10 @@ class DirectoryListModel {
      * Returns whether anything in the two given states indicates that the state
      * has changed.
      *
-     * @param prevState - the previous state
-     * @param nextState - the next state
+     * @param prevState the previous state
+     * @param nextState the next state
      *
-     * @returns - whether the state of the DirectoryList has changed
+     * @returns whether the state of the DirectoryList has changed
      */
     public stateChanged(prevState: IDirectoryListState, nextState: IDirectoryListState): boolean {
         return prevState.creatingNewItem !== nextState.creatingNewItem ||
@@ -68,10 +68,10 @@ class DirectoryListModel {
      * Returns whether anything in the two given props indicates that the props
      * have changed.
      *
-     * @param prevProps - the previous props
-     * @param nextProps - the next props
+     * @param prevProps the previous props
+     * @param nextProps the next props
      *
-     * @returns - whether the props have changed
+     * @returns whether the props have changed
      */
     public propsChanged(prevProps: IDirectoryListProps, nextProps: IDirectoryListProps): boolean {
         return prevProps.isSelectedPane !== nextProps.isSelectedPane ||
@@ -82,10 +82,10 @@ class DirectoryListModel {
      * Returns whether anything in the two arrays of chosen items indicates that
      * the chosen items have changed.
      *
-     * @param prevItems - the previously chosen items
-     * @param nextItems - the next chosen items
+     * @param prevItems the previously chosen items
+     * @param nextItems the next chosen items
      *
-     * @returns - whether the chosen items have changed
+     * @returns whether the chosen items have changed
      */
     public chosenItemsChanged(prevItems: IDirectoryItem[], nextItems: IDirectoryItem[]): boolean {
         return prevItems.length !== nextItems.length;
@@ -95,10 +95,10 @@ class DirectoryListModel {
      * Returns whether anything in the two arrays of directory items indicates that
      * the items have changed.
      *
-     * @param prevItems - the previous directory items
-     * @param nextItems - the next directory items
+     * @param prevItems the previous directory items
+     * @param nextItems the next directory items
      *
-     * @returns - whether the directory items have changed
+     * @returns whether the directory items have changed
      */
     public directoryItemsChanged(prevItems: IDirectoryItem[], nextItems: IDirectoryItem[]): boolean {
         if (prevItems.length !== nextItems.length) {
@@ -118,7 +118,7 @@ class DirectoryListModel {
     /**
      * Caches a given selected index value.
      *
-     * @param value - a selected index to add to the cache
+     * @param value a selected index to add to the cache
      */
     public cacheSelectedIndex(value: number) {
         this.selectedIndexCache.push(value);

@@ -23,7 +23,7 @@ class KeysManager implements IKeysManager {
     /**
      * Initialises an instance of the KeysManager class.
      *
-     * @param directoryManager - a directory manager for reading user-defined key map files
+     * @param directoryManager a directory manager for reading user-defined key map files
      */
     public constructor(
         @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
@@ -47,7 +47,7 @@ class KeysManager implements IKeysManager {
     /**
      * Retrieves application and user-specific key map settings files.
      *
-     * @returns - a fully-formed key map object
+     * @returns a fully-formed key map object
      */
     private retrieve(): IKeyMap {
         const userKeys = this.parseUserKeys();
@@ -60,7 +60,7 @@ class KeysManager implements IKeysManager {
     /**
      * Parses user-specific key map settings file.
      *
-     * @returns - a fully-formed key map object, or null if no settings could
+     * @returns a fully-formed key map object, or null if no settings could
      *      be read
      */
     private parseUserKeys(): IKeyMap | null {

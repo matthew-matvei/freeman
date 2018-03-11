@@ -165,8 +165,8 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Returns whether a given file or folder is hidden.
      *
-     * @param pathToItem - the path to the file or folder
-     * @param hideUnixStyleHiddenItems - whether Unix-style hidden items should be hidden on Windows
+     * @param pathToItem the path to the file or folder
+     * @param hideUnixStyleHiddenItems whether Unix-style hidden items should be hidden on Windows
      *
      * @returns whether the file at pathToItem is hidden
      */
@@ -206,8 +206,8 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Copies an item at itemPath to the destinationDirectory.
      *
-     * @param itemPath - the full path to the source item
-     * @param destinationDirectory - the directory to copy the item to
+     * @param itemPath the full path to the source item
+     * @param destinationDirectory the directory to copy the item to
      */
     private static async copyItem(itemPath: string, destinationDirectory: string): Promise<void> {
         const fileName = path.basename(itemPath);
@@ -224,9 +224,9 @@ class DirectoryManager implements IDirectoryManager {
      * Moves an item at itemPath to the destinationDirectory. This involves deleting
      * permanently the source file.
      *
-     * @param itemPath - the full path to the source item
-     * @param destinationDirectory - the directory to move the item to
-     * @param itemType - the type of the source item
+     * @param itemPath the full path to the source item
+     * @param destinationDirectory the directory to move the item to
+     * @param itemType the type of the source item
      */
     private static async moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void> {
         try {
@@ -240,8 +240,8 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Deletes the item of itemType at itemPath.
      *
-     * @param itemPath - the full path to the item to be deleted
-     * @param itemType - the type of the item to be deleted
+     * @param itemPath the full path to the item to be deleted
+     * @param itemType the type of the item to be deleted
      */
     private static async deleteItem(itemPath: string, itemType: ItemType): Promise<void> {
         if (itemType === "folder") {
@@ -262,7 +262,7 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Sends the item at itemPath to the system-dependent trash.
      *
-     * @param itemPath - the path to the file
+     * @param itemPath the path to the file
      */
     private static async sendItemToTrash(itemPath: string): Promise<void> {
         try {
@@ -275,9 +275,9 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Returns whether the file at the given path is a directory.
      *
-     * @param pathToItem - the path to the file
+     * @param pathToItem the path to the file
      *
-     * @returns - whether the file is a directory
+     * @returns whether the file is a directory
      */
     private static async isDirectory(pathToItem: string): Promise<boolean> {
         const stats = await lstatAsync(pathToItem);
@@ -288,9 +288,9 @@ class DirectoryManager implements IDirectoryManager {
     /**
      * Returns a list of directory item paths in the given filePath.
      *
-     * @param filePath - the path to the directory to get a list of files for
+     * @param filePath the path to the directory to get a list of files for
      *
-     * @returns - a list of directory item paths in the given filePath
+     * @returns a list of directory item paths in the given filePath
      */
     private static async getDirectoryPaths(filePath: string): Promise<string[]> {
         return new Promise<string[]>((resolve, reject) => {

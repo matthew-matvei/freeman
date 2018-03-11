@@ -8,9 +8,9 @@ export default {
     /**
      * Sorts the directory by type (directory vs. file etc.).
      *
-     * @param unsortedItems - an array of unsorted directory items
+     * @param unsortedItems an array of unsorted directory items
      *
-     * @returns - the given directory items, sorted by type
+     * @returns the given directory items, sorted by type
      */
     sortByType(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort(compareTypes);
@@ -19,9 +19,9 @@ export default {
     /**
      * Sorts the directory alphanumerically.
      *
-     * @param unsortedItems - an array of unsorted directory items
+     * @param unsortedItems an array of unsorted directory items
      *
-     * @returns - the given directory items, sorted alphanumerically
+     * @returns the given directory items, sorted alphanumerically
      */
     sortByAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort((a, b) => a.name.localeCompare(b.name));
@@ -31,9 +31,9 @@ export default {
      * Sorts the directory by type, then alphanumerically. This is the default
      * sort function.
      *
-     * @param unsortedItems - an array of unsorted directory items
+     * @param unsortedItems an array of unsorted directory items
      *
-     * @returns - the given directory items, sorted by type, then alphanumerically
+     * @returns the given directory items, sorted by type, then alphanumerically
      */
     sortByTypeThenAlphaNumery(unsortedItems: IDirectoryItem[]): IDirectoryItem[] {
         return unsortedItems.sort((a, b) => {
@@ -48,10 +48,10 @@ export default {
 /**
  * Compares two directory items based on their type (directory, file etc.).
  *
- * @param a - this directory item to compare to
- * @param b - that directory item to compare to
+ * @param a this directory item to compare to
+ * @param b that directory item to compare to
  *
- * @returns - a number comparing a to b
+ * @returns a number comparing a to b
  */
 function compareTypes(a: IDirectoryItem, b: IDirectoryItem): number {
     if (a.isDirectory && !b.isDirectory) {

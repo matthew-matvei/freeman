@@ -10,7 +10,7 @@ class FreemanWindow extends BrowserWindow {
     /**
      * Initialises a new instance of the Freemanwindow class.
      *
-     * @param options - options to send to the underlying BrowserWindow
+     * @param options options to send to the underlying BrowserWindow
      */
     public constructor(options: Electron.BrowserWindowConstructorOptions) {
         super(options);
