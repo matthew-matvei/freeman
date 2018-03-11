@@ -5,7 +5,7 @@ import * as React from "react";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
 import "reflect-metadata";
 import sinon, { SinonSandbox } from "sinon";
-import { IMock, Mock } from "typemoq";
+import { IMock, It, Mock } from "typemoq";
 
 import { DirectoryWrapper } from "components/wrappers";
 import { IDirectoryManager, ISettingsManager } from "managers";
@@ -51,6 +51,8 @@ describe("<DirectoryWrapper />", () => {
     beforeEach(() => {
         component = <DirectoryWrapper {...props} />;
         sandbox = sinon.createSandbox();
+        directoryManager.setup(async dm => dm.listDirectory(It.isAny(), It.isAny()))
+            .returns(sandbox.stub().resolves([]));
     });
 
     afterEach(() => {

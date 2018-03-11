@@ -1,8 +1,12 @@
 # FreeMAN
 
-![Travis-CI build status](https://travis-ci.org/matthew-matvei/freeman.svg?branch=develop)
-![AppVeyor build status](https://ci.appveyor.com/api/projects/status/a919pf573a0tv0fg/branch/develop?svg=true)
-![First contributions welcome](http://img.shields.io/badge/first--contributions-welcome-green.svg?style=flat-square)
+[![Travis-CI build status](https://travis-ci.org/matthew-matvei/freeman.svg?branch=develop)](https://travis-ci.org/matthew-matvei/freeman)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/a919pf573a0tv0fg/branch/develop?svg=true)](https://ci.appveyor.com/project/matthew-matvei/freeman)
+[![Dependencies](https://david-dm.org/matthew-matvei/freeman.svg)](https://david-dm.org/matthew-matvei/freeman)
+[![Dev Dependencies](https://david-dm.org/matthew-matvei/freeman/dev-status.svg)](https://david-dm.org/matthew-matvei/freeman#info=devDependencies)
+[![Peer Dependencies](https://david-dm.org/matthew-matvei/freeman/peer-status.svg)](https://david-dm.org/matthew-matvei/freeman#info=peerDependencies)
+[![Maintainability](https://api.codeclimate.com/v1/badges/962d19a24fb074a1df39/maintainability)](https://codeclimate.com/github/matthew-matvei/freeman/maintainability)
+[![First contributions welcome](http://img.shields.io/badge/first--contributions-welcome-green.svg?style=flat-square)](./github/CONTRIBUTING.md)
 
 A free, extensible, cross-platform file manager for power users
 
@@ -53,8 +57,9 @@ environment)*. Example files can be found in the `./resources/` folder.
 
 If you would like to package / install the program, on Windows and Linux you can:
 
-    npm run package:linux
-    npm run package:windows
+    npm run package
+
+Then run the appropriate built executable.
 
 ## Running
 
@@ -71,9 +76,9 @@ Providing the `--verbose` command-line argument will make the application log
 in more detail, helping trace execution when using the packaged app. Logs of
 warnings and errors can be found at `{appData}/log.log`.
 
-## Can I contribute?
+## How to contribute
 
-Yes please! Work on the core application is still under way. There are
+Contributions are welcome! Work on the core application is still under way. There are
 numerous areas with room for improvement in usability and stability. My
 priorities for development are currently:
 
@@ -81,4 +86,6 @@ priorities for development are currently:
 * Plugin functionality (starting with out-of-the-box ones)
 * Appearance
 
-I'll take whatever pull requests, issues, contributors and PMs I can get!
+I'll take whatever pull requests, issues, contributors and PMs I can get! Please
+have a look at the [Contributing Guidelines](./github/CONTRIBUTING.md) before
+submitting a PR.
