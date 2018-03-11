@@ -122,14 +122,23 @@ describe("directoryManager's", () => {
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === "fakeFile.txt" &&
-                !item.isDirectory));
+                !item.isDirectory)).to.be.true;
         });
 
         it("can return a child folder of the given path", async () => {
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === fakeFolder &&
-                item.isDirectory));
+                item.isDirectory)).to.be.true;
+        });
+
+        it("returns false if attributes manager throws getting file attributes", async () => {
+            attributesManager.setup(async am => am.getAttributesAsync(It.isAnyString()))
+                .returns(sandbox.stub().rejects());
+
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
+
+            expect(result.every(item => !item.isHidden)).to.be.true;
         });
     });
 

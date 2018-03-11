@@ -188,8 +188,13 @@ class DirectoryManager implements IDirectoryManager {
                 const attributes = await this.attributesManager.getAttributesAsync(pathToItem);
 
                 return attributes.hidden;
-            } catch {
-                throw new DirectoryError("Could not determine attributes", pathToItem);
+            } catch (error) {
+                log.warn(
+                    "Could not determine attributes, defaulting path to not hidden",
+                    pathToItem,
+                    error);
+
+                return false;
             }
         }
 
