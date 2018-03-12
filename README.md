@@ -6,7 +6,7 @@
 [![Dev Dependencies](https://david-dm.org/matthew-matvei/freeman/dev-status.svg)](https://david-dm.org/matthew-matvei/freeman#info=devDependencies)
 [![Peer Dependencies](https://david-dm.org/matthew-matvei/freeman/peer-status.svg)](https://david-dm.org/matthew-matvei/freeman#info=peerDependencies)
 [![Maintainability](https://api.codeclimate.com/v1/badges/962d19a24fb074a1df39/maintainability)](https://codeclimate.com/github/matthew-matvei/freeman/maintainability)
-[![First contributions welcome](http://img.shields.io/badge/first--contributions-welcome-green.svg?style=flat-square)](./github/CONTRIBUTING.md)
+[![First contributions welcome](http://img.shields.io/badge/first--contributions-welcome-green.svg?style=flat-square)](.github/CONTRIBUTING.md)
 
 A free, extensible, cross-platform file manager for power users
 
