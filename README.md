@@ -69,6 +69,12 @@ During development, after compiling you can:
 After packaging, you can run the system-dependent executable outputted by
 `electron-builder` in the `./dist/` folder.
 
+## Developing
+
+An overview of the codebase can be found in the [docs](docs/CODE_STRUCTURE.md).
+If you find it helpful, you can `npm run docs` and open the generated
+`docs/generated/index.html` file. Please let me know if you find this useful.
+
 ## Debugging
 
 Providing the `--verbose` command-line argument will make the application log

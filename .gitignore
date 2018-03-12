@@ -6,3 +6,4 @@ app/*
 **/*.map
 .vscode/settings.json
 __tests__
+docs/generated
