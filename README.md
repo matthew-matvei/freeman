@@ -86,5 +86,5 @@ priorities for development are currently:
 * Appearance
 
 I'll take whatever pull requests, issues, contributors and PMs I can get! Please
-have a look at the [Contributing Guidelines](./github/CONTRIBUTING.md) before
+have a look at the [Contributing Guidelines](./.github/CONTRIBUTING.md) before
 submitting a PR.
