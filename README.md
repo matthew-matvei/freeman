@@ -4,7 +4,6 @@
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/a919pf573a0tv0fg/branch/develop?svg=true)](https://ci.appveyor.com/project/matthew-matvei/freeman)
 [![Dependencies](https://david-dm.org/matthew-matvei/freeman.svg)](https://david-dm.org/matthew-matvei/freeman)
 [![Dev Dependencies](https://david-dm.org/matthew-matvei/freeman/dev-status.svg)](https://david-dm.org/matthew-matvei/freeman#info=devDependencies)
-[![Peer Dependencies](https://david-dm.org/matthew-matvei/freeman/peer-status.svg)](https://david-dm.org/matthew-matvei/freeman#info=peerDependencies)
 [![Maintainability](https://api.codeclimate.com/v1/badges/962d19a24fb074a1df39/maintainability)](https://codeclimate.com/github/matthew-matvei/freeman/maintainability)
 [![First contributions welcome](http://img.shields.io/badge/first--contributions-welcome-green.svg?style=flat-square)](.github/CONTRIBUTING.md)
 
