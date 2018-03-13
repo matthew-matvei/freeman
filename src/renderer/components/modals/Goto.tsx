@@ -13,7 +13,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     /**
      * Instantiates a new Goto component.
      *
-     * @param props - the properties for the Goto
+     * @param propsthe properties for the Goto
      */
     public constructor(props: IGotoProps) {
         super(props);
@@ -53,7 +53,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     /**
      * Defines how the goto component is rendered.
      *
-     * @returns - a JSX element representing the goto view
+     * @returnsa JSX element representing the goto view
      */
     public render(): JSX.Element {
         const items = this.state.directoryItems.map(item => item.path);
@@ -74,7 +74,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     /**
      * Handles interpreting the key entered in the search field.
      *
-     * @param event - a keyboard event fired when a user finishes pressing a key
+     * @param eventa keyboard event fired when a user finishes pressing a key
      */
     @autobind
     private async handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -131,7 +131,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     /**
      * Handles selecting an item and closing the goto modal.
      *
-     * @param selectedItem - the selected item
+     * @param selectedItemthe selected item
      */
     @autobind
     private handleSelect(selectedItem: string) {
@@ -143,7 +143,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
     /**
      * Handles updating the goto based on the user's choice of selectedItem.
      *
-     * @param selectedItem - the selected item
+     * @param selectedItemthe selected item
      */
     @autobind
     private async handleUpdate(selectedItem: string) {

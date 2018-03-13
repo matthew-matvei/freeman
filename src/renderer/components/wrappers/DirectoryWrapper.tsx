@@ -37,7 +37,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /**
      * Instantiates the DirectoryWrapper component.
      *
-     * @param props - the properties for the DirectoryWrapper component
+     * @param propsthe properties for the DirectoryWrapper component
      */
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
@@ -62,7 +62,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /**
      * Defines how the directory wrapper component is rendered.
      *
-     * @returns - a JSX element representing the directory view
+     * @returnsa JSX element representing the directory view
      */
     public render(): JSX.Element {
         const scrollAreaVertContainerStyle: React.CSSProperties = {
@@ -148,7 +148,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /**
      * Updates the path held in the directory wrapper's state
      *
-     * @param path - the path to update to
+     * @param paththe path to update to
      */
     @autobind
     private updatePath(path: string) {

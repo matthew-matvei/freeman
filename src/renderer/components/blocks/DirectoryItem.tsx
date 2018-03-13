@@ -23,7 +23,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     /**
      * Defines how the directory item component is rendered.
      *
-     * @returns - a JSX element representing the directory item view
+     * @returnsa JSX element representing the directory item view
      */
     public render(): JSX.Element {
         const { isSelected, model } = this.props;

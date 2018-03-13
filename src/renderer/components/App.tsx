@@ -33,9 +33,9 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Defines how the main app component is rendered.
      *
-     * @param - the props for the component
+     * @paramthe props for the component
      *
-     * @returns - a JSX element representing the app view
+     * @returnsa JSX element representing the app view
      */
     constructor(props: IAppProps) {
         super(props);
@@ -60,7 +60,7 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Defines how the main application component is rendered
      *
-     * @returns - a JSX element representing the main application view
+     * @returnsa JSX element representing the main application view
      */
     public render(): JSX.Element {
         const { directoryManager, keysManager, settingsManager, themeManager } = this.props;
@@ -127,8 +127,8 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Handles updating the status component's message.
      *
-     * @param updateType - the type of the status update
-     * @param payload - the data to use in the status update
+     * @param updateTypethe type of the status update
+     * @param payloadthe data to use in the status update
      */
     @autobind
     private updateStatus(updateType: StatusUpdate, payload: string | number) {
@@ -166,7 +166,7 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Handles selecting the given pane.
      *
-     * @param paneToSelect - the pane to select, if not currently selected
+     * @param paneToSelectthe pane to select, if not currently selected
      */
     @autobind
     private selectPane(paneToSelect: DirectoryPaneSide) {

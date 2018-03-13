@@ -13,7 +13,7 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
     /**
      * Defines how the directory item icon is rendered.
      *
-     * @returns - a JSX element representing the directory item icon
+     * @returnsa JSX element representing the directory item icon
      */
     public render(): JSX.Element {
         const { directoryItem, directoryItemType, theme } = this.props;
