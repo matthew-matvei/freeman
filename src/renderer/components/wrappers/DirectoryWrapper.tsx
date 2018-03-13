@@ -80,6 +80,13 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
             display: this.state.isTerminalOpen ? "block" : "none"
         };
 
+        const splitPaneStyle: React.CSSProperties = {
+            fontStyle: "italic",
+            height: "auto",
+            padding: "0.3em 0 0.3em 16px",
+            position: "relative"
+        };
+
         return <HotKeys
             handlers={this.handlers}>
             <div className="DirectoryWrapper">
@@ -90,27 +97,36 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         size={directoryListHeight}
                         resizerStyle={resizerStyle}
                         onDragFinished={this.storeDirectoryListHeight}>
-                        <div
-                            className="scrollAreaWrapper"
-                            ref={element => this.directoryScrollArea = element}>
-                            <ScrollArea
-                                className="directoryScrollArea"
-                                horizontal={false}
-                                style={{ backgroundColor: this.props.theme.primaryBackgroundColour }}
-                                verticalContainerStyle={scrollAreaVertContainerStyle}
-                                verticalScrollbarStyle={scrollAreaVertBarStyle}>
-                                <DirectoryList
-                                    ref={directoryList => this.directoryList = directoryList}
-                                    id={this.props.id}
-                                    path={this.state.path}
-                                    isSelectedPane={this.props.isSelectedPane}
-                                    sendSelectedPaneUp={this.props.sendSelectedPaneUp}
-                                    sendPathUp={this.updatePath}
-                                    directoryManager={this.props.directoryManager}
-                                    statusNotifier={this.props.statusNotifier}
-                                    settingsManager={this.props.settingsManager}
-                                    theme={this.props.theme} />
-                            </ScrollArea>
+                        <div style={{ width: "100%" }}>
+                            <SplitPane style={splitPaneStyle}>
+                                <div>Name</div>
+                                <SplitPane>
+                                    <div>Size</div>
+                                    <div>Modified on</div>
+                                </SplitPane>
+                            </SplitPane>
+                            <div
+                                className="scrollAreaWrapper"
+                                ref={element => this.directoryScrollArea = element}>
+                                <ScrollArea
+                                    className="directoryScrollArea"
+                                    horizontal={false}
+                                    style={{ backgroundColor: this.props.theme.primaryBackgroundColour }}
+                                    verticalContainerStyle={scrollAreaVertContainerStyle}
+                                    verticalScrollbarStyle={scrollAreaVertBarStyle}>
+                                    <DirectoryList
+                                        ref={directoryList => this.directoryList = directoryList}
+                                        id={this.props.id}
+                                        path={this.state.path}
+                                        isSelectedPane={this.props.isSelectedPane}
+                                        sendSelectedPaneUp={this.props.sendSelectedPaneUp}
+                                        sendPathUp={this.updatePath}
+                                        directoryManager={this.props.directoryManager}
+                                        statusNotifier={this.props.statusNotifier}
+                                        settingsManager={this.props.settingsManager}
+                                        theme={this.props.theme} />
+                                </ScrollArea>
+                            </div>
                         </div>
                         {this.state.isTerminalOpen &&
                             <TerminalWrapper
