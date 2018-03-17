@@ -1,7 +1,12 @@
 .App {
-    position: fixed;
+    display: grid;
     height: 100vh;
     width: 100vw;
+
+    .main {
+        grid-area: 1 / 1 / 100 / 25;
+        position: relative;
+    }
 }
 
 .Resizer {
@@ -20,4 +25,8 @@
         width: 2px;
         cursor: col-resize;
     }
+}
+
+.HotKeys {
+    height: 100%;
 }
