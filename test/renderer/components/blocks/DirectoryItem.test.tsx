@@ -32,6 +32,11 @@ describe("<DirectoryItem />", () => {
         };
 
         props = {
+            columnSizes: {
+                lastModified: 25,
+                name: 50,
+                size: 25
+            },
             isChosen: false,
             isSelected: false,
             model: directoryModel,

@@ -1,8 +1,8 @@
 import { IDirectoryItem } from "models";
-import { IThemeableProps } from "props/common";
+import { IColumnProps, IThemeableProps } from "props/common";
 
 /** Describes the properties of a directory item component. */
-interface IDirectoryItemProps extends IThemeableProps {
+interface IDirectoryItemProps extends IThemeableProps, IColumnProps {
 
     /** The underlying model for a DirectoryItem component. */
     model: IDirectoryItem;

@@ -112,6 +112,11 @@ describe("DirectoryListModel's", () => {
             directoryManager = Mock.ofType<IDirectoryManager>();
 
             const commonProps: IDirectoryListProps = {
+                columnSizes: {
+                    lastModified: 25,
+                    name: 50,
+                    size: 25
+                },
                 directoryManager: directoryManager.object,
                 id: "left",
                 isSelectedPane: false,

@@ -41,10 +41,21 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
             backgroundColor: isSelected ? selectedColour : backgroundColour
         };
 
-        const foregroundColourStyle: React.CSSProperties = {
+        const nameColumnStyle: React.CSSProperties = {
             color: (this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour))
+                (model.isDirectory && directoryColour)),
+            width: `${this.props.columnSizes.name}px`
+        };
+
+        const sizeColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: `${this.props.columnSizes.size}px`
+        };
+
+        const lastModifiedColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: `${this.props.columnSizes.lastModified}px`
         };
 
         return <HotKeys
@@ -55,13 +66,13 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                 style={backgroundColourStyle}>
                 <DirectoryItemIcon directoryItem={this.props.model} theme={this.props.theme} />
                 <button
-                    style={foregroundColourStyle}
+                    style={nameColumnStyle}
                     onClick={this.select}
                     onDoubleClick={this.activate}>
                     {model.name}
                 </button>
-                <span>{model.size}</span>
-                <span>{moment(model.lastModified).format("mm:HH:ss - D MMM, Y")}</span>
+                <span style={sizeColumnStyle}>{model.size}</span>
+                <span style={lastModifiedColumnStyle}>{moment(model.lastModified).format("mm:HH:ss - D MMM, Y")}</span>
             </div>
         </HotKeys>;
     }

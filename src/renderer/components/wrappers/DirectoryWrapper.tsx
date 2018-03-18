@@ -108,7 +108,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                                         directoryManager={this.props.directoryManager}
                                         statusNotifier={this.props.statusNotifier}
                                         settingsManager={this.props.settingsManager}
-                                        theme={this.props.theme} />
+                                        theme={this.props.theme}
+                                        columnSizes={this.state.columnSizes} />
                                 </ScrollArea>
                             </div>
                         </div>

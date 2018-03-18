@@ -77,6 +77,11 @@ describe("<DirectoryList />", () => {
             .returns(sandbox.stub().resolves());
 
         props = {
+            columnSizes: {
+                lastModified: 25,
+                name: 50,
+                size: 25
+            },
             directoryManager: mockDirectoryManager.object,
             id: "left",
             isSelectedPane: true,

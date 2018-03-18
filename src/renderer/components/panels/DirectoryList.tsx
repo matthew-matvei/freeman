@@ -234,7 +234,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                         sendPathUp={this.goIn}
                         sendSelectedItemUp={this.selectItem}
                         sendDeletionUp={this.refreshAfterDelete}
-                        theme={this.props.theme} />;
+                        theme={this.props.theme}
+                        columnSizes={this.props.columnSizes} />;
                 }
             });
 
