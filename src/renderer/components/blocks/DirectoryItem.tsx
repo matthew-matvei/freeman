@@ -21,6 +21,16 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         openInNativeExplorer: this.openInNativeExplorer
     };
 
+    private get sizeInKiloBytes(): string | undefined {
+        if (!this.props.model.size) {
+            return "";
+        }
+
+        const bytesInKiloByte = 1024;
+
+        return `${Math.round(this.props.model.size / bytesInKiloByte)} Kb`;
+    }
+
     /**
      * Defines how the directory item component is rendered.
      *
@@ -71,8 +81,16 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                     onDoubleClick={this.activate}>
                     {model.name}
                 </button>
-                <span style={sizeColumnStyle}>{model.size}</span>
-                <span style={lastModifiedColumnStyle}>{moment(model.lastModified).format("mm:HH:ss - D MMM, Y")}</span>
+                <span
+                    className="sizeColumn"
+                    style={sizeColumnStyle}>
+                    {this.sizeInKiloBytes}
+                </span>
+                <span
+                    className="lastModifiedColumn"
+                    style={lastModifiedColumnStyle}>
+                    {moment(model.lastModified).format("mm:HH:ss - D MMM, Y")}
+                </span>
             </div>
         </HotKeys>;
     }
