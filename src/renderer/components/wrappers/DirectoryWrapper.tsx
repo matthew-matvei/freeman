@@ -96,6 +96,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                                 theme={this.props.theme} />
                             <div style={{ overflow: "hidden" }}>
                                 <ScrollArea
+                                    className="directoryScrollArea"
                                     horizontal={false}
                                     style={{ backgroundColor: this.props.theme.primaryBackgroundColour }}
                                     verticalScrollbarStyle={scrollAreaVertBarStyle}>
