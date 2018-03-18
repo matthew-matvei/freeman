@@ -12,7 +12,7 @@ class Status extends React.PureComponent<IStatusProps> {
     /**
      * Defines how the status indication component is rendered
      *
-     * @returnsa JSX element representing the status indication view
+     * @returns a JSX element representing the status indication view
      */
     public render(): JSX.Element {
         const { backgroundColour, foregroundColour } = this.props.theme.statusBar;

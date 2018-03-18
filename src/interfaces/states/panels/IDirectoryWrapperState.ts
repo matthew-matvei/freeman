@@ -9,6 +9,7 @@ interface IDirectoryWrapperState {
     /** Whether the integrated terminal is open. */
     isTerminalOpen: boolean;
 
+    /** The sizes of the columns visible in the directory list. */
     columnSizes: IColumnSizes;
 }
 

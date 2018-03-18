@@ -5,15 +5,19 @@ import { IDirectoryHeaderProps } from "props/panels";
 
 import "styles/panels/DirectoryHeader.scss";
 
+/** The DirectoryHeader component. */
 class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
 
+    /** Divisors to use when calculating column widths. */
     private readonly divisors = {
         half: 2,
         quarter: 4
     };
 
+    /** The parent container used for calculating column widths. */
     private container?: HTMLDivElement | null;
 
+    /** @inheritDoc */
     public componentDidMount() {
         if (!this.container) {
             return;
@@ -27,6 +31,11 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
             containerWidth / this.divisors.quarter);
     }
 
+    /**
+     * Defines how the directory header component is rendered.
+     *
+     * @returns a JSX element representing the directory header view
+     */
     public render(): JSX.Element {
         const splitPaneStyles: React.CSSProperties = {
             position: "relative"

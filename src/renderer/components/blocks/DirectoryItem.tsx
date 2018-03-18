@@ -21,6 +21,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         openInNativeExplorer: this.openInNativeExplorer
     };
 
+    /** Gets the size of the directory item rendered in Kilobytes. */
     private get sizeInKiloBytes(): string | undefined {
         if (!this.props.model.size) {
             return "";
@@ -34,7 +35,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     /**
      * Defines how the directory item component is rendered.
      *
-     * @returnsa JSX element representing the directory item view
+     * @returns a JSX element representing the directory item view
      */
     public render(): JSX.Element {
         const { isSelected, model } = this.props;

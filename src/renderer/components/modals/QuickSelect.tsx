@@ -58,7 +58,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     /**
      * Instantiates the QuickSelect component.
      *
-     * @param propsthe properties for this component
+     * @param props the properties for this component
      */
     public constructor(props: IQuickSelectProps) {
         super(props);
@@ -71,7 +71,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     /**
      * Defines how the quick select component is rendered.
      *
-     * @returnsa JSX element representing the quick select view
+     * @returns a JSX element representing the quick select view
      */
     public render(): JSX.Element {
         const { selectedColour, backgroundColour } = this.props.theme.quickSelect;
