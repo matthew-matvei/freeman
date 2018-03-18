@@ -146,6 +146,13 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         });
     }
 
+    /**
+     * Updates the column sizes with those given (in pixels).
+     *
+     * @param nameColumnSize - the size that the 'name' column should be
+     * @param sizeColumnSize - the size that the 'size' column should be
+     * @param lastModifiedSize - the size that the 'last modified on' column should be
+     */
     @autobind
     private updateColumnSizes(nameColumnSize: number, sizeColumnSize: number, lastModifiedSize: number) {
         this.setState({
