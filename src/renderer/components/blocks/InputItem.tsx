@@ -115,7 +115,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      *
      * @param event an event raised on key up
      *
-     * @requirethis.input && this.props.sendUpCreateItem
+     * @require this.input && this.props.sendUpCreateItem
      */
     private handleCreate(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === "Enter") {
@@ -130,7 +130,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      *
      * @param event an event raised on key up
      *
-     * @requirethis.input && this.props.sendUpRenameItem
+     * @require this.input && this.props.sendUpRenameItem
      */
     private handleRename(event: React.KeyboardEvent<HTMLInputElement>) {
         if (!this.props.sendUpRenameItem) {
