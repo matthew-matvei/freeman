@@ -1,11 +1,11 @@
 import * as React from "react";
 import SplitPane from "react-split-pane";
 
-import { IDirectoryHeaderState } from "states/panels";
+import { IDirectoryHeaderProps } from "props/panels";
 
 import "styles/panels/DirectoryHeader.scss";
 
-class DirectoryHeader extends React.Component<{}, IDirectoryHeaderState> {
+class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
 
     private readonly divisors = {
         half: 2,
@@ -14,30 +14,17 @@ class DirectoryHeader extends React.Component<{}, IDirectoryHeaderState> {
 
     private container?: HTMLDivElement | null;
 
-    public constructor(props: {}) {
-        super(props);
-
-        this.state = {
-            columnSizes: {
-                lastModified: 50,
-                name: 50,
-                size: 50
-            }
-        };
-    }
-
     public componentDidMount() {
         if (!this.container) {
             return;
         }
 
-        this.setState({
-            columnSizes: {
-                lastModified: this.container.clientWidth / this.divisors.quarter,
-                name: this.container.clientWidth / this.divisors.half,
-                size: this.container.clientWidth / this.divisors.quarter
-            }
-        } as IDirectoryHeaderState);
+        const containerWidth = this.container.clientWidth;
+
+        this.props.updateColumnSizes(
+            containerWidth / this.divisors.half,
+            containerWidth / this.divisors.quarter,
+            containerWidth / this.divisors.quarter);
     }
 
     public render(): JSX.Element {
@@ -49,11 +36,11 @@ class DirectoryHeader extends React.Component<{}, IDirectoryHeaderState> {
             <SplitPane
                 allowResize={false}
                 style={splitPaneStyles}
-                size={this.state.columnSizes.name}>
+                size={this.props.columnSizes.name}>
                 <div>Name</div>
                 <SplitPane
                     allowResize={false}
-                    size={this.state.columnSizes.size}>
+                    size={this.props.columnSizes.size}>
                     <div>Size</div>
                     <div>Modified on</div>
                 </SplitPane>

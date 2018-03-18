@@ -54,6 +54,11 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         }
 
         this.state = {
+            columnSizes: {
+                lastModified: 50,
+                name: 50,
+                size: 50
+            },
             isTerminalOpen: settingsManager.settings.terminal.displayAtStartup,
             path: initialPath
         };
@@ -85,7 +90,9 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         resizerStyle={resizerStyle}
                         onDragFinished={this.storeDirectoryListHeight}>
                         <div className="scrollAreaWrapper">
-                            <DirectoryHeader />
+                            <DirectoryHeader
+                                columnSizes={this.state.columnSizes}
+                                updateColumnSizes={this.updateColumnSizes} />
                             <div style={{ overflow: "hidden" }}>
                                 <ScrollArea
                                     horizontal={false}
@@ -136,6 +143,17 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 isTerminalOpen: !previousState.isTerminalOpen
             } as IDirectoryWrapperState;
         });
+    }
+
+    @autobind
+    private updateColumnSizes(nameColumnSize: number, sizeColumnSize: number, lastModifiedSize: number) {
+        this.setState({
+            columnSizes: {
+                lastModified: lastModifiedSize,
+                name: nameColumnSize,
+                size: sizeColumnSize
+            }
+        } as IDirectoryWrapperState);
     }
 
     /**
