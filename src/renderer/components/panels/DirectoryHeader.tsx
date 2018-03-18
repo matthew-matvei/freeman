@@ -38,7 +38,7 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
      */
     public render(): JSX.Element {
         const directoryHeaderStyles: React.CSSProperties = {
-            boxShadow: `5px 5px 5px ${this.props.theme.directoryItem.backgroundColour}`
+            boxShadow: `0 5px 5px ${this.props.theme.directoryItem.backgroundColour}`
         };
 
         const splitPaneStyles: React.CSSProperties = {
