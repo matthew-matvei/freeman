@@ -105,6 +105,7 @@
     "electron-fswin": "^2.18.2",
     "electron-log": "^2.2.13",
     "file-icons-js": "github:websemantics/file-icons-js",
+    "format-number": "^3.0.0",
     "fuzzysearch": "^1.0.3",
     "immutable": "^3.8.2",
     "inversify": "^4.9.0",
