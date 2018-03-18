@@ -81,16 +81,20 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                     onDoubleClick={this.activate}>
                     {model.name}
                 </button>
-                <span
+                <button
                     className="sizeColumn"
-                    style={sizeColumnStyle}>
+                    style={sizeColumnStyle}
+                    onClick={this.select}
+                    onDoubleClick={this.activate}>
                     {this.sizeInKiloBytes}
-                </span>
-                <span
+                </button>
+                <button
                     className="lastModifiedColumn"
-                    style={lastModifiedColumnStyle}>
+                    style={lastModifiedColumnStyle}
+                    onClick={this.select}
+                    onDoubleClick={this.activate}>
                     {moment(model.lastModified).format("mm:HH:ss - D MMM, Y")}
-                </span>
+                </button>
             </div>
         </HotKeys>;
     }
