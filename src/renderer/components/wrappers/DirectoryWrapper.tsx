@@ -89,12 +89,14 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         size={directoryListHeight}
                         resizerStyle={resizerStyle}
                         onDragFinished={this.storeDirectoryListHeight}>
-                        <div className="scrollAreaWrapper">
+                        <div
+                            ref={element => this.directoryScrollArea = element}
+                            className="scrollAreaWrapper">
                             <DirectoryHeader
                                 columnSizes={this.state.columnSizes}
                                 updateColumnSizes={this.updateColumnSizes}
                                 theme={this.props.theme} />
-                            <div style={{ overflow: "hidden" }}>
+                            <div className="clippedHeight">
                                 <ScrollArea
                                     className="directoryScrollArea"
                                     horizontal={false}
