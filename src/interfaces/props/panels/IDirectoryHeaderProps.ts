@@ -1,7 +1,7 @@
-import { IColumnProps } from "props/common";
+import { IColumnProps, IThemeableProps } from "props/common";
 
 /** Describes properties for the DirectoryHeader component. */
-interface IDirectoryHeaderProps extends IColumnProps {
+interface IDirectoryHeaderProps extends IColumnProps, IThemeableProps {
 
     /**
      * Updates the directory list column sizes with the ones given (in pixels).

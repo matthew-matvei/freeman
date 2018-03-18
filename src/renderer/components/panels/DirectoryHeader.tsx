@@ -37,11 +37,18 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
      * @returns a JSX element representing the directory header view
      */
     public render(): JSX.Element {
+        const directoryHeaderStyles: React.CSSProperties = {
+            boxShadow: `5px 5px 5px ${this.props.theme.directoryItem.backgroundColour}`
+        };
+
         const splitPaneStyles: React.CSSProperties = {
             position: "relative"
         };
 
-        return <div className="DirectoryHeader" ref={element => this.container = element}>
+        return <div
+            className="DirectoryHeader"
+            style={directoryHeaderStyles}
+            ref={element => this.container = element}>
             <SplitPane
                 allowResize={false}
                 style={splitPaneStyles}

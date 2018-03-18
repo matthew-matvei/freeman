@@ -92,7 +92,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         <div className="scrollAreaWrapper">
                             <DirectoryHeader
                                 columnSizes={this.state.columnSizes}
-                                updateColumnSizes={this.updateColumnSizes} />
+                                updateColumnSizes={this.updateColumnSizes}
+                                theme={this.props.theme} />
                             <div style={{ overflow: "hidden" }}>
                                 <ScrollArea
                                     horizontal={false}
