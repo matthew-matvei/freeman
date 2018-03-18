@@ -66,6 +66,7 @@ describe("directoryManager's", () => {
         testFile = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFile,
             path: path.join(fakeDirPath, fakeFile)
         };
@@ -73,6 +74,7 @@ describe("directoryManager's", () => {
         testFile2 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFile2,
             path: path.join(fakeDirPath, fakeFile2)
         };
@@ -80,6 +82,7 @@ describe("directoryManager's", () => {
         testFolder = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFolder,
             path: path.join(fakeDirPath, fakeFolder)
         };
@@ -87,6 +90,7 @@ describe("directoryManager's", () => {
         testFolder2 = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFolder2,
             path: path.join(fakeDirPath, fakeFolder2)
         };
@@ -265,6 +269,7 @@ describe("directoryManager's", () => {
             testFile = {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: invalidFileName,
                 path: path.join(fakeDirPath, invalidFileName)
             };
@@ -379,6 +384,7 @@ describe("directoryManager's", () => {
             testFile = {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: invalidFileName,
                 path: path.join(fakeDirPath, invalidFileName)
             };

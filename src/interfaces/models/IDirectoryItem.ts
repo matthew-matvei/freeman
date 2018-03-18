@@ -12,6 +12,12 @@ interface IDirectoryItem {
 
     /** Whether the directory item is hidden. */
     isHidden: boolean;
+
+    /** The size (in bytes) of the file, if any. */
+    size?: number;
+
+    /** The last time the directory item was modified. */
+    lastModified: Date;
 }
 
 export default IDirectoryItem;

@@ -25,6 +25,7 @@ describe("DirectoryListModel's", () => {
         directoryItem1 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "Item 1",
             path: "path/to/Item 1"
         };

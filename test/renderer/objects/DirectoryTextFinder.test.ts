@@ -23,6 +23,7 @@ describe("DirectoryTextFinder's", () => {
         item1 = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: "A item",
             path: "path/to/A item"
         };
@@ -30,6 +31,7 @@ describe("DirectoryTextFinder's", () => {
         item2 = {
             isDirectory: false,
             isHidden: true,
+            lastModified: new Date(),
             name: "B item",
             path: "path/to/B item"
         };
@@ -37,6 +39,7 @@ describe("DirectoryTextFinder's", () => {
         item3 = {
             isDirectory: false,
             isHidden: true,
+            lastModified: new Date(),
             name: "BA item",
             path: "path/to/BA item"
         };
@@ -44,6 +47,7 @@ describe("DirectoryTextFinder's", () => {
         item4 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "B-A item",
             path: "path/to/B-A item"
         };

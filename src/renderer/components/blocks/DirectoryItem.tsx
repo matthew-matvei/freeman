@@ -1,5 +1,6 @@
 import autobind from "autobind-decorator";
 import { shell } from "electron";
+import moment from "moment";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
@@ -59,6 +60,8 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                     onDoubleClick={this.activate}>
                     {model.name}
                 </button>
+                <span>{model.size}</span>
+                <span>{moment(model.lastModified).format("mm:HH:ss - D MMM, Y")}</span>
             </div>
         </HotKeys>;
     }

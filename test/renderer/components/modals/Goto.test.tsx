@@ -35,6 +35,7 @@ describe("<Goto />", () => {
         item1 = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: "Item 1",
             path: "/path/to/Item 1"
         };
@@ -42,6 +43,7 @@ describe("<Goto />", () => {
         item2 = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: "Item 2",
             path: "/path/to/Item 2"
         };

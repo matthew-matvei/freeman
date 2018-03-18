@@ -66,8 +66,10 @@ class DirectoryManager implements IDirectoryManager {
             return {
                 isDirectory: fileStats.isDirectory(),
                 isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems),
+                lastModified: fileStats.mtime,
                 name: fileName,
-                path: fullPath
+                path: fullPath,
+                size: fileStats.size
             } as IDirectoryItem;
         });
 

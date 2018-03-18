@@ -57,12 +57,14 @@ describe("<DirectoryList />", () => {
             {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: "item1.txt",
                 path: "/path/to/item1.txt"
             },
             {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: "item2.txt",
                 path: "/path/to/item2.txt"
             }

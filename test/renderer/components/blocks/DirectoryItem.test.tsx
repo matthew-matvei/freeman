@@ -26,6 +26,7 @@ describe("<DirectoryItem />", () => {
         directoryModel = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "item.txt",
             path: "/path/to/"
         };
