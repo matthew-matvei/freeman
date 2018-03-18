@@ -6,6 +6,9 @@
         text-align: left;
         background: inherit;
         border: none;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .sizeColumn, .lastModifiedColumn {
