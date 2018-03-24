@@ -69,7 +69,7 @@ class DirectoryManager implements IDirectoryManager {
                 lastModified: fileStats.mtime,
                 name: fileName,
                 path: fullPath,
-                size: !fileStats.isDirectory() && fileStats.size
+                size: !fileStats.isDirectory() && fileStats.size || undefined
             } as IDirectoryItem;
         });
 
