@@ -267,4 +267,6 @@ describe("<DirectoryList />", () => {
 
         expect(scrollTopStub.calledOnce).to.be.true;
     });
+
+    it("focusses keys trapper only if pane is focussed");
 });

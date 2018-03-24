@@ -8,7 +8,7 @@ import { CommandPalette } from "components/modals";
 import { Status } from "components/panels";
 import { DirectoryWrapper } from "components/wrappers";
 import { IHandlers, IStatusNotifier } from "models";
-import { ApplicationCommander } from "objects";
+import { ApplicationCommander, IIntegratedTerminal, IntegratedTerminal } from "objects";
 import { IAppProps } from "props";
 import { IAppState } from "states";
 import { DirectoryPaneSide, StatusUpdate } from "types";
@@ -29,6 +29,12 @@ class App extends React.Component<IAppProps, IAppState> {
 
     /** A timer used for the status message. */
     private statusMessageTimeout?: NodeJS.Timer;
+
+    /** The integrated terminal for the left directory pane. */
+    private leftTerminal: IIntegratedTerminal;
+
+    /** The integrated terminal for the right directory pane. */
+    private rightTerminal: IIntegratedTerminal;
 
     /**
      * Defines how the main app component is rendered.
@@ -55,6 +61,17 @@ class App extends React.Component<IAppProps, IAppState> {
                 message: ""
             }
         };
+
+        try {
+            // Try to construct a terminal using shell path given in settings
+            this.leftTerminal = new IntegratedTerminal(this.props.settingsManager);
+            this.rightTerminal = new IntegratedTerminal(this.props.settingsManager);
+        } catch {
+            // Fallback to a pre-defined, system-dependent shell
+            const useFallbackShell = true;
+            this.leftTerminal = new IntegratedTerminal(this.props.settingsManager, useFallbackShell);
+            this.rightTerminal = new IntegratedTerminal(this.props.settingsManager, useFallbackShell);
+        }
     }
 
     /**
@@ -85,7 +102,8 @@ class App extends React.Component<IAppProps, IAppState> {
                                 directoryManager={directoryManager}
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
-                                theme={themeManager.theme} />
+                                theme={themeManager.theme}
+                                integratedTerminal={this.leftTerminal} />
                             <DirectoryWrapper
                                 id="right"
                                 initialPath={os.homedir()}
@@ -94,7 +112,8 @@ class App extends React.Component<IAppProps, IAppState> {
                                 directoryManager={directoryManager}
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
-                                theme={themeManager.theme} />
+                                theme={themeManager.theme}
+                                integratedTerminal={this.rightTerminal} />
                         </SplitPane>
                     </div>
                     <Status {...this.state.status} theme={themeManager.theme} />

@@ -10,6 +10,7 @@ import { IMock, It, Mock } from "typemoq";
 import { DirectoryWrapper } from "components/wrappers";
 import { IDirectoryManager, ISettingsManager } from "managers";
 import { IHandlers, IStatusNotifier } from "models";
+import { IIntegratedTerminal } from "objects";
 import { IDirectoryWrapperProps } from "props/wrappers";
 import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
@@ -26,11 +27,13 @@ describe("<DirectoryWrapper />", () => {
 
     let directoryManager: IMock<IDirectoryManager>;
     let settingsManager: IMock<ISettingsManager>;
+    let integratedTerminal: IMock<IIntegratedTerminal>;
 
     before(() => {
         directoryManager = Mock.ofType<IDirectoryManager>();
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
+        integratedTerminal = Mock.ofType<IIntegratedTerminal>();
 
         const statusNotifier = {} as IStatusNotifier;
 
@@ -40,6 +43,7 @@ describe("<DirectoryWrapper />", () => {
             directoryManager: directoryManager.object,
             id: "left",
             initialPath: "path/to/initial",
+            integratedTerminal: integratedTerminal.object,
             isSelectedPane: true,
             sendSelectedPaneUp: () => { },
             settingsManager: settingsManager.object,
@@ -114,4 +118,6 @@ describe("<DirectoryWrapper />", () => {
 
         expect(autoFocusStub.calledOnce).to.be.true;
     });
+
+    it("terminal changes directory only when enabled in settings");
 });

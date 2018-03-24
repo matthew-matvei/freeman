@@ -1,3 +1,4 @@
+import { IIntegratedTerminal } from "objects";
 import {
     IDirectoryCommonProps,
     IDirectoryManageableProps,
@@ -16,6 +17,8 @@ interface IDirectoryWrapperProps extends
 
     /** The initial path the directory wrapper is set to. */
     initialPath: string;
+
+    integratedTerminal: IIntegratedTerminal;
 }
 
 export default IDirectoryWrapperProps;
