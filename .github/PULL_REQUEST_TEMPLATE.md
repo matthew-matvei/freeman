@@ -19,12 +19,10 @@ Failure to do so may result in the rejection of the pull request. -->
 <!--- If fixing a bug, there should be an issue describing it with steps to reproduce -->
 <!--- Please link to the issue here. Note that there should only be one
 linked issue -->
+<!--- Please ensure you have marked items in any checklist in the related issue
+that have been resolved by code in this pull request -->
 
 This pull request closes #*{issue number}*
-
-## Motivation and Context
-
-<!--- Why is this change required? What problem does it solve? -->
 
 ## Testing
 
@@ -38,7 +36,10 @@ This pull request closes #*{issue number}*
 
 ## Documentation
 
-- [ ] Updated JSDoc documentation
+<!--- If no documentation changes were required, remove the checklist / section -->
+
+- [ ] Added / updated Markdown documentation (e.g. `README.md`)
+- [ ] Added / updated JSDoc documentation
 
 ## Screenshots
 

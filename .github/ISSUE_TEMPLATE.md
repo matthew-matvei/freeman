@@ -14,7 +14,12 @@ of steps to reproduce this bug. Include code to reproduce, if relevant -->
 
 ### Expected behaviour
 
-<!--- Describe what you expect the behaviour to be -->
+<!--- Describe what you expect the behaviour to be. Note the check-list behaviours
+form the acceptance criteria of a related pull request -->
+
+- [ ] Behaviour 1
+- [ ] Behaviour 2
+- [ ] Behaviour N
 
 ### Current behaviour
 
@@ -35,11 +40,12 @@ section -->
 
 ## Feature
 
-<!--- Justification for the proposed feature. Include a checklist of functionality
-that must be delivered in order for the feature to be considered complete -->
+<!--- Justification for the proposed feature. Note the check-list functionalities
+form the acceptance criteria of a related pull request -->
 
 - [ ] Functionality 1
 - [ ] Functionality 2
+- [ ] Functionality N
 
 ### Proposed solution
 
