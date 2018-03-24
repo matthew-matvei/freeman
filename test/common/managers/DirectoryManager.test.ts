@@ -144,6 +144,13 @@ describe("directoryManager's", () => {
 
             expect(result.every(item => !item.isHidden)).to.be.true;
         });
+
+        it("returns a size for a given item if it is not a directory", async () => {
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
+
+            expect(result.every(item => (item.isDirectory && item.size === undefined) ||
+                (!item.isDirectory && item.size !== undefined))).to.be.true;
+        });
     });
 
     describe("createItem method", () => {
