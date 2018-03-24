@@ -21,6 +21,14 @@ interface ITheme {
         backgroundColour: string;
     };
 
+    /** The colours of the DirectoryHeader component. */
+    directoryHeader: {
+        /** The foreground colour of the directory header. */
+        foregroundColour: string;
+        /** The background colour of the directory header. */
+        backgroundColour: string;
+    };
+
     /** The colours of the DirectoryItem component. */
     directoryItem: {
         /** The colour of a file-type directory item. */

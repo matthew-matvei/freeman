@@ -10,7 +10,7 @@ class TerminalHeader extends React.PureComponent<ITerminalHeaderProps> {
     /**
      * Defines how the terminal header component is rendered.
      *
-     * @returns - a JSX element representing the terminal header view
+     * @returns a JSX element representing the terminal header view
      */
     public render(): JSX.Element {
         const style: React.CSSProperties = {

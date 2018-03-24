@@ -26,7 +26,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Instantiates the InputItem component.
      *
-     * @param props - the properties for the DirectoryPane component
+     * @param props the properties for the DirectoryPane component
      */
     public constructor(props: IInputItemProps) {
         super(props);
@@ -44,10 +44,10 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Returns whether the component should update.
      *
-     * @param nextProps - the next props
-     * @param nextState - the next state
+     * @param nextProps the next props
+     * @param nextState the next state
      *
-     * @returns - whether the component should update
+     * @returns whether the component should update
      */
     public shouldComponentUpdate(nextProps: {}, nextState: IInputItemState): boolean {
         return this.state.isInvalid !== nextState.isInvalid;
@@ -56,7 +56,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Defines how the input item component is rendered.
      *
-     * @returns - a JSX element representing the directory view
+     * @returns a JSX element representing the directory view
      */
     public render(): JSX.Element {
         const inputStyle: React.CSSProperties = {
@@ -85,7 +85,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Handles interpreting the input value on key up.
      *
-     * @param event - an event raised on key up
+     * @param event an event raised on key up
      */
     @autobind
     private handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -113,9 +113,9 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Handles sending a create item request up to the parent component.
      *
-     * @param event - an event raised on key up
+     * @param event an event raised on key up
      *
-     * @require - this.input && this.props.sendUpCreateItem
+     * @require this.input && this.props.sendUpCreateItem
      */
     private handleCreate(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === "Enter") {
@@ -128,9 +128,9 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Handles sending a rename item request up to the parent component.
      *
-     * @param event - an event raised on key up
+     * @param event an event raised on key up
      *
-     * @require - this.input && this.props.sendUpRenameItem
+     * @require this.input && this.props.sendUpRenameItem
      */
     private handleRename(event: React.KeyboardEvent<HTMLInputElement>) {
         if (!this.props.sendUpRenameItem) {
@@ -152,9 +152,9 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
     /**
      * Validates the given content.
      *
-     * @param content - the content to validate
+     * @param content the content to validate
      *
-     * @returns - whether the given content is valid
+     * @returns whether the given content is valid
      */
     private validate(content: string): boolean {
         if (!content) {

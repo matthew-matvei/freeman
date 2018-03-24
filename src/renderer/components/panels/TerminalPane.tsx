@@ -25,7 +25,7 @@ class TerminalPane extends React.PureComponent<ITerminalPaneProps> {
     /**
      * Defines how the terminal pane component is rendered.
      *
-     * @returns - a JSX element representing the terminal view
+     * @returns a JSX element representing the terminal view
      */
     public render(): JSX.Element {
         const terminalPaneStyle: React.CSSProperties = {

@@ -23,6 +23,7 @@ describe("<DirectoryItemIcon />", () => {
         directoryItem = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "Some directory item",
             path: "/path/to/Some directory item"
         };

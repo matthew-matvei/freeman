@@ -25,6 +25,7 @@ describe("DirectoryListModel's", () => {
         directoryItem1 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "Item 1",
             path: "path/to/Item 1"
         };
@@ -111,6 +112,11 @@ describe("DirectoryListModel's", () => {
             directoryManager = Mock.ofType<IDirectoryManager>();
 
             const commonProps: IDirectoryListProps = {
+                columnSizes: {
+                    lastModified: 25,
+                    name: 50,
+                    size: 25
+                },
                 directoryManager: directoryManager.object,
                 id: "left",
                 isSelectedPane: false,

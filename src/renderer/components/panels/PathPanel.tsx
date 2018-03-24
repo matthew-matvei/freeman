@@ -12,7 +12,7 @@ class PathPanel extends React.PureComponent<IPathPanelProps> {
     /**
      * Defines how the path pane component is rendered
      *
-     * @returns - a JSX element representing the path pane view
+     * @returns a JSX element representing the path pane view
      */
     public render(): JSX.Element {
         const { backgroundColour } = this.props.theme.pathPanel;

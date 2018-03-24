@@ -4,7 +4,7 @@ import { HotKeys } from "react-hotkeys";
 import ScrollArea from "react-scrollbar/dist/no-css";
 import SplitPane from "react-split-pane";
 
-import { DirectoryList, PathPanel } from "components/panels";
+import { DirectoryHeader, DirectoryList, PathPanel } from "components/panels";
 import { TerminalWrapper } from "components/wrappers";
 import { IHandlers } from "models";
 import { IIntegratedTerminal, IntegratedTerminal } from "objects";
@@ -37,7 +37,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /**
      * Instantiates the DirectoryWrapper component.
      *
-     * @param props - the properties for the DirectoryWrapper component
+     * @param props the properties for the DirectoryWrapper component
      */
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
@@ -54,6 +54,11 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         }
 
         this.state = {
+            columnSizes: {
+                lastModified: 50,
+                name: 50,
+                size: 50
+            },
             isTerminalOpen: settingsManager.settings.terminal.displayAtStartup,
             path: initialPath
         };
@@ -62,16 +67,11 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /**
      * Defines how the directory wrapper component is rendered.
      *
-     * @returns - a JSX element representing the directory view
+     * @returns a JSX element representing the directory view
      */
     public render(): JSX.Element {
-        const scrollAreaVertContainerStyle: React.CSSProperties = {
-            backgroundColor: "inherit",
-            width: "0.9em"
-        };
         const scrollAreaVertBarStyle: React.CSSProperties = {
-            backgroundColor: "rgb(65, 67, 57)",
-            width: "100%"
+            backgroundColor: "rgb(65, 67, 57)"
         };
         const directoryListHeight = this.state.isTerminalOpen ?
             this.prevScrollAreaHeight || "65vh" : "100%";
@@ -80,8 +80,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
             display: this.state.isTerminalOpen ? "block" : "none"
         };
 
-        return <HotKeys
-            handlers={this.handlers}>
+        return <HotKeys handlers={this.handlers} className="HotKeys">
             <div className="DirectoryWrapper">
                 <PathPanel path={this.state.path} theme={this.props.theme} />
                 <div className="splitPaneWrapper">
@@ -91,26 +90,32 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                         resizerStyle={resizerStyle}
                         onDragFinished={this.storeDirectoryListHeight}>
                         <div
-                            className="scrollAreaWrapper"
-                            ref={element => this.directoryScrollArea = element}>
-                            <ScrollArea
-                                className="directoryScrollArea"
-                                horizontal={false}
-                                style={{ backgroundColor: this.props.theme.primaryBackgroundColour }}
-                                verticalContainerStyle={scrollAreaVertContainerStyle}
-                                verticalScrollbarStyle={scrollAreaVertBarStyle}>
-                                <DirectoryList
-                                    ref={directoryList => this.directoryList = directoryList}
-                                    id={this.props.id}
-                                    path={this.state.path}
-                                    isSelectedPane={this.props.isSelectedPane}
-                                    sendSelectedPaneUp={this.props.sendSelectedPaneUp}
-                                    sendPathUp={this.updatePath}
-                                    directoryManager={this.props.directoryManager}
-                                    statusNotifier={this.props.statusNotifier}
-                                    settingsManager={this.props.settingsManager}
-                                    theme={this.props.theme} />
-                            </ScrollArea>
+                            ref={element => this.directoryScrollArea = element}
+                            className="scrollAreaWrapper">
+                            <DirectoryHeader
+                                columnSizes={this.state.columnSizes}
+                                updateColumnSizes={this.updateColumnSizes}
+                                theme={this.props.theme} />
+                            <div className="clippedHeight">
+                                <ScrollArea
+                                    className="directoryScrollArea"
+                                    horizontal={false}
+                                    style={{ backgroundColor: this.props.theme.primaryBackgroundColour }}
+                                    verticalScrollbarStyle={scrollAreaVertBarStyle}>
+                                    <DirectoryList
+                                        ref={directoryList => this.directoryList = directoryList}
+                                        id={this.props.id}
+                                        path={this.state.path}
+                                        isSelectedPane={this.props.isSelectedPane}
+                                        sendSelectedPaneUp={this.props.sendSelectedPaneUp}
+                                        sendPathUp={this.updatePath}
+                                        directoryManager={this.props.directoryManager}
+                                        statusNotifier={this.props.statusNotifier}
+                                        settingsManager={this.props.settingsManager}
+                                        theme={this.props.theme}
+                                        columnSizes={this.state.columnSizes} />
+                                </ScrollArea>
+                            </div>
                         </div>
                         {this.state.isTerminalOpen &&
                             <TerminalWrapper
@@ -146,9 +151,27 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     }
 
     /**
+     * Updates the column sizes with those given (in pixels).
+     *
+     * @param nameColumnSize - the size that the 'name' column should be
+     * @param sizeColumnSize - the size that the 'size' column should be
+     * @param lastModifiedSize - the size that the 'last modified on' column should be
+     */
+    @autobind
+    private updateColumnSizes(nameColumnSize: number, sizeColumnSize: number, lastModifiedSize: number) {
+        this.setState({
+            columnSizes: {
+                lastModified: lastModifiedSize,
+                name: nameColumnSize,
+                size: sizeColumnSize
+            }
+        } as IDirectoryWrapperState);
+    }
+
+    /**
      * Updates the path held in the directory wrapper's state
      *
-     * @param path - the path to update to
+     * @param path the path to update to
      */
     @autobind
     private updatePath(path: string) {

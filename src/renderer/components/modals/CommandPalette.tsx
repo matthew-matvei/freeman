@@ -10,7 +10,7 @@ class CommandPalette extends React.PureComponent<ICommandPaletteProps> {
     /**
      * Defines how the command palette component is rendered.
      *
-     * @returns - a JSX element representing the command palette view
+     * @returns a JSX element representing the command palette view
      */
     public render(): JSX.Element {
         const itemKeys = Object.keys(this.props.applicationCommands);
@@ -26,7 +26,7 @@ class CommandPalette extends React.PureComponent<ICommandPaletteProps> {
     /**
      * Handles invoking the command chosen in the QuickSelect.
      *
-     * @param selectedItem - the item selected in the QuickSelect
+     * @param selectedItem the item selected in the QuickSelect
      */
     @autobind
     private handleSelect(selectedItem: string) {

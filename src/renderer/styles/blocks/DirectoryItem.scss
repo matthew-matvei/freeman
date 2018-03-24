@@ -2,9 +2,15 @@
     padding: 0.13em 1em;
 
     button {
-        width: 100%;
         text-align: left;
         background: inherit;
         border: none;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .sizeColumn, .lastModifiedColumn {
+        font-size: 0.9em;
     }
 }

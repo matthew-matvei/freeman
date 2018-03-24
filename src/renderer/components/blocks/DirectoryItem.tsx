@@ -1,5 +1,7 @@
 import autobind from "autobind-decorator";
 import { shell } from "electron";
+import formatter from "format-number";
+import moment from "moment";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
@@ -20,10 +22,21 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         openInNativeExplorer: this.openInNativeExplorer
     };
 
+    /** Gets the size of the directory item rendered in Kilobytes. */
+    private get sizeInKiloBytes(): string | undefined {
+        if (!this.props.model.size) {
+            return "";
+        }
+
+        const bytesInKiloByte = 1024;
+
+        return formatter({ suffix: " Kb" })(Math.round(this.props.model.size / bytesInKiloByte));
+    }
+
     /**
      * Defines how the directory item component is rendered.
      *
-     * @returns - a JSX element representing the directory item view
+     * @returns a JSX element representing the directory item view
      */
     public render(): JSX.Element {
         const { isSelected, model } = this.props;
@@ -40,10 +53,21 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
             backgroundColor: isSelected ? selectedColour : backgroundColour
         };
 
-        const foregroundColourStyle: React.CSSProperties = {
+        const nameColumnStyle: React.CSSProperties = {
             color: (this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour))
+                (model.isDirectory && directoryColour)),
+            width: `${this.props.columnSizes.name}px`
+        };
+
+        const sizeColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: `${this.props.columnSizes.size}px`
+        };
+
+        const lastModifiedColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: `${this.props.columnSizes.lastModified}px`
         };
 
         return <HotKeys
@@ -54,10 +78,24 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                 style={backgroundColourStyle}>
                 <DirectoryItemIcon directoryItem={this.props.model} theme={this.props.theme} />
                 <button
-                    style={foregroundColourStyle}
+                    style={nameColumnStyle}
                     onClick={this.select}
                     onDoubleClick={this.activate}>
                     {model.name}
+                </button>
+                <button
+                    className="sizeColumn"
+                    style={sizeColumnStyle}
+                    onClick={this.select}
+                    onDoubleClick={this.activate}>
+                    {this.sizeInKiloBytes}
+                </button>
+                <button
+                    className="lastModifiedColumn"
+                    style={lastModifiedColumnStyle}
+                    onClick={this.select}
+                    onDoubleClick={this.activate}>
+                    {moment(model.lastModified).format("HH:mm:ss - D MMM, Y")}
                 </button>
             </div>
         </HotKeys>;

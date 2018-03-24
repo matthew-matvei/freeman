@@ -33,9 +33,9 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Defines how the main app component is rendered.
      *
-     * @param - the props for the component
+     * @param props the props for the component
      *
-     * @returns - a JSX element representing the app view
+     * @returns a JSX element representing the app view
      */
     constructor(props: IAppProps) {
         super(props);
@@ -60,12 +60,11 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Defines how the main application component is rendered
      *
-     * @returns - a JSX element representing the main application view
+     * @returns a JSX element representing the main application view
      */
     public render(): JSX.Element {
         const { directoryManager, keysManager, settingsManager, themeManager } = this.props;
         const appStyle = { color: themeManager.theme.primaryColour };
-        const splitPaneStyle: React.CSSProperties = { height: "97vh" };
         const resizerStyle: React.CSSProperties = {
             backgroundColor: this.props.themeManager.theme.resizers.colour
         };
@@ -73,30 +72,31 @@ class App extends React.Component<IAppProps, IAppState> {
         return <div>
             <HotKeys keyMap={keysManager.keyMap} handlers={this.handlers}>
                 <div className="App" style={appStyle}>
-                    <SplitPane
-                        split="vertical"
-                        defaultSize="50vw"
-                        style={splitPaneStyle}
-                        resizerStyle={resizerStyle}>
-                        <DirectoryWrapper
-                            id="left"
-                            initialPath={os.homedir()}
-                            isSelectedPane={this.state.selectedPane === "left"}
-                            sendSelectedPaneUp={this.selectPane}
-                            directoryManager={directoryManager}
-                            statusNotifier={this.statusNotifier}
-                            settingsManager={settingsManager}
-                            theme={themeManager.theme} />
-                        <DirectoryWrapper
-                            id="right"
-                            initialPath={os.homedir()}
-                            isSelectedPane={this.state.selectedPane === "right"}
-                            sendSelectedPaneUp={this.selectPane}
-                            directoryManager={directoryManager}
-                            statusNotifier={this.statusNotifier}
-                            settingsManager={settingsManager}
-                            theme={themeManager.theme} />
-                    </SplitPane>
+                    <div className="main">
+                        <SplitPane
+                            split="vertical"
+                            defaultSize="50vw"
+                            resizerStyle={resizerStyle}>
+                            <DirectoryWrapper
+                                id="left"
+                                initialPath={os.homedir()}
+                                isSelectedPane={this.state.selectedPane === "left"}
+                                sendSelectedPaneUp={this.selectPane}
+                                directoryManager={directoryManager}
+                                statusNotifier={this.statusNotifier}
+                                settingsManager={settingsManager}
+                                theme={themeManager.theme} />
+                            <DirectoryWrapper
+                                id="right"
+                                initialPath={os.homedir()}
+                                isSelectedPane={this.state.selectedPane === "right"}
+                                sendSelectedPaneUp={this.selectPane}
+                                directoryManager={directoryManager}
+                                statusNotifier={this.statusNotifier}
+                                settingsManager={settingsManager}
+                                theme={themeManager.theme} />
+                        </SplitPane>
+                    </div>
                     <Status {...this.state.status} theme={themeManager.theme} />
                 </div>
             </HotKeys>
@@ -127,8 +127,8 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Handles updating the status component's message.
      *
-     * @param updateType - the type of the status update
-     * @param payload - the data to use in the status update
+     * @param updateType the type of the status update
+     * @param payload the data to use in the status update
      */
     @autobind
     private updateStatus(updateType: StatusUpdate, payload: string | number) {
@@ -166,7 +166,7 @@ class App extends React.Component<IAppProps, IAppState> {
     /**
      * Handles selecting the given pane.
      *
-     * @param paneToSelect - the pane to select, if not currently selected
+     * @param paneToSelect the pane to select, if not currently selected
      */
     @autobind
     private selectPane(paneToSelect: DirectoryPaneSide) {

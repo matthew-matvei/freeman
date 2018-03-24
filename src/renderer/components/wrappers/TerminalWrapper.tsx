@@ -13,7 +13,7 @@ class TerminalWrapper extends React.PureComponent<ITerminalWrapperProps> {
     /**
      * Defines how the terminal wrapper component is rendered.
      *
-     * @returns - a JSX element representing the terminal wrapper view
+     * @returns a JSX element representing the terminal wrapper view
      */
     public render(): JSX.Element | null {
         return <div className="TerminalWrapper">

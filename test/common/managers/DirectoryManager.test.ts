@@ -66,6 +66,7 @@ describe("directoryManager's", () => {
         testFile = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFile,
             path: path.join(fakeDirPath, fakeFile)
         };
@@ -73,6 +74,7 @@ describe("directoryManager's", () => {
         testFile2 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFile2,
             path: path.join(fakeDirPath, fakeFile2)
         };
@@ -80,6 +82,7 @@ describe("directoryManager's", () => {
         testFolder = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFolder,
             path: path.join(fakeDirPath, fakeFolder)
         };
@@ -87,6 +90,7 @@ describe("directoryManager's", () => {
         testFolder2 = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: fakeFolder2,
             path: path.join(fakeDirPath, fakeFolder2)
         };
@@ -139,6 +143,13 @@ describe("directoryManager's", () => {
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.every(item => !item.isHidden)).to.be.true;
+        });
+
+        it("returns a size for a given item if it is not a directory", async () => {
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
+
+            expect(result.every(item => (item.isDirectory && item.size === undefined) ||
+                (!item.isDirectory && item.size !== undefined))).to.be.true;
         });
     });
 
@@ -265,6 +276,7 @@ describe("directoryManager's", () => {
             testFile = {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: invalidFileName,
                 path: path.join(fakeDirPath, invalidFileName)
             };
@@ -379,6 +391,7 @@ describe("directoryManager's", () => {
             testFile = {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: invalidFileName,
                 path: path.join(fakeDirPath, invalidFileName)
             };

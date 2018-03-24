@@ -80,7 +80,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Instantiates the DirectoryList component.
      *
-     * @param props - the properties for the DirectoryList component
+     * @param props the properties for the DirectoryList component
      */
     public constructor(props: IDirectoryListProps, context: { scrollArea: any }) {
         super(props, context);
@@ -134,7 +134,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Handles setting the component to be focused on receiving new props.
      *
-     * @param nextProps - the next props object
+     * @param nextProps the next props object
      */
     public componentWillReceiveProps(nextProps: IDirectoryListProps) {
         if (!this.props.isSelectedPane && nextProps.isSelectedPane) {
@@ -145,8 +145,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Updates the directory contents after updating the component.
      *
-     * @param prevProps - the previous props object
-     * @param prevState - the previous state object
+     * @param prevProps the previous props object
+     * @param prevState the previous state object
      */
     public async componentDidUpdate(prevProps: IDirectoryListProps, prevState: IDirectoryListState) {
         const { directoryManager, settingsManager } = this.props;
@@ -195,8 +195,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Whether the component should update.
      *
-     * @param nextProps - the next props
-     * @param nextState - the next state
+     * @param nextProps the next props
+     * @param nextState the next state
      */
     public shouldComponentUpdate(nextProps: IDirectoryListProps, nextState: IDirectoryListState): boolean {
         return (this.model.stateChanged(this.state, nextState) ||
@@ -208,7 +208,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Defines how the directory list component is rendered.
      *
-     * @returns - a JSX element representing the directory list view
+     * @returns a JSX element representing the directory list view
      */
     public render(): JSX.Element {
         const items = this.nonHiddenDirectoryItems
@@ -234,7 +234,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                         sendPathUp={this.goIn}
                         sendSelectedItemUp={this.selectItem}
                         sendDeletionUp={this.refreshAfterDelete}
-                        theme={this.props.theme} />;
+                        theme={this.props.theme}
+                        columnSizes={this.props.columnSizes} />;
                 }
             });
 
@@ -280,8 +281,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Creates a new directory item if arguments are provided.
      *
-     * @param itemName - the name of the item to be created
-     * @param itemTypeToCreate - the type of the item to be created
+     * @param itemName the name of the item to be created
+     * @param itemTypeToCreate the type of the item to be created
      */
     @autobind
     private async createNewItem(itemName?: string, itemTypeToCreate?: ItemType) {
@@ -320,7 +321,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Begins the creation of a new directory item.
      *
-     * @param itemTypeToCreate - the type of the item to begin creating
+     * @param itemTypeToCreate the type of the item to begin creating
      */
     @autobind
     private inputNewItem(itemTypeToCreate: ItemType) {
@@ -348,7 +349,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Updates the path held in the directory pane's state
      *
-     * @param pathToDirectory - the path to update to
+     * @param pathToDirectory the path to update to
      */
     @autobind
     private goIn(pathToDirectory: string) {
@@ -364,7 +365,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * Handles adding single alphanumeric characters to a search term to update
      * the currently-selected item.
      *
-     * @param event - an event raised on key down
+     * @param event an event raised on key down
      */
     @autobind
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
@@ -381,7 +382,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Navigates the currently-selected item in the given direction.
      *
-     * @param direction - the direction to navigate in
+     * @param direction the direction to navigate in
      */
     @autobind
     private move(direction: DirectoryDirection) {
@@ -400,7 +401,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * Handles navigating the user to the given path by sending it up to the
      * parent component.
      *
-     * @param filePath - the path to navigate to
+     * @param filePath the path to navigate to
      */
     @autobind
     private navigateToPath(filePath: string) {
@@ -470,8 +471,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Renames a directory item if arguments are provided.
      *
-     * @param oldName - the previous name
-     * @param newName - the new name
+     * @param oldName the previous name
+     * @param newName the new name
      */
     @autobind
     private async renameItem(oldName?: string, newName?: string) {
@@ -486,7 +487,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Handles scrolling in the given scrollToDirection.
      *
-     * @param scrollToDirection - the direction in which to scroll to
+     * @param scrollToDirection the direction in which to scroll to
      */
     @autobind
     private scrollTo(scrollToDirection: ScrollToDirection) {
@@ -507,7 +508,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Handles selecting the given item in the directory pane.
      *
-     * @param itemToSelect - the item to select
+     * @param itemToSelect the item to select
      */
     @autobind
     private selectItem(itemToSelect: IDirectoryItem) {
@@ -555,7 +556,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     /**
      * Stores the currently selected item within the internal clipboard.
      *
-     * @param action - the action to take when pasting, "cut" or "copy"
+     * @param action the action to take when pasting, "cut" or "copy"
      */
     @autobind
     private storeItemInClipboard(action: ClipboardAction) {
@@ -607,9 +608,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
  * Displays a dialog and returns whether the user confirmed the action described
  * in the given message.
  *
- * @param message - the message to display to the user
+ * @param message the message to display to the user
  *
- * @returns - whether the user confirmed the described action
+ * @returns whether the user confirmed the described action
  */
 function confirmationDialog(message: string): boolean {
     const confirmIndex = 0;

@@ -57,12 +57,14 @@ describe("<DirectoryList />", () => {
             {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: "item1.txt",
                 path: "/path/to/item1.txt"
             },
             {
                 isDirectory: false,
                 isHidden: false,
+                lastModified: new Date(),
                 name: "item2.txt",
                 path: "/path/to/item2.txt"
             }
@@ -75,6 +77,11 @@ describe("<DirectoryList />", () => {
             .returns(sandbox.stub().resolves());
 
         props = {
+            columnSizes: {
+                lastModified: 25,
+                name: 50,
+                size: 25
+            },
             directoryManager: mockDirectoryManager.object,
             id: "left",
             isSelectedPane: true,

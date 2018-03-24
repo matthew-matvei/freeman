@@ -1,6 +1,10 @@
 import { ITheme } from "models";
 
 export default {
+    directoryHeader: {
+        backgroundColour: "rgb(39, 40, 34)",
+        foregroundColour: "rgb(234, 248, 229)"
+    },
     directoryItem: {
         backgroundColour: "rgb(39, 40, 34)",
         chosenColour: "rgb(226, 220, 43)",

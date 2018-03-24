@@ -16,18 +16,21 @@ describe("DirectorySorter's", () => {
         testItem1 = {
             isDirectory: true,
             isHidden: false,
+            lastModified: new Date(),
             name: "test",
             path: "path/to/"
         };
         testItem2 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "test.jpg",
             path: "/path/to/"
         };
         testItem3 = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "another test.jpg",
             path: "/path/to/"
         };

@@ -26,11 +26,17 @@ describe("<DirectoryItem />", () => {
         directoryModel = {
             isDirectory: false,
             isHidden: false,
+            lastModified: new Date(),
             name: "item.txt",
             path: "/path/to/"
         };
 
         props = {
+            columnSizes: {
+                lastModified: 25,
+                name: 50,
+                size: 25
+            },
             isChosen: false,
             isSelected: false,
             model: directoryModel,
@@ -93,9 +99,9 @@ describe("<DirectoryItem />", () => {
         props.sendPathUp = sendPathUp;
         component = <DirectoryItem {...props} />;
         const wrapper = shallow(component).find("button");
-        wrapper.simulate("doubleClick");
+        wrapper.forEach(n => n.simulate("doubleClick"));
 
-        expect(sendPathUp.calledOnce).to.be.true;
+        expect(sendPathUp.callCount).to.equal(wrapper.length);
     });
 
     it("requests selecting the item when clicked", () => {
@@ -103,16 +109,16 @@ describe("<DirectoryItem />", () => {
         props.sendSelectedItemUp = sendSelectionUp;
         component = <DirectoryItem {...props} />;
         const wrapper = shallow(component).find("button");
-        wrapper.simulate("click");
+        wrapper.forEach(n => n.simulate("click"));
 
-        expect(sendSelectionUp.calledOnce).to.be.true;
+        expect(sendSelectionUp.callCount).to.equal(wrapper.length);
     });
 
     it("opens item using Electron shell when file activated", () => {
         const openItem = sandbox.stub(shell, "openItem");
         const wrapper = shallow(component).find("button");
-        wrapper.simulate("doubleClick");
+        wrapper.forEach(n => n.simulate("doubleClick"));
 
-        expect(openItem.calledOnce).to.be.true;
+        expect(openItem.callCount).to.equal(wrapper.length);
     });
 });
