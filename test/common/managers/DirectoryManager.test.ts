@@ -13,7 +13,7 @@ import { IAttributes, IDirectoryItem, IListDirectoryOptions } from "models";
 
 chai.use(chaiAsPromised);
 
-describe("directoryManager's", () => {
+describe("DirectoryManager's", () => {
     let fakeDirPath: string;
     let fakeFolder: string;
     let fakeFolder2: string;
