@@ -11,7 +11,7 @@ A free, extensible, cross-platform file manager for power users
 
 ---
 
-![FreeMAN with open integrated terminal](./resources/freeManScreenshot.png)
+![FreeMAN with open integrated terminal](./resources/using-the-app.gif)
 
 ## Features
 
