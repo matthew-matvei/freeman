@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import * as pty from "node-pty";
 import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
-import path from "path";
+import os from "os";
 import Xterm from "xterm";
 
 import TYPES from "ioc/types";
@@ -83,8 +83,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
 
     /** @inheritDoc */
     public changeDirectory(pathToDirectory: string): void {
-        
-        const changeDirectoryCommand = `cd '${pathToDirectory}'\r\n`;
+        const changeDirectoryCommand = `cd '${pathToDirectory}'${os.EOL}`;
         this.ptyProcess.write(changeDirectoryCommand);
     }
 }
