@@ -176,6 +176,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     @autobind
     private updatePath(path: string) {
         this.setState({ path } as IDirectoryWrapperState);
+        this.integratedTerminal.changeDirectory(path);
     }
 }
 
