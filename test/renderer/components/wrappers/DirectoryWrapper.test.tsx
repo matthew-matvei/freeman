@@ -118,6 +118,4 @@ describe("<DirectoryWrapper />", () => {
 
         expect(autoFocusStub.calledOnce).to.be.true;
     });
-
-    it("terminal changes directory only when enabled in settings");
 });
