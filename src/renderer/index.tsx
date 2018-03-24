@@ -16,6 +16,7 @@ import {
 } from "managers";
 import Utils from "Utils";
 
+import { IIntegratedTerminal, IntegratedTerminal } from "objects";
 import "styles/main.scss";
 
 installExtension(REACT_DEVELOPER_TOOLS)
@@ -35,10 +36,25 @@ const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
 const keysManager = container.get<IKeysManager>(TYPES.IKeysManager);
 const themeManager = container.get<IThemesManager>(TYPES.IThemesManager);
 const directoryManager = container.get<IDirectoryManager>(TYPES.IDirectoryManager);
+let leftTerminal: IIntegratedTerminal;
+let rightTerminal: IIntegratedTerminal;
+
+try {
+    // Try to construct a terminal using shell path given in settings
+    leftTerminal = new IntegratedTerminal(settingsManager);
+    rightTerminal = new IntegratedTerminal(settingsManager);
+} catch {
+    // Fallback to a pre-defined, system-dependent shell
+    const useFallbackShell = true;
+    leftTerminal = new IntegratedTerminal(settingsManager, useFallbackShell);
+    rightTerminal = new IntegratedTerminal(settingsManager, useFallbackShell);
+}
 
 ReactDOM.render(<App
     settingsManager={settingsManager}
     keysManager={keysManager}
     themeManager={themeManager}
-    directoryManager={directoryManager} />,
+    directoryManager={directoryManager}
+    leftTerminal={leftTerminal}
+    rightTerminal={rightTerminal} />,
     document.getElementById("app-root"));
