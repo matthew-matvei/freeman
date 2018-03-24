@@ -102,6 +102,7 @@
   "dependencies": {
     "autobind-decorator": "^2.1.0",
     "deepmerge": "^2.0.1",
+    "electron-about-window": "^1.10.0",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-fswin": "^2.18.2",
