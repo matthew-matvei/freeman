@@ -77,8 +77,8 @@ If you find it helpful, you can `npm run docs` and open the generated
 
 ## Debugging
 
-Providing the `--verbose` command-line argument will make the application log
-in more detail, helping trace execution when using the packaged app. Logs of
+Providing the `--verbose` or `-V` command-line argument will make the application
+log in more detail, helping trace execution when using the packaged app. Logs of
 warnings and errors can be found at `{appData}/log.log`.
 
 ## How to contribute
