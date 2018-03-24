@@ -3,6 +3,8 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const GoogleFontsPlugin = require("google-fonts-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const HappyPackPlugin = require('happypack');
 
 const extractSass = new ExtractTextPlugin({ filename: "[name].css" });
 const googleFonts = new GoogleFontsPlugin({
@@ -12,10 +14,22 @@ const googleFonts = new GoogleFontsPlugin({
     ],
     formats: ["woff2"]
 });
+const happyPack = new HappyPackPlugin({
+    id: "ts",
+    threads: 2,
+    loaders: [{
+        path: "ts-loader",
+        query: { happyPackMode: true },
+        options: {
+            onlyCompileBundledFiles: true
+        }
+    }]
+});
+const forkTsChecker = new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true });
 
 const commonConfig = {
     output: { path: path.resolve(__dirname, "app"), filename: "[name].js" },
-    devtool: "inline-source-map",
+    devtool: "cheap-module-eval-source-map",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"],
         modules: [
@@ -29,7 +43,11 @@ const commonConfig = {
     },
     module: {
         loaders: [
-            { test: /\.tsx?$/, exclude: /node_modules/, loader: "awesome-typescript-loader" },
+            {
+                test: /\.tsx?$/,
+                exclude: /node_modules/,
+                loader: "happypack/loader?id=ts"
+            },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
             {
                 test: /\.scss$/,
@@ -67,12 +85,13 @@ module.exports = [
     Object.assign(
         {
             target: "electron-main",
-            entry: { main: "./src/main/index.ts" }
+            entry: { main: "./src/main/index.ts" },
+            plugins: [happyPack, forkTsChecker]
         }, commonConfig),
     Object.assign(
         {
             target: "electron-renderer",
             entry: { renderer: "./src/renderer/index.tsx" },
-            plugins: [extractSass, googleFonts]
+            plugins: [happyPack, forkTsChecker, extractSass, googleFonts]
         }, commonConfig)
 ];
