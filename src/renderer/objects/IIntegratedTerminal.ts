@@ -14,13 +14,6 @@ interface IIntegratedTerminal {
      * @param element the element to which the terminal is fitted
      */
     fitTo(element: HTMLDivElement): void;
-
-    /**
-     * Sends a command to change to pathToDirectory.
-     *
-     * @param pathToDirectory - the path of the directory to change to
-     */
-    changeDirectory(pathToDirectory: string): void;
 }
 
 export default IIntegratedTerminal;
