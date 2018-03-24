@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import { shell } from "electron";
-import format from "format-number";
+import formatter from "format-number";
 import moment from "moment";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
@@ -30,7 +30,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
         const bytesInKiloByte = 1024;
 
-        return format({ suffix: " Kb" })(Math.round(this.props.model.size / bytesInKiloByte));
+        return formatter({ suffix: " Kb" })(Math.round(this.props.model.size / bytesInKiloByte));
     }
 
     /**
