@@ -6,6 +6,9 @@ interface ITerminalSettings {
 
     /** Whether to use a blinking cursor. */
     cursorBlink: boolean;
+
+    /** Whether the integrated terminal should sync when changing directory. */
+    syncNavigation: boolean;
 }
 
 export default ITerminalSettings;
