@@ -154,6 +154,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.props.statusNotifier.setItemCount(this.nonHiddenDirectoryItems.length);
         this.props.statusNotifier.setChosenCount(this.state.chosenItems.length);
 
+        if (this.nonHiddenDirectoryItems.length === 0 && this.keysTrapper && this.state.isFocused) {
+            Utils.autoFocus(this.keysTrapper);
+        }
+
         if (prevProps.path === this.props.path &&
             !prevState.creatingNewItem &&
             !prevState.renamingItem &&
@@ -245,7 +249,6 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     handlers={this.handlers}
                     ref={component => {
                         this.keysTrapper = component;
-                        this.keysTrapper && items.length === 0 && Utils.autoFocus(this.keysTrapper);
                     }}
                     onFocus={this.setFocused}
                     onBlur={this.setUnFocused}>
