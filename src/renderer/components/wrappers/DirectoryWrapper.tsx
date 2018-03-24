@@ -7,7 +7,6 @@ import SplitPane from "react-split-pane";
 import { DirectoryHeader, DirectoryList, PathPanel } from "components/panels";
 import { TerminalWrapper } from "components/wrappers";
 import { IHandlers } from "models";
-import { IIntegratedTerminal, IntegratedTerminal } from "objects";
 import { IDirectoryWrapperProps } from "props/wrappers";
 import { IDirectoryWrapperState } from "states/panels";
 import Utils from "Utils";
@@ -26,9 +25,6 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /** The directory list child of this wrapper. */
     private directoryList?: DirectoryList | null;
 
-    /** The terminal frontend. */
-    private integratedTerminal: IIntegratedTerminal;
-
     /** Handler functions for the given events this component handles. */
     private handlers: IHandlers = {
         toggleIntegratedTerminal: this.toggleIntegratedTerminal
@@ -43,15 +39,6 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         super(props);
 
         const { settingsManager, initialPath } = this.props;
-
-        try {
-            // Try to construct a terminal using shell path given in settings
-            this.integratedTerminal = new IntegratedTerminal(settingsManager);
-        } catch {
-            // Fallback to a pre-defined, system-dependent shell
-            const useFallbackShell = true;
-            this.integratedTerminal = new IntegratedTerminal(settingsManager, useFallbackShell);
-        }
 
         this.state = {
             columnSizes: {
@@ -121,7 +108,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                             <TerminalWrapper
                                 settingsManager={this.props.settingsManager}
                                 theme={this.props.theme}
-                                integratedTerminal={this.integratedTerminal} />}
+                                integratedTerminal={this.props.integratedTerminal} />}
                     </SplitPane>
                 </div>
             </div>
@@ -176,6 +163,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     @autobind
     private updatePath(path: string) {
         this.setState({ path } as IDirectoryWrapperState);
+        this.props.settingsManager.settings.terminal.syncNavigation &&
+            this.props.integratedTerminal.changeDirectory(path);
     }
 }
 

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import Enzyme, { shallow } from "enzyme";
+import Enzyme, { mount, shallow } from "enzyme";
 import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
 import "reflect-metadata";
@@ -20,6 +20,7 @@ import { IDirectoryListProps } from "props/panels";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
 import applicationTheme from "settings/internal/themes/dark";
 import { IDirectoryListState } from "states/panels";
+import Utils from "Utils";
 
 Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
@@ -266,5 +267,15 @@ describe("<DirectoryList />", () => {
         directoryItemProps.sendPathUp("/path/to/dir");
 
         expect(scrollTopStub.calledOnce).to.be.true;
+    });
+
+    it("focusses keys trapper only if pane is focussed", () => {
+        const wrapper = mount(component);
+        const focusSpy = sandbox.spy(Utils, "autoFocus");
+        wrapper.setState({ isFocused: false } as IDirectoryListState);
+        expect(focusSpy.calledOnce).to.be.false;
+
+        wrapper.setState({ isFocused: true } as IDirectoryListState);
+        expect(focusSpy.calledOnce).to.be.true;
     });
 });

@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 import * as pty from "node-pty";
 import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
+import os from "os";
 import Xterm from "xterm";
 
 import TYPES from "ioc/types";
@@ -78,6 +79,12 @@ class IntegratedTerminal implements IIntegratedTerminal {
     public fitTo(element: HTMLDivElement): void {
         (this.xterm as any).fit!();
         this.ptyProcess.resize(this.xterm.cols, this.xterm.rows);
+    }
+
+    /** @inheritDoc */
+    public changeDirectory(pathToDirectory: string): void {
+        const changeDirectoryCommand = `cd '${pathToDirectory}'${os.EOL}`;
+        this.ptyProcess.write(changeDirectoryCommand);
     }
 }
 

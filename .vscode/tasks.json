@@ -30,7 +30,19 @@
                 "echo": true,
                 "focus": false,
                 "panel": "dedicated"
-            },
+            }
+        },
+        {
+            "label": "build:test",
+            "type": "npm",
+            "script": "build:test",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared"
+            }
         }
     ]
 }

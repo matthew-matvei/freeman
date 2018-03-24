@@ -55,6 +55,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 message: ""
             }
         };
+
     }
 
     /**
@@ -85,7 +86,8 @@ class App extends React.Component<IAppProps, IAppState> {
                                 directoryManager={directoryManager}
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
-                                theme={themeManager.theme} />
+                                theme={themeManager.theme}
+                                integratedTerminal={this.props.leftTerminal} />
                             <DirectoryWrapper
                                 id="right"
                                 initialPath={os.homedir()}
@@ -94,7 +96,8 @@ class App extends React.Component<IAppProps, IAppState> {
                                 directoryManager={directoryManager}
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
-                                theme={themeManager.theme} />
+                                theme={themeManager.theme}
+                                integratedTerminal={this.props.rightTerminal} />
                         </SplitPane>
                     </div>
                     <Status {...this.state.status} theme={themeManager.theme} />

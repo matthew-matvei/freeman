@@ -14,6 +14,7 @@
     },
     "terminal": {
         "displayAtStartup": false,
-        "cursorBlink": true
+        "cursorBlink": true,
+        "syncNavigation": true
     }
 }

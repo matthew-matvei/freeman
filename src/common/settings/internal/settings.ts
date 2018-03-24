@@ -11,7 +11,8 @@ export default {
     },
     terminal: {
         cursorBlink: true,
-        displayAtStartup: false
+        displayAtStartup: false,
+        syncNavigation: true
     },
     themeName: "dark",
     windows: {
