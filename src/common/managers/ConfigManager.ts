@@ -7,7 +7,7 @@ import { IDirectoryManager } from "managers";
 import Utils from "Utils";
 
 @injectable()
-abstract class Manager {
+abstract class ConfigManager {
 
     protected directoryManager: IDirectoryManager;
 
@@ -37,4 +37,4 @@ abstract class Manager {
     }
 }
 
-export default Manager;
+export default ConfigManager;

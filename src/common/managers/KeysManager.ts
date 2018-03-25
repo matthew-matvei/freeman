@@ -2,13 +2,13 @@ import deepmerge from "deepmerge";
 import { inject, injectable } from "inversify";
 import TYPES from "ioc/types";
 import { IDirectoryManager, IKeysManager } from "managers";
-import Manager from "managers/Manager";
+import ConfigManager from "managers/ConfigManager";
 import { IKeyMap } from "models";
 import applicationKeys from "settings/internal/keys";
 
 /** Manages parsing key maps from application and user settings files. */
 @injectable()
-class KeysManager extends Manager implements IKeysManager {
+class KeysManager extends ConfigManager implements IKeysManager {
 
     /** The internally held key map for this manager. */
     private _keyMap?: IKeyMap;
