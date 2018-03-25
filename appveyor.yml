@@ -3,7 +3,7 @@ pull_requests:
 
 cache:
   - node_modules -> package.json
-  - '%APPDATA%\npm-cache' -> package.json
+  - '%APPDATA%\npm-cache -> package.json'
 
 branches:
   only:
