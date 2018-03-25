@@ -1,6 +1,10 @@
 pull_requests:
   do_not_increment_build_number: true
 
+cache:
+  - node_modules -> package.json
+  - '%APPDATA%\npm-cache' -> package.json
+
 branches:
   only:
   - master
@@ -28,3 +32,4 @@ deploy:
 environment:
   GH_TOKEN:
     secure: 'wVuEFe8aedCSPeg261afek1xyAYb67Ep76jsUtiPaAf07LHbyQzG9ZqF11mElmqC'
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
