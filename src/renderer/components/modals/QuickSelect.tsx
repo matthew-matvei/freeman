@@ -48,7 +48,8 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
             top: "0"
         },
         overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0)"
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            zIndex: "200"
         }
     };
 
