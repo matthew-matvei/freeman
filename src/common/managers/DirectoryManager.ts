@@ -182,27 +182,41 @@ class DirectoryManager implements IDirectoryManager {
         if (os.platform() === "linux") {
             return itemName.startsWith(".");
         } else if (os.platform() === "win32") {
-            if (hideUnixStyleHiddenItems && itemName.startsWith(".")) {
-                return true;
-            }
-
-            try {
-                const attributes = await this.attributesManager.getAttributesAsync(pathToItem);
-
-                return attributes.hidden;
-            } catch (error) {
-                log.warn(
-                    "Could not determine attributes, defaulting path to not hidden",
-                    pathToItem,
-                    error);
-
-                return false;
-            }
+            return this.handleWindowsIshidden(pathToItem, hideUnixStyleHiddenItems);
         }
 
         log.warn("Only linux and win32 platforms currently supported");
 
         return false;
+    }
+
+    /**
+     * Handles returning whether a given file or folder is hidden on Windows.
+     *
+     * @param pathToItem the path to the file or folder
+     * @param hideUnixStyleHiddenItems whether Unix-style hidden items should be hidden on Windows
+     *
+     * @returns whether the file at pathToItem is hidden
+     */
+    private async handleWindowsIshidden(pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> {
+        const itemName = path.basename(pathToItem);
+
+        if (hideUnixStyleHiddenItems && itemName.startsWith(".")) {
+            return true;
+        }
+
+        try {
+            const attributes = await this.attributesManager.getAttributesAsync(pathToItem);
+
+            return attributes.hidden;
+        } catch (error) {
+            log.warn(
+                "Could not determine attributes, defaulting path to not hidden",
+                pathToItem,
+                error);
+
+            return false;
+        }
     }
 
     /**
