@@ -193,33 +193,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @returns a JSX element representing the directory list view
      */
     public render(): JSX.Element {
-        const items = this.nonHiddenDirectoryItems
-            .map((item, index) => {
-                const isSelectedItem = this.props.isSelectedPane &&
-                    !this.state.creatingNewItem && this.state.selectedIndex === index;
-
-                if (this.state.renamingItem && isSelectedItem) {
-                    const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
-                    const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
-
-                    return <InputItem
-                        thisItem={thisItem}
-                        otherItems={otherItems}
-                        sendUpRenameItem={this.renameItem}
-                        theme={this.props.theme} />;
-                } else {
-                    return <DirectoryItem
-                        key={item.path}
-                        model={item}
-                        isSelected={this.state.isFocused && isSelectedItem}
-                        isChosen={this.state.chosenItems.includes(item)}
-                        sendPathUp={this.goIn}
-                        sendSelectedItemUp={this.selectItem}
-                        sendDeletionUp={this.refreshAfterDelete}
-                        theme={this.props.theme}
-                        columnSizes={this.props.columnSizes} />;
-                }
-            });
+        const items = this.renderItems();
 
         return (
             <div className="DirectoryList">
@@ -249,6 +223,37 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
                     settingsManager={this.props.settingsManager}
                     theme={this.props.theme} />
             </div>);
+    }
+
+    /** Renders a list of directory items within the DirectoryList component. */
+    private renderItems(): JSX.Element[] {
+        return this.nonHiddenDirectoryItems
+            .map((item, index) => {
+                const isSelectedItem = this.props.isSelectedPane &&
+                    !this.state.creatingNewItem && this.state.selectedIndex === index;
+
+                if (this.state.renamingItem && isSelectedItem) {
+                    const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
+                    const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
+
+                    return <InputItem
+                        thisItem={thisItem}
+                        otherItems={otherItems}
+                        sendUpRenameItem={this.renameItem}
+                        theme={this.props.theme} />;
+                } else {
+                    return <DirectoryItem
+                        key={item.path}
+                        model={item}
+                        isSelected={this.state.isFocused && isSelectedItem}
+                        isChosen={this.state.chosenItems.includes(item)}
+                        sendPathUp={this.goIn}
+                        sendSelectedItemUp={this.selectItem}
+                        sendDeletionUp={this.refreshAfterDelete}
+                        theme={this.props.theme}
+                        columnSizes={this.props.columnSizes} />;
+                }
+            });
     }
 
     /** Handles closing the GoTo modal. */
