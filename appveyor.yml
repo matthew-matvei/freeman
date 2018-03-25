@@ -5,7 +5,6 @@ branches:
   only:
   - master
   - develop
-  - show-version
 
 install:
   - ps: Install-Product node 8.10.0 x64
