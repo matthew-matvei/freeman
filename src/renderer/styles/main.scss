@@ -1,5 +1,15 @@
 @import "normalize-scss/sass/normalize/import-now";
 
+@font-face {
+    font-family: "Ubuntu";
+    src: url("font/Ubuntu-Regular.woff2") format("woff2")
+}
+
+@font-face {
+    font-family: "Ubuntu Mono";
+    src: url("font/UbuntuMono-Regular.woff2") format("woff2")
+}
+
 body {
     font-size: 1em;
     font-family: "Ubuntu", sans-serif

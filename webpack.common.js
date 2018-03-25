@@ -2,18 +2,10 @@ const webpack = require("webpack");
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const GoogleFontsPlugin = require("google-fonts-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HappyPackPlugin = require('happypack');
 
 const extractSass = new ExtractTextPlugin({ filename: "[name].css" });
-const googleFonts = new GoogleFontsPlugin({
-    fonts: [
-        { family: "Ubuntu" },
-        { family: "Ubuntu Mono" }
-    ],
-    formats: ["woff2"]
-});
 const happyPack = new HappyPackPlugin({
     id: "ts",
     threads: 2,
@@ -92,6 +84,6 @@ module.exports = [
         {
             target: "electron-renderer",
             entry: { renderer: "./src/renderer/index.tsx" },
-            plugins: [happyPack, forkTsChecker, extractSass, googleFonts]
+            plugins: [happyPack, forkTsChecker, extractSass]
         }, commonConfig)
 ];
