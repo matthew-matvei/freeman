@@ -22,12 +22,6 @@ class KeysManager extends Manager implements IKeysManager {
         @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
 
         super(directoryManager);
-
-        if (!directoryManager) {
-            throw new ReferenceError("Directory manager must be defined");
-        }
-
-        this.directoryManager = directoryManager;
     }
 
     /** @inheritDoc */
