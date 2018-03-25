@@ -1,23 +1,8 @@
-const webpack = require("webpack");
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const HappyPackPlugin = require('happypack');
 
 const extractSass = new ExtractTextPlugin({ filename: "[name].css" });
-const happyPack = new HappyPackPlugin({
-    id: "ts",
-    threads: 2,
-    loaders: [{
-        path: "ts-loader",
-        query: { happyPackMode: true },
-        options: {
-            onlyCompileBundledFiles: true
-        }
-    }]
-});
-const forkTsChecker = new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true });
 
 const commonConfig = {
     output: { path: path.resolve(__dirname, "app"), filename: "[name].js" },
@@ -38,7 +23,7 @@ const commonConfig = {
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
-                loader: "happypack/loader?id=ts"
+                loader: "awesome-typescript-loader"
             },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
             {
@@ -77,13 +62,12 @@ module.exports = [
     Object.assign(
         {
             target: "electron-main",
-            entry: { main: "./src/main/index.ts" },
-            plugins: [happyPack, forkTsChecker]
+            entry: { main: "./src/main/index.ts" }
         }, commonConfig),
     Object.assign(
         {
             target: "electron-renderer",
             entry: { renderer: "./src/renderer/index.tsx" },
-            plugins: [happyPack, forkTsChecker, extractSass]
+            plugins: [extractSass]
         }, commonConfig)
 ];
