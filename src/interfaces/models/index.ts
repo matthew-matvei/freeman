@@ -2,6 +2,7 @@ import IApplicationCommands from "./IApplicationCommands";
 import IAttributes from "./IAttributes";
 import IColumnSizes from "./IColumnSizes";
 import IDirectoryItem from "./IDirectoryItem";
+import IDirectoryItemStyles from "./IDirectoryItemStyles";
 import IHandlers from "./IHandlers";
 import IItemClipboard from "./IItemClipboard";
 import IKeyMap from "./IKeyMap";
@@ -15,6 +16,7 @@ export {
     IAttributes,
     IColumnSizes,
     IDirectoryItem,
+    IDirectoryItemStyles,
     IHandlers,
     IItemClipboard,
     IKeyMap,
