@@ -3,6 +3,7 @@ import path from "path";
 import * as React from "react";
 
 import { QuickSelect } from "components/modals";
+import { IDirectoryItem } from "models";
 import { IGotoProps } from "props/modals";
 import { IGotoState } from "states/modals";
 import Utils from "Utils";
@@ -30,13 +31,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * mounts.
      */
     public async componentDidMount() {
-        const nonHiddenDirectoryFolders = await this.props.directoryManager.listDirectory(
-            this.state.currentDirectory,
-            {
-                filterCondition: item => item.isDirectory && !item.isHidden,
-                hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
-            }
-        );
+        const nonHiddenDirectoryFolders = await this.getNonHiddenFolders(this.state.currentDirectory);
 
         this.setState({ directoryItems: nonHiddenDirectoryFolders } as IGotoState);
     }
@@ -90,13 +85,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
          */
         if (event.key === "Backspace" && this.state.searchTerm.endsWith(path.sep)) {
             const basePath = path.dirname(this.state.searchTerm);
-            const nonHiddenDirectoryItems = await this.props.directoryManager.listDirectory(
-                basePath,
-                {
-                    filterCondition: item => item.isDirectory && !item.isHidden,
-                    hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
-                }
-            );
+            const nonHiddenDirectoryItems = await this.getNonHiddenFolders(basePath);
 
             this.setState(
                 {
@@ -109,13 +98,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
              * directory.
              */
         } else if (event.key === path.sep) {
-            const nonHiddenDirectoryItems = await this.props.directoryManager.listDirectory(
-                newPath,
-                {
-                    filterCondition: item => item.isDirectory && !item.isHidden,
-                    hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
-                }
-            );
+            const nonHiddenDirectoryItems = await this.getNonHiddenFolders(newPath);
 
             this.setState(
                 {
@@ -126,6 +109,23 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
         } else {
             this.setState({ searchTerm: newPath });
         }
+    }
+
+    /**
+     * Returns non-hidden child folders of the basePath.
+     *
+     * @param basePath - the directory in which to return child folders
+     *
+     * @returns non-hidden child folders of the basePath
+     */
+    private getNonHiddenFolders(basePath: string): Promise<IDirectoryItem[]> {
+        return this.props.directoryManager.listDirectory(
+            basePath,
+            {
+                filterCondition: item => item.isDirectory && !item.isHidden,
+                hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
+            }
+        );
     }
 
     /**
@@ -147,12 +147,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      */
     @autobind
     private async handleUpdate(selectedItem: string) {
-        const newDirectoryItems = await this.props.directoryManager.listDirectory(selectedItem,
-            {
-                filterCondition: item => item.isDirectory && !item.isHidden,
-                hideUnixStyleHiddenItems: this.props.settingsManager.settings.windows.hideUnixStyleHiddenItems
-            }
-        );
+        const newDirectoryItems = await this.getNonHiddenFolders(selectedItem);
 
         this.setState(
             {
