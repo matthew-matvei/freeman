@@ -106,18 +106,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     public async componentDidMount() {
         const { directoryManager, settingsManager } = this.props;
 
-        try {
-            directoryManager.startWatching(this.props.path, async () => {
-                this.setState(
-                    {
-                        directoryItems: await directoryManager.listDirectory(
-                            this.props.path,
-                            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
-                    } as IDirectoryListState);
-            });
-        } catch {
-            throw new DirectoryError("Could not set watcher", this.props.path);
-        }
+        this.startWatcher();
 
         const items = await directoryManager.listDirectory(
             this.props.path,
@@ -171,18 +160,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         }
 
         if (prevProps.path !== this.props.path) {
-            try {
-                directoryManager.startWatching(this.props.path, async () => {
-                    this.setState(
-                        {
-                            directoryItems: await directoryManager.listDirectory(
-                                this.props.path,
-                                { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
-                        } as IDirectoryListState);
-                });
-            } catch {
-                throw new DirectoryError("Could not set watcher", this.props.path);
-            }
+            this.startWatcher();
         }
 
         const directoryItems = await directoryManager.listDirectory(
@@ -554,6 +532,24 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private setUnFocused() {
         this.setState({ isFocused: false } as IDirectoryListState);
+    }
+
+    /** Starts watching the current directory for changes to update the list of directory items. */
+    private startWatcher() {
+        const { directoryManager, settingsManager } = this.props;
+
+        try {
+            directoryManager.startWatching(this.props.path, async () => {
+                this.setState(
+                    {
+                        directoryItems: await directoryManager.listDirectory(
+                            this.props.path,
+                            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
+                    } as IDirectoryListState);
+            });
+        } catch {
+            throw new DirectoryError("Could not set watcher", this.props.path);
+        }
     }
 
     /**
