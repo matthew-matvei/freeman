@@ -6,11 +6,18 @@ const app = electron.app || electron.remote.app;
 import { IDirectoryManager } from "managers";
 import Utils from "Utils";
 
+/** The base functionality of a configuration manager class. */
 @injectable()
 abstract class ConfigManager {
 
+    /** A directory manager for reading user-defined key map files. */
     protected directoryManager: IDirectoryManager;
 
+    /**
+     * Initialises the base functionality of a ConfigManager class.
+     *
+     * @param directoryManager a directory manager for reading user-defined config files
+     */
     public constructor(directoryManager: IDirectoryManager) {
         this.directoryManager = directoryManager;
     }
