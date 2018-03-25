@@ -91,7 +91,6 @@
             "severity": "error",
             "options": [
                 "debug",
-                "info",
                 "log",
                 "time",
                 "timeEnd",

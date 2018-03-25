@@ -2,6 +2,7 @@ import { app, dialog, ipcMain, Menu } from "electron";
 import "reflect-metadata";
 require("electron-debug")({ enabled: true });
 
+import { ArgumentsParser } from "arguments";
 import container from "ioc/container";
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
@@ -10,7 +11,14 @@ import { FreemanWindow } from "widgets";
 
 let mainWindow: FreemanWindow | null = null;
 
-if (process.argv.includes("--verbose")) {
+const parsedArguments = ArgumentsParser.parse(process.argv);
+
+if (parsedArguments.version) {
+    console.info(app.getVersion());
+    process.exit(0);
+}
+
+if (parsedArguments.verbose) {
     process.env.VERBOSE = "1";
     Utils.trace("Running application in verbose mode");
 }

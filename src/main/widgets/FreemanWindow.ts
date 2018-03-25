@@ -1,4 +1,5 @@
 import { BrowserWindow, dialog } from "electron";
+import openAboutWindow from "electron-about-window";
 import log from "electron-log";
 import path from "path";
 
@@ -23,7 +24,18 @@ class FreemanWindow extends BrowserWindow {
     public static get menuTemplate(): Electron.MenuItemConstructorOptions[] {
         return [
             { label: "File", submenu: [{ role: "quit" }] },
-            { role: "windowMenu" }
+            { role: "windowMenu" },
+            {
+                label: "Help",
+                submenu: [
+                    {
+                        click: () => openAboutWindow({
+                            icon_path: path.join(`file://${__dirname}`, "..", "icons", "icon.png")
+                        }),
+                        label: "About"
+                    }
+                ]
+            }
         ];
     }
 
