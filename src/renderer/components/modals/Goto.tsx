@@ -84,31 +84,51 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
          * updated by taking the dirname of the search term.
          */
         if (event.key === "Backspace" && this.state.searchTerm.endsWith(path.sep)) {
-            const basePath = path.dirname(this.state.searchTerm);
-            const nonHiddenDirectoryItems = await this.getNonHiddenFolders(basePath);
+            await this.handleNavigateUp(newPath);
 
-            this.setState(
-                {
-                    currentDirectory: basePath,
-                    directoryItems: nonHiddenDirectoryItems,
-                    searchTerm: newPath
-                });
             /*
              * If path.sep is entered, the search term becomes the new current
              * directory.
              */
         } else if (event.key === path.sep) {
-            const nonHiddenDirectoryItems = await this.getNonHiddenFolders(newPath);
+            await this.handleNavigateIn(newPath);
 
-            this.setState(
-                {
-                    currentDirectory: newPath,
-                    directoryItems: nonHiddenDirectoryItems,
-                    searchTerm: newPath
-                });
         } else {
             this.setState({ searchTerm: newPath });
         }
+    }
+
+    /**
+     * Handles navigating up a directory when the user deletes a path.sep character
+     *
+     * @param newPath the new path entered in the GoTo's input field
+     */
+    private async handleNavigateUp(newPath: string) {
+        const basePath = path.dirname(this.state.searchTerm);
+        const nonHiddenDirectoryItems = await this.getNonHiddenFolders(basePath);
+
+        this.setState(
+            {
+                currentDirectory: basePath,
+                directoryItems: nonHiddenDirectoryItems,
+                searchTerm: newPath
+            });
+    }
+
+    /**
+     * Handles navigating into a directory when the user enters a path.sep character
+     *
+     * @param newPath the new path entered in the GoTo's input field
+     */
+    private async handleNavigateIn(newPath: string) {
+        const nonHiddenDirectoryItems = await this.getNonHiddenFolders(newPath);
+
+        this.setState(
+            {
+                currentDirectory: newPath,
+                directoryItems: nonHiddenDirectoryItems,
+                searchTerm: newPath
+            });
     }
 
     /**
