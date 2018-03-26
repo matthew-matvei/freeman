@@ -285,10 +285,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async delete() {
-        const selectedItems = this.state.chosenItems.length > 0 ?
-            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
-
-        const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
+        const chosenItems = this.selectedItems.length > 1 ? "the chosen items" : `'${this.selectedItems[0].name}'`;
         const confirmDelete = this.props.settingsManager.settings.confirmation.requiredBeforeDeletion ?
             confirmationDialog(`Are you sure you want to permanently delete ${chosenItems}?`) :
             true;
@@ -296,8 +293,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmDelete) {
-            Utils.trace(`Requesting to delete ${selectedItems.map(item => item.path).join(", ")}`);
-            await this.props.directoryManager.deleteItems(selectedItems);
+            Utils.trace(`Requesting to delete ${this.selectedItems.map(item => item.path).join(", ")}`);
+            await this.props.directoryManager.deleteItems(this.selectedItems);
 
             this.refreshAfterDelete();
             this.props.statusNotifier.notify("Deleted items");
