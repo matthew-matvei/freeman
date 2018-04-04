@@ -33,7 +33,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
     ) {
         this.settingsManager = settingsManager;
 
-        const shell = useFallbackShell ? this.shell : this.fallbackShell;
+        const shell = useFallbackShell ? this.fallbackShell : this.shell;
 
         this.ptyProcess = pty.spawn(shell, [], {
             cwd: process.cwd(),
