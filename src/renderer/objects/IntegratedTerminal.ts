@@ -13,13 +13,16 @@ import { IIntegratedTerminal } from "objects";
 class IntegratedTerminal implements IIntegratedTerminal {
 
     /** A settings manager for terminal configuration.  */
-    private settingsManager: ISettingsManager;
+    private readonly settingsManager: ISettingsManager;
 
     /** A private instance of the xterm terminal emulator. */
-    private xterm: Xterm;
+    private readonly xterm: Xterm;
 
     /** A spawned terminal process for shell execution. */
-    private ptyProcess: ITerminal;
+    private readonly ptyProcess: ITerminal;
+
+    /** Whether to use a safe, fallback shell */
+    private readonly useFallbackShell: boolean;
 
     /**
      * Initialises a new instance of the IntegratedTerminal class.
@@ -32,10 +35,9 @@ class IntegratedTerminal implements IIntegratedTerminal {
         useFallbackShell = false
     ) {
         this.settingsManager = settingsManager;
+        this.useFallbackShell = useFallbackShell;
 
-        const shell = useFallbackShell ? this.fallbackShell : this.shell;
-
-        this.ptyProcess = pty.spawn(shell, [], {
+        this.ptyProcess = pty.spawn(this.shell, [], {
             cwd: process.cwd(),
             env: process.env as ProcessEnv
         });
@@ -54,8 +56,13 @@ class IntegratedTerminal implements IIntegratedTerminal {
         });
     }
 
-    /** Gets the path or name of the system-dependent and configurable shell. */
-    private get shell(): string {
+    /** @inheritDoc */
+    public get shell(): string {
+        return this.useFallbackShell ? this.fallbackShell : this.configuredShell;
+    }
+
+    /** Gets the path or name of the shell configured in user settings. */
+    private get configuredShell(): string {
         const { windows, linux } = this.settingsManager.settings;
 
         if (process.platform === "win32") {
@@ -65,6 +72,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
         }
     }
 
+    /** Gets the path or name of the fallback shell used as a fail-safe. */
     private get fallbackShell(): string {
         return process.platform === "win32" ? "powershell.exe" : "bash";
     }

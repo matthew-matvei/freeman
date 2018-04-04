@@ -17,18 +17,9 @@ class TerminalWrapper extends React.PureComponent<ITerminalWrapperProps> {
      */
     public render(): JSX.Element | null {
         return <div className="TerminalWrapper">
-            <TerminalHeader shellName={this.ShellName} theme={this.props.theme} />
+            <TerminalHeader shellName={path.basename(this.props.integratedTerminal.shell)} theme={this.props.theme} />
             <TerminalPane theme={this.props.theme} integratedTerminal={this.props.integratedTerminal} />
         </div>;
-    }
-
-    /** Gets the name of the shell, as configured in application settings. */
-    private get ShellName() {
-        const settings = this.props.settingsManager.settings;
-        const shellNameFull = os.platform() === "win32" ? settings.windows.shell :
-            settings.linux.shell;
-
-        return path.basename(shellNameFull);
     }
 }
 

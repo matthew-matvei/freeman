@@ -1,6 +1,9 @@
 /** Describes an integrated, interactive terminal. */
 interface IIntegratedTerminal {
 
+    /** The shell used in this integrated terminal. */
+    readonly shell: string;
+
     /**
      * Opens the terminal in the container element.
      *
