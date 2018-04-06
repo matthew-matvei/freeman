@@ -1,6 +1,9 @@
 /** Describes an integrated, interactive terminal. */
 interface IIntegratedTerminal {
 
+    /** The shell used in this integrated terminal. */
+    readonly shellName: string;
+
     /**
      * Opens the terminal in the container element.
      *
@@ -8,12 +11,8 @@ interface IIntegratedTerminal {
      */
     openIn(element: HTMLDivElement): void;
 
-    /**
-     * Fits the terminal to the container element.
-     *
-     * @param element the element to which the terminal is fitted
-     */
-    fitTo(element: HTMLDivElement): void;
+    /** Fits the terminal to the container element. */
+    fit(): void;
 
     /**
      * Sends a command to change to pathToDirectory.

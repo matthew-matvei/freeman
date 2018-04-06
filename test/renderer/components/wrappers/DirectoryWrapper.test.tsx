@@ -34,6 +34,7 @@ describe("<DirectoryWrapper />", () => {
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
         integratedTerminal = Mock.ofType<IIntegratedTerminal>();
+        integratedTerminal.setup(it => it.shellName).returns(() => "bash");
 
         const statusNotifier = {} as IStatusNotifier;
 

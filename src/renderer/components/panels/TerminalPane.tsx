@@ -50,7 +50,7 @@ class TerminalPane extends React.PureComponent<ITerminalPaneProps> {
     @autobind
     private handleResize() {
         if (this.container) {
-            this.props.integratedTerminal.fitTo(this.container);
+            this.props.integratedTerminal.fit();
         }
     }
 }

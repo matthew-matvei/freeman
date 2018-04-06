@@ -1,61 +1,59 @@
 import { inject, injectable } from "inversify";
-import * as pty from "node-pty";
-import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 import os from "os";
 import Xterm from "xterm";
 
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
-import { IIntegratedTerminal } from "objects";
+import { IIntegratedTerminal, IShell } from "objects";
 
 /** An integrated, interactive terminal. */
 @injectable()
 class IntegratedTerminal implements IIntegratedTerminal {
 
     /** A settings manager for terminal configuration.  */
-    private settingsManager: ISettingsManager;
+    private readonly settingsManager: ISettingsManager;
+
+    /** The backend shell process the terminal uses. */
+    private readonly shell: IShell;
+
+    /** Whether to use a safe, fallback shell */
+    private readonly useFallbackShell: boolean;
 
     /** A private instance of the xterm terminal emulator. */
-    private xterm: Xterm;
-
-    /** A spawned terminal process for shell execution. */
-    private ptyProcess: ITerminal;
+    private readonly xterm: Xterm;
 
     /**
      * Initialises a new instance of the IntegratedTerminal class.
      *
      * @param settingsManager a settings manager for terminal configuration
+     * @param shell the backend shell process the terminal uses
      * @param useFallbackShell whether to use a safe, fallback shell, defaults to false
      */
     public constructor(
         @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
+        @inject(TYPES.IShell) shell: IShell,
         useFallbackShell = false
     ) {
         this.settingsManager = settingsManager;
-
-        const shell = useFallbackShell ? this.shell : this.fallbackShell;
-
-        this.ptyProcess = pty.spawn(shell, [], {
-            cwd: process.cwd(),
-            env: process.env as ProcessEnv
-        });
+        this.shell = shell;
+        this.useFallbackShell = useFallbackShell;
 
         (Xterm as any).loadAddon("fit");
         this.xterm = new Xterm({
             cursorBlink: this.settingsManager.settings.terminal.cursorBlink
         });
 
-        this.xterm.on("data", data => {
-            this.ptyProcess.write(data);
-        });
-
-        this.ptyProcess.on("data", data => {
-            this.xterm.write(data);
-        });
+        this.shell.spawn(this.shellName);
+        this.shell.attach(this.xterm);
     }
 
-    /** Gets the path or name of the system-dependent and configurable shell. */
-    private get shell(): string {
+    /** @inheritDoc */
+    public get shellName(): string {
+        return this.useFallbackShell ? this.fallbackShellName : this.configuredShellName;
+    }
+
+    /** Gets the path or name of the shell configured in user settings. */
+    private get configuredShellName(): string {
         const { windows, linux } = this.settingsManager.settings;
 
         if (process.platform === "win32") {
@@ -65,7 +63,8 @@ class IntegratedTerminal implements IIntegratedTerminal {
         }
     }
 
-    private get fallbackShell(): string {
+    /** Gets the path or name of the fallback shell used as a fail-safe. */
+    private get fallbackShellName(): string {
         return process.platform === "win32" ? "powershell.exe" : "bash";
     }
 
@@ -76,15 +75,15 @@ class IntegratedTerminal implements IIntegratedTerminal {
     }
 
     /** @inheritDoc */
-    public fitTo(element: HTMLDivElement): void {
+    public fit(): void {
         (this.xterm as any).fit!();
-        this.ptyProcess.resize(this.xterm.cols, this.xterm.rows);
+        this.shell.resize(this.xterm.cols, this.xterm.rows);
     }
 
     /** @inheritDoc */
     public changeDirectory(pathToDirectory: string): void {
         const changeDirectoryCommand = `cd '${pathToDirectory}'${os.EOL}`;
-        this.ptyProcess.write(changeDirectoryCommand);
+        this.shell.write(changeDirectoryCommand);
     }
 }
 
