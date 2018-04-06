@@ -4,7 +4,7 @@ import Xterm from "xterm";
 
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
-import { IIntegratedTerminal, IShell } from "objects";
+import { IIntegratedTerminal, IShell, Shell } from "objects";
 
 /** An integrated, interactive terminal. */
 @injectable()
@@ -35,8 +35,6 @@ class IntegratedTerminal implements IIntegratedTerminal {
         this.settingsManager = settingsManager;
         this.useFallbackShell = useFallbackShell;
 
-
-
         (Xterm as any).loadAddon("fit");
         this.xterm = new Xterm({
             cursorBlink: this.settingsManager.settings.terminal.cursorBlink
@@ -45,6 +43,8 @@ class IntegratedTerminal implements IIntegratedTerminal {
         this.xterm.on("data", data => {
             this.terminalProcess.write(data);
         });
+
+        this.terminalProcess = new Shell(this.shell, this.xterm);
     }
 
     /** @inheritDoc */

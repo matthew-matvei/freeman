@@ -1,8 +1,7 @@
 import * as pty from "node-pty";
-import { ProcessEnv, ITerminal } from 'node-pty/lib/interfaces';
+import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 
 import { IShell } from "objects";
-
 
 class Shell implements IShell {
 
@@ -17,7 +16,7 @@ class Shell implements IShell {
         this.xterm = xterm;
     }
 
-    spawn(): void {
+    public spawn(): void {
         this.terminalProcess = pty.spawn(this.shellPath, [], {
             cwd: process.cwd(),
             env: process.env as ProcessEnv
@@ -26,6 +25,13 @@ class Shell implements IShell {
         this.terminalProcess.on("data", data => {
             this.xterm.write(data);
         });
+    }
+
+    public write(data: any): void {
+        this.terminalProcess && this.terminalProcess.write(data);
+    }
+    public resize(columns: number, rows: number): void {
+        this.terminalProcess && this.terminalProcess.resize(columns, rows);
     }
 }
 
