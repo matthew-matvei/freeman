@@ -17,10 +17,11 @@ describe("IntegratedTerminal's", () => {
     let userSettings: ICommonSettings;
 
     before(() => {
-        settingsManager = Mock.ofType<ISettingsManager>();
         userSettings = JSON.parse(JSON.stringify(applicationSettings));
         userSettings.linux.shell = userLinuxShell;
         userSettings.windows.shell = userWindowsShell;
+        settingsManager = Mock.ofType<ISettingsManager>();
+        settingsManager.setup(sm => sm.settings).returns(() => userSettings);
     });
 
     beforeEach(() => {
