@@ -50,6 +50,14 @@ ReactDOM.render(<App
     rightTerminal={rightTerminal} />,
     document.getElementById("app-root"));
 
+/**
+ * Builds an integrated terminal using the given settings and shell.
+ *
+ * @param settings the settings manager to use in the built terminal
+ * @param shell the shell process to use in the built terminal
+ *
+ * @returns an integrated terminal using the given settings and shell
+ */
 function buildTerminal(settings: ISettingsManager, shell: IShell): IIntegratedTerminal {
     try {
         return new IntegratedTerminal(settings, shell);
