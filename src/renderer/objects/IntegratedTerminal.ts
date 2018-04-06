@@ -26,8 +26,8 @@ class IntegratedTerminal implements IIntegratedTerminal {
      * Initialises a new instance of the IntegratedTerminal class.
      *
      * @param settingsManager a settings manager for terminal configuration
-     * @param useFallbackShell whether to use a safe, fallback shell, defaults to false
      * @param shell the backend shell process the terminal uses
+     * @param useFallbackShell whether to use a safe, fallback shell, defaults to false
      */
     public constructor(
         @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
