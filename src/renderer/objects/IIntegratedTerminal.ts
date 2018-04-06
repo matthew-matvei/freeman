@@ -11,12 +11,8 @@ interface IIntegratedTerminal {
      */
     openIn(element: HTMLDivElement): void;
 
-    /**
-     * Fits the terminal to the container element.
-     *
-     * @param element the element to which the terminal is fitted
-     */
-    fitTo(element: HTMLDivElement): void;
+    /** Fits the terminal to the container element. */
+    fit(): void;
 
     /**
      * Sends a command to change to pathToDirectory.

@@ -75,7 +75,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
     }
 
     /** @inheritDoc */
-    public fitTo(element: HTMLDivElement): void {
+    public fit(): void {
         (this.xterm as any).fit!();
         this.shell.resize(this.xterm.cols, this.xterm.rows);
     }
