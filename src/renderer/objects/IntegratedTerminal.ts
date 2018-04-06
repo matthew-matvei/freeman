@@ -4,7 +4,7 @@ import Xterm from "xterm";
 
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
-import { IIntegratedTerminal, IShell, Shell } from "objects";
+import { IIntegratedTerminal, IShell } from "objects";
 
 /** An integrated, interactive terminal. */
 @injectable()
@@ -13,26 +13,29 @@ class IntegratedTerminal implements IIntegratedTerminal {
     /** A settings manager for terminal configuration.  */
     private readonly settingsManager: ISettingsManager;
 
-    /** A private instance of the xterm terminal emulator. */
-    private readonly xterm: Xterm;
-
-    /** A spawned terminal process for shell execution. */
-    private readonly terminalProcess: IShell;
+    /** The backend shell process the terminal uses. */
+    private readonly shell: IShell;
 
     /** Whether to use a safe, fallback shell */
     private readonly useFallbackShell: boolean;
+
+    /** A private instance of the xterm terminal emulator. */
+    private readonly xterm: Xterm;
 
     /**
      * Initialises a new instance of the IntegratedTerminal class.
      *
      * @param settingsManager a settings manager for terminal configuration
      * @param useFallbackShell whether to use a safe, fallback shell, defaults to false
+     * @param shell the backend shell process the terminal uses
      */
     public constructor(
         @inject(TYPES.ISettingsManager) settingsManager: ISettingsManager,
+        @inject(TYPES.IShell) shell: IShell,
         useFallbackShell = false
     ) {
         this.settingsManager = settingsManager;
+        this.shell = shell;
         this.useFallbackShell = useFallbackShell;
 
         (Xterm as any).loadAddon("fit");
@@ -40,11 +43,8 @@ class IntegratedTerminal implements IIntegratedTerminal {
             cursorBlink: this.settingsManager.settings.terminal.cursorBlink
         });
 
-        this.xterm.on("data", data => {
-            this.terminalProcess.write(data);
-        });
-
-        this.terminalProcess = new Shell(this.shellName, this.xterm);
+        this.shell.spawn(this.shellName);
+        this.shell.attach(this.xterm);
     }
 
     /** @inheritDoc */
@@ -77,13 +77,13 @@ class IntegratedTerminal implements IIntegratedTerminal {
     /** @inheritDoc */
     public fitTo(element: HTMLDivElement): void {
         (this.xterm as any).fit!();
-        this.terminalProcess.resize(this.xterm.cols, this.xterm.rows);
+        this.shell.resize(this.xterm.cols, this.xterm.rows);
     }
 
     /** @inheritDoc */
     public changeDirectory(pathToDirectory: string): void {
         const changeDirectoryCommand = `cd '${pathToDirectory}'${os.EOL}`;
-        this.terminalProcess.write(changeDirectoryCommand);
+        this.shell.write(changeDirectoryCommand);
     }
 }
 

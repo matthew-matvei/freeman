@@ -4,6 +4,7 @@ const TYPES = {
     IDirectoryManager: Symbol.for("IDirectoryManager"),
     IKeysManager: Symbol.for("IKeysManager"),
     ISettingsManager: Symbol.for("ISettingsManager"),
+    IShell: Symbol.for("IShell"),
     IThemesManager: Symbol.for("IThemesManager")
 };
 

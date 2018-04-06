@@ -1,37 +1,39 @@
 import * as pty from "node-pty";
 import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 
+import LoggedError from "errors/LoggedError";
 import { IShell } from "objects";
 
 class Shell implements IShell {
 
-    private readonly shellPath: string;
-
-    private readonly xterm: Xterm;
-
     private terminalProcess?: ITerminal;
 
-    public constructor(shellPath: string, xterm: Xterm) {
-        this.shellPath = shellPath;
-        this.xterm = xterm;
-    }
-
-    public spawn(): void {
-        this.terminalProcess = pty.spawn(this.shellPath, [], {
+    public spawn(shellName: string) {
+        this.terminalProcess = pty.spawn(shellName, [], {
             cwd: process.cwd(),
             env: process.env as ProcessEnv
         });
-
-        this.terminalProcess.on("data", data => {
-            this.xterm.write(data);
-        });
     }
 
-    public write(data: any): void {
+    public write(data: any) {
         this.terminalProcess && this.terminalProcess.write(data);
     }
-    public resize(columns: number, rows: number): void {
+    public resize(columns: number, rows: number) {
         this.terminalProcess && this.terminalProcess.resize(columns, rows);
+    }
+
+    public attach(xterm: Xterm) {
+        if (!this.terminalProcess) {
+            throw new LoggedError("Could not write to shell process before spawning");
+        }
+
+        xterm.on("data", data => {
+            this.terminalProcess!.write(data);
+        });
+
+        this.terminalProcess.on("data", data => {
+            xterm.write(data);
+        });
     }
 }
 
