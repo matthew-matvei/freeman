@@ -1,9 +1,11 @@
+import { injectable } from "inversify";
 import * as pty from "node-pty";
 import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 
 import LoggedError from "errors/LoggedError";
 import { IShell } from "objects";
 
+@injectable()
 class Shell implements IShell {
 
     private terminalProcess?: ITerminal;
