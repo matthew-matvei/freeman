@@ -115,7 +115,7 @@
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-hotkeys": "^0.10.0",
+    "react-hotkeys": "^1.1.1",
     "react-icons": "^2.2.7",
     "react-modal": "^3.3.2",
     "react-resize-detector": "^2.2.0",
