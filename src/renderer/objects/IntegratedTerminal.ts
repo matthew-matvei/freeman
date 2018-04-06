@@ -44,16 +44,16 @@ class IntegratedTerminal implements IIntegratedTerminal {
             this.terminalProcess.write(data);
         });
 
-        this.terminalProcess = new Shell(this.shell, this.xterm);
+        this.terminalProcess = new Shell(this.shellName, this.xterm);
     }
 
     /** @inheritDoc */
-    public get shell(): string {
-        return this.useFallbackShell ? this.fallbackShell : this.configuredShell;
+    public get shellName(): string {
+        return this.useFallbackShell ? this.fallbackShellName : this.configuredShellName;
     }
 
     /** Gets the path or name of the shell configured in user settings. */
-    private get configuredShell(): string {
+    private get configuredShellName(): string {
         const { windows, linux } = this.settingsManager.settings;
 
         if (process.platform === "win32") {
@@ -64,7 +64,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
     }
 
     /** Gets the path or name of the fallback shell used as a fail-safe. */
-    private get fallbackShell(): string {
+    private get fallbackShellName(): string {
         return process.platform === "win32" ? "powershell.exe" : "bash";
     }
 

@@ -2,7 +2,7 @@
 interface IIntegratedTerminal {
 
     /** The shell used in this integrated terminal. */
-    readonly shell: string;
+    readonly shellName: string;
 
     /**
      * Opens the terminal in the container element.
