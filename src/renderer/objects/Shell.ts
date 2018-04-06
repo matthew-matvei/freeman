@@ -5,35 +5,42 @@ import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 import LoggedError from "errors/LoggedError";
 import { IShell } from "objects";
 
+/** A thin facade of an underlying shell process of an integrated terminal. */
 @injectable()
 class Shell implements IShell {
 
-    private terminalProcess?: ITerminal;
+    /** The underlying shell process. */
+    private process?: ITerminal;
 
+    /** @inheritDoc */
     public spawn(shellName: string) {
-        this.terminalProcess = pty.spawn(shellName, [], {
+        this.process = pty.spawn(shellName, [], {
             cwd: process.cwd(),
             env: process.env as ProcessEnv
         });
     }
 
+    /** @inheritDoc */
     public write(data: any) {
-        this.terminalProcess && this.terminalProcess.write(data);
-    }
-    public resize(columns: number, rows: number) {
-        this.terminalProcess && this.terminalProcess.resize(columns, rows);
+        this.process && this.process.write(data);
     }
 
+    /** @inheritDoc */
+    public resize(columns: number, rows: number) {
+        this.process && this.process.resize(columns, rows);
+    }
+
+    /** @inheritDoc */
     public attach(xterm: Xterm) {
-        if (!this.terminalProcess) {
+        if (!this.process) {
             throw new LoggedError("Could not write to shell process before spawning");
         }
 
         xterm.on("data", data => {
-            this.terminalProcess!.write(data);
+            this.process!.write(data);
         });
 
-        this.terminalProcess.on("data", data => {
+        this.process.on("data", data => {
             xterm.write(data);
         });
     }
