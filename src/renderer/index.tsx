@@ -38,19 +38,8 @@ const themeManager = container.get<IThemesManager>(TYPES.IThemesManager);
 const directoryManager = container.get<IDirectoryManager>(TYPES.IDirectoryManager);
 const leftShell = container.get<IShell>(TYPES.IShell);
 const rightShell = container.get<IShell>(TYPES.IShell);
-let leftTerminal: IIntegratedTerminal;
-let rightTerminal: IIntegratedTerminal;
-
-try {
-    // Try to construct a terminal using shell path given in settings
-    leftTerminal = new IntegratedTerminal(settingsManager, leftShell);
-    rightTerminal = new IntegratedTerminal(settingsManager, rightShell);
-} catch {
-    // Fallback to a pre-defined, system-dependent shell
-    const useFallbackShell = true;
-    leftTerminal = new IntegratedTerminal(settingsManager, leftShell, useFallbackShell);
-    rightTerminal = new IntegratedTerminal(settingsManager, rightShell, useFallbackShell);
-}
+const leftTerminal = buildTerminal(settingsManager, leftShell);
+const rightTerminal = buildTerminal(settingsManager, rightShell);
 
 ReactDOM.render(<App
     settingsManager={settingsManager}
@@ -60,3 +49,13 @@ ReactDOM.render(<App
     leftTerminal={leftTerminal}
     rightTerminal={rightTerminal} />,
     document.getElementById("app-root"));
+
+function buildTerminal(settings: ISettingsManager, shell: IShell): IIntegratedTerminal {
+    try {
+        return new IntegratedTerminal(settings, shell);
+    } catch {
+        const useFallbackShell = true;
+
+        return new IntegratedTerminal(settings, shell, useFallbackShell);
+    }
+}
