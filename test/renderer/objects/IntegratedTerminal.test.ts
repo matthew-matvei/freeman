@@ -91,10 +91,6 @@ describe("IntegratedTerminal's", () => {
         });
     });
 
-    describe("fitTo method", () => {
-        it("adjusts the rows and columns of the underlying terminal process");
-    });
-
     describe("changeDirectory method", () => {
         it("begins with a 'cd' command", () => {
             const terminal = new IntegratedTerminal(settingsManager.object, shell.object, useFallbackShell);
