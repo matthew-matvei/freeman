@@ -1,12 +1,10 @@
 import { inject, injectable } from "inversify";
-import * as pty from "node-pty";
-import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
 import os from "os";
 import Xterm from "xterm";
 
 import TYPES from "ioc/types";
 import { ISettingsManager } from "managers";
-import { IIntegratedTerminal } from "objects";
+import { IIntegratedTerminal, IShell } from "objects";
 
 /** An integrated, interactive terminal. */
 @injectable()
@@ -19,7 +17,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
     private readonly xterm: Xterm;
 
     /** A spawned terminal process for shell execution. */
-    private readonly ptyProcess: ITerminal;
+    private readonly terminalProcess: IShell;
 
     /** Whether to use a safe, fallback shell */
     private readonly useFallbackShell: boolean;
@@ -37,10 +35,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
         this.settingsManager = settingsManager;
         this.useFallbackShell = useFallbackShell;
 
-        this.ptyProcess = pty.spawn(this.shell, [], {
-            cwd: process.cwd(),
-            env: process.env as ProcessEnv
-        });
+
 
         (Xterm as any).loadAddon("fit");
         this.xterm = new Xterm({
@@ -48,11 +43,7 @@ class IntegratedTerminal implements IIntegratedTerminal {
         });
 
         this.xterm.on("data", data => {
-            this.ptyProcess.write(data);
-        });
-
-        this.ptyProcess.on("data", data => {
-            this.xterm.write(data);
+            this.terminalProcess.write(data);
         });
     }
 
@@ -86,13 +77,13 @@ class IntegratedTerminal implements IIntegratedTerminal {
     /** @inheritDoc */
     public fitTo(element: HTMLDivElement): void {
         (this.xterm as any).fit!();
-        this.ptyProcess.resize(this.xterm.cols, this.xterm.rows);
+        this.terminalProcess.resize(this.xterm.cols, this.xterm.rows);
     }
 
     /** @inheritDoc */
     public changeDirectory(pathToDirectory: string): void {
         const changeDirectoryCommand = `cd '${pathToDirectory}'${os.EOL}`;
-        this.ptyProcess.write(changeDirectoryCommand);
+        this.terminalProcess.write(changeDirectoryCommand);
     }
 }
 
