@@ -123,6 +123,12 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     /** Handles sending up the directory's path to the parent component. */
     @autobind
     private openDirectory() {
+        if (!this.props.model.accessible) {
+            Utils.trace(`Cannot open inaccessible directory ${this.props.model.path}`);
+
+            return;
+        }
+
         if (this.props.model.isDirectory) {
             this.props.sendPathUp(this.props.model.path);
         }
