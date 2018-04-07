@@ -138,7 +138,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      *
      * @returns non-hidden child folders of the basePath
      */
-    private getNonHiddenFolders(basePath: string): Promise<IDirectoryItem[]> {
+    private async getNonHiddenFolders(basePath: string): Promise<IDirectoryItem[]> {
         return this.props.directoryManager.listDirectory(
             basePath,
             {
