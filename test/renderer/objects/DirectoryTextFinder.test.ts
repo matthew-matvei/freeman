@@ -21,6 +21,7 @@ describe("DirectoryTextFinder's", () => {
         directoryTextFinder = new DirectoryTextFinder();
 
         item1 = {
+            accessible: true,
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -29,6 +30,7 @@ describe("DirectoryTextFinder's", () => {
         };
 
         item2 = {
+            accessible: true,
             isDirectory: false,
             isHidden: true,
             lastModified: new Date(),
@@ -37,6 +39,7 @@ describe("DirectoryTextFinder's", () => {
         };
 
         item3 = {
+            accessible: true,
             isDirectory: false,
             isHidden: true,
             lastModified: new Date(),
@@ -45,6 +48,7 @@ describe("DirectoryTextFinder's", () => {
         };
 
         item4 = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),

@@ -24,6 +24,7 @@ describe("<DirectoryItem />", () => {
 
     beforeEach(() => {
         directoryModel = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),

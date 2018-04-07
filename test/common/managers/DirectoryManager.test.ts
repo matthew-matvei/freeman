@@ -64,6 +64,7 @@ describe("DirectoryManager's", () => {
         });
 
         testFile = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -72,6 +73,7 @@ describe("DirectoryManager's", () => {
         };
 
         testFile2 = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -80,6 +82,7 @@ describe("DirectoryManager's", () => {
         };
 
         testFolder = {
+            accessible: true,
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -88,6 +91,7 @@ describe("DirectoryManager's", () => {
         };
 
         testFolder2 = {
+            accessible: true,
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -274,6 +278,7 @@ describe("DirectoryManager's", () => {
         it("rejects when given an invalid path", () => {
             const invalidFileName = "invalidFileName.txt";
             testFile = {
+                accessible: true,
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),
@@ -389,6 +394,7 @@ describe("DirectoryManager's", () => {
         it("rejects when given an invalid itemPath", () => {
             const invalidFileName = "invalidFileName.txt";
             testFile = {
+                accessible: true,
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),

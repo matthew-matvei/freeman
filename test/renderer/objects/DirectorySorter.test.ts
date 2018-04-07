@@ -14,6 +14,7 @@ describe("DirectorySorter's", () => {
     beforeEach(() => {
         items = [];
         testItem1 = {
+            accessible: true,
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -21,6 +22,7 @@ describe("DirectorySorter's", () => {
             path: "path/to/"
         };
         testItem2 = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -28,6 +30,7 @@ describe("DirectorySorter's", () => {
             path: "/path/to/"
         };
         testItem3 = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),

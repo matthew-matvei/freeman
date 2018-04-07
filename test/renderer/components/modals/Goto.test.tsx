@@ -33,6 +33,7 @@ describe("<Goto />", () => {
         sandbox = Sinon.createSandbox();
 
         item1 = {
+            accessible: true,
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -41,6 +42,7 @@ describe("<Goto />", () => {
         };
 
         item2 = {
+            accessible: true,
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
