@@ -134,6 +134,12 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
      */
     @autobind
     private activate() {
+        if (!this.props.model.accessible) {
+            Utils.trace(`Cannot activate inaccessible item ${this.props.model.path}`);
+
+            return;
+        }
+
         if (this.props.model.isDirectory) {
             this.props.sendPathUp(this.props.model.path);
         } else {

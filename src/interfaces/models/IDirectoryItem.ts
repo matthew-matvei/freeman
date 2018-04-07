@@ -13,8 +13,8 @@ interface IDirectoryItem {
     /** Whether the directory item is hidden. */
     isHidden: boolean;
 
-    /** Whether the directory item can be accessed by the user, if it's a folder. */
-    accessible?: boolean;
+    /** Whether the directory item can be accessed by the user. */
+    accessible: boolean;
 
     /** The size (in bytes) of the file, if any. */
     size?: number;
