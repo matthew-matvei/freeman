@@ -60,4 +60,7 @@ describe("<DirectoryItemIcon />", () => {
 
         expect(wrapper.findWhere(n => n.type() === "i" && n.hasClass(className))).to.have.length(1);
     });
+
+    it("icon of inaccessible folder is reflected by colour");
+    it("icon of inaccessible file is reflected by colour");
 });

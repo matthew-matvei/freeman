@@ -122,4 +122,9 @@ describe("<DirectoryItem />", () => {
 
         expect(openItem.callCount).to.equal(wrapper.length);
     });
+
+    it("background colour changes when item is selected");
+    it("foreground colour shows inaccessibility");
+    it("does not open a directory that is inaccessible");
+    it("does not activate an item that is inaccessible");
 });

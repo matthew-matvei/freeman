@@ -155,6 +155,8 @@ describe("DirectoryManager's", () => {
             expect(result.every(item => (item.isDirectory && item.size === undefined) ||
                 (!item.isDirectory && item.size !== undefined))).to.be.true;
         });
+
+        it("returns accessibility for a given item");
     });
 
     describe("createItem method", () => {
