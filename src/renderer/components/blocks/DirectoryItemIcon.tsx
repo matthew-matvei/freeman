@@ -26,9 +26,7 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
         const { directoryItemIcon } = theme;
 
         if (directoryItem && directoryItem.isDirectory || directoryItemType === "folder") {
-            return <FaFolderO
-                style={this.iconStyles}
-                color={this.getIconColour("folder")} />;
+            return <FaFolderO style={this.iconStyles} color={this.getIconColour("folder")} />;
         }
 
         if (directoryItem && !directoryItem.isDirectory || directoryItemType === "file") {
@@ -40,9 +38,7 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
                         !directoryItem.accessible &&
                         directoryItemIcon.inaccessibleIconColour) || undefined}
                     className={className}></i> :
-                <FaFileO
-                    style={this.iconStyles}
-                    color={this.getIconColour("file")} />;
+                <FaFileO style={this.iconStyles} color={this.getIconColour("file")} />;
         }
 
         throw new LoggedError("Tried to render directory item icon with no valid prop");
