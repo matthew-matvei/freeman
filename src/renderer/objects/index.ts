@@ -4,6 +4,8 @@ import DirectorySorter from "./DirectorySorter";
 import DirectoryTextFinder from "./DirectoryTextFinder";
 import IIntegratedTerminal from "./IIntegratedTerminal";
 import IntegratedTerminal from "./IntegratedTerminal";
+import IShell from "./IShell";
+import Shell from "./Shell";
 
 export {
     ApplicationCommander,
@@ -11,5 +13,7 @@ export {
     DirectorySorter,
     DirectoryTextFinder,
     IIntegratedTerminal,
-    IntegratedTerminal
+    IntegratedTerminal,
+    IShell,
+    Shell
 };

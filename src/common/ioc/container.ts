@@ -13,6 +13,7 @@ import {
     SettingsManager,
     ThemesManager
 } from "managers";
+import { IShell, Shell } from "objects";
 
 const container = new Container({ defaultScope: "Singleton" });
 
@@ -22,5 +23,6 @@ container.bind<ISettingsManager>(TYPES.ISettingsManager).to(SettingsManager);
 container.bind<IKeysManager>(TYPES.IKeysManager).to(KeysManager);
 container.bind<IThemesManager>(TYPES.IThemesManager).to(ThemesManager);
 container.bind<IAttributesManager>(TYPES.IAttributesManager).to(AttributesManager);
+container.bind<IShell>(TYPES.IShell).to(Shell).inTransientScope();
 
 export default container;
