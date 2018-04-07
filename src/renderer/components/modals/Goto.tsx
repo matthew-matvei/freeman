@@ -138,6 +138,12 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * @param newPath the new path entered in the GoTo's input field
      */
     private async handleNavigateIn(newPath: string) {
+        const strippedPath = newPath.endsWith(path.sep) ? newPath.substr(0, newPath.lastIndexOf(path.sep)) : newPath;
+        const directoryToNavigateInto = this.state.directoryItems.find(item => item.path === strippedPath)!;
+        if (!directoryToNavigateInto.accessible) {
+            return;
+        }
+
         const nonHiddenDirectoryItems = await this.getNonHiddenFolders(newPath);
 
         this.setState(
@@ -172,6 +178,11 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      */
     @autobind
     private handleSelect(selectedItem: string) {
+        const directoryToNavigateInto = this.state.directoryItems.find(item => item.path === selectedItem)!;
+        if (!directoryToNavigateInto.accessible) {
+            return;
+        }
+
         this.props.navigateTo(selectedItem);
 
         this.props.onClose();
