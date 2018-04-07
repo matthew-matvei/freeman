@@ -22,20 +22,23 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
      */
     public render(): JSX.Element {
         const { directoryItem, directoryItemType, theme } = this.props;
+        const { directoryItemIcon } = theme;
 
         if (directoryItem && !directoryItem.accessible) {
-            return <FaLock style={this.iconStyles} />;
+            return <FaLock
+                style={this.iconStyles}
+                color={directoryItemIcon.inaccessibleIconColour} />;
         }
 
         if (directoryItem && directoryItem.isDirectory || directoryItemType === "folder") {
-            return <FaFolderO style={this.iconStyles} color={theme.directoryItem.directoryIconColour} />;
+            return <FaFolderO style={this.iconStyles} color={directoryItemIcon.directoryIconColour} />;
         }
 
         if (directoryItem && !directoryItem.isDirectory || directoryItemType === "file") {
             const className = directoryItem && fileIcons.getClassWithColor(directoryItem.path);
 
             return className ? <i style={this.iconStyles} className={className}></i> :
-                <FaFileO style={this.iconStyles} color={theme.directoryItem.fileIconDefaultColour} />;
+                <FaFileO style={this.iconStyles} color={directoryItemIcon.fileIconDefaultColour} />;
         }
 
         throw new LoggedError("Tried to render directory item icon with no valid prop");

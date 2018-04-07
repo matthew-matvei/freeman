@@ -82,23 +82,30 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
     /** Gets the directory item styles based on the component's current props. */
     private get itemStyles(): IDirectoryItemStyles {
-        const { isSelected, model } = this.props;
+        const { isSelected, model, theme } = this.props;
         const {
             fileColour,
             directoryColour,
             backgroundColour,
             chosenColour,
-            selectedColour
-        } = this.props.theme.directoryItem;
+            selectedBackgroundColour
+        } = theme.directoryItem;
 
         const backgroundStyle: React.CSSProperties = {
-            backgroundColor: isSelected ? selectedColour : backgroundColour
+            backgroundColor: isSelected ? selectedBackgroundColour : backgroundColour
         };
 
-        const nameColumnStyle: React.CSSProperties = {
-            color: (this.props.isChosen ? chosenColour :
+        let foregroundColour: string | false;
+        if (this.props.model.accessible) {
+            foregroundColour = this.props.isChosen ? chosenColour :
                 (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour)),
+                (model.isDirectory && directoryColour);
+        } else {
+            foregroundColour = theme.directoryItem.inaccessibleColour;
+        }
+
+        const nameColumnStyle: React.CSSProperties = {
+            color: foregroundColour,
             width: `${this.props.columnSizes.name}px`
         };
 

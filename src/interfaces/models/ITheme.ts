@@ -33,18 +33,26 @@ interface ITheme {
     directoryItem: {
         /** The colour of a file-type directory item. */
         fileColour: string;
-        /** The colour of a default file-type directory item. */
-        fileIconDefaultColour: string;
         /** The colour of a folder-type directory item. */
         directoryColour: string;
-        /** The colour of a folder-type directory item's icon. */
-        directoryIconColour: string;
         /** The foreground colour of a chosen item. */
         chosenColour: string;
         /** The background colour of a directory item. */
         backgroundColour: string;
         /** The background colour of the selected directory item. */
-        selectedColour: string;
+        selectedBackgroundColour: string;
+        /** The foreground colour of an inaccessible directory item. */
+        inaccessibleColour: string;
+    };
+
+    /** The colours of a DirectoryItem's icon component. */
+    directoryItemIcon: {
+        /** The colour of a default file-type directory item. */
+        fileIconDefaultColour: string;
+        /** The colour of a folder-type directory item's icon. */
+        directoryIconColour: string;
+        /** The colour of an inaccessible directory item's icon'. */
+        inaccessibleIconColour: string;
     };
 
     /** The colours of the InputItem component. */
