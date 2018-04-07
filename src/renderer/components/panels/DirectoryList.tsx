@@ -106,18 +106,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     public async componentDidMount() {
         const { directoryManager, settingsManager } = this.props;
 
-        try {
-            directoryManager.startWatching(this.props.path, async () => {
-                this.setState(
-                    {
-                        directoryItems: await directoryManager.listDirectory(
-                            this.props.path,
-                            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
-                    } as IDirectoryListState);
-            });
-        } catch {
-            throw new DirectoryError("Could not set watcher", this.props.path);
-        }
+        this.startWatcher();
 
         const items = await directoryManager.listDirectory(
             this.props.path,
@@ -171,18 +160,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         }
 
         if (prevProps.path !== this.props.path) {
-            try {
-                directoryManager.startWatching(this.props.path, async () => {
-                    this.setState(
-                        {
-                            directoryItems: await directoryManager.listDirectory(
-                                this.props.path,
-                                { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
-                        } as IDirectoryListState);
-                });
-            } catch {
-                throw new DirectoryError("Could not set watcher", this.props.path);
-            }
+            this.startWatcher();
         }
 
         const directoryItems = await directoryManager.listDirectory(
@@ -215,33 +193,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      * @returns a JSX element representing the directory list view
      */
     public render(): JSX.Element {
-        const items = this.nonHiddenDirectoryItems
-            .map((item, index) => {
-                const isSelectedItem = this.props.isSelectedPane &&
-                    !this.state.creatingNewItem && this.state.selectedIndex === index;
-
-                if (this.state.renamingItem && isSelectedItem) {
-                    const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
-                    const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
-
-                    return <InputItem
-                        thisItem={thisItem}
-                        otherItems={otherItems}
-                        sendUpRenameItem={this.renameItem}
-                        theme={this.props.theme} />;
-                } else {
-                    return <DirectoryItem
-                        key={item.path}
-                        model={item}
-                        isSelected={this.state.isFocused && isSelectedItem}
-                        isChosen={this.state.chosenItems.includes(item)}
-                        sendPathUp={this.goIn}
-                        sendSelectedItemUp={this.selectItem}
-                        sendDeletionUp={this.refreshAfterDelete}
-                        theme={this.props.theme}
-                        columnSizes={this.props.columnSizes} />;
-                }
-            });
+        const items = this.renderItems();
 
         return (
             <div className="DirectoryList">
@@ -273,6 +225,37 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
             </div>);
     }
 
+    /** Renders a list of directory items within the DirectoryList component. */
+    private renderItems(): JSX.Element[] {
+        return this.nonHiddenDirectoryItems
+            .map((item, index) => {
+                const isSelectedItem = this.props.isSelectedPane &&
+                    !this.state.creatingNewItem && this.state.selectedIndex === index;
+
+                if (this.state.renamingItem && isSelectedItem) {
+                    const thisItem = this.nonHiddenDirectoryItems.find(i => i.name === item.name);
+                    const otherItems = this.state.directoryItems.filter(i => i.name !== item.name);
+
+                    return <InputItem
+                        thisItem={thisItem}
+                        otherItems={otherItems}
+                        sendUpRenameItem={this.renameItem}
+                        theme={this.props.theme} />;
+                } else {
+                    return <DirectoryItem
+                        key={item.path}
+                        model={item}
+                        isSelected={this.state.isFocused && isSelectedItem}
+                        isChosen={this.state.chosenItems.includes(item)}
+                        sendPathUp={this.goIn}
+                        sendSelectedItemUp={this.selectItem}
+                        sendDeletionUp={this.refreshAfterDelete}
+                        theme={this.props.theme}
+                        columnSizes={this.props.columnSizes} />;
+                }
+            });
+    }
+
     /** Handles closing the GoTo modal. */
     @autobind
     private closeGoto() {
@@ -302,10 +285,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private async delete() {
-        const selectedItems = this.state.chosenItems.length > 0 ?
-            this.state.chosenItems : [this.nonHiddenDirectoryItems[this.state.selectedIndex]];
-
-        const chosenItems = selectedItems.length > 1 ? "the chosen items" : `'${selectedItems[0].name}'`;
+        const chosenItems = this.selectedItems.length > 1 ? "the chosen items" : `'${this.selectedItems[0].name}'`;
         const confirmDelete = this.props.settingsManager.settings.confirmation.requiredBeforeDeletion ?
             confirmationDialog(`Are you sure you want to permanently delete ${chosenItems}?`) :
             true;
@@ -313,8 +293,8 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         this.keysTrapper && Utils.autoFocus(this.keysTrapper);
 
         if (confirmDelete) {
-            Utils.trace(`Requesting to delete ${selectedItems.map(item => item.path).join(", ")}`);
-            await this.props.directoryManager.deleteItems(selectedItems);
+            Utils.trace(`Requesting to delete ${this.selectedItems.map(item => item.path).join(", ")}`);
+            await this.props.directoryManager.deleteItems(this.selectedItems);
 
             this.refreshAfterDelete();
             this.props.statusNotifier.notify("Deleted items");
@@ -554,6 +534,24 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
     @autobind
     private setUnFocused() {
         this.setState({ isFocused: false } as IDirectoryListState);
+    }
+
+    /** Starts watching the current directory for changes to update the list of directory items. */
+    private startWatcher() {
+        const { directoryManager, settingsManager } = this.props;
+
+        try {
+            directoryManager.startWatching(this.props.path, async () => {
+                this.setState(
+                    {
+                        directoryItems: await directoryManager.listDirectory(
+                            this.props.path,
+                            { hideUnixStyleHiddenItems: settingsManager.settings.windows.hideUnixStyleHiddenItems })
+                    } as IDirectoryListState);
+            });
+        } catch {
+            throw new DirectoryError("Could not set watcher", this.props.path);
+        }
     }
 
     /**

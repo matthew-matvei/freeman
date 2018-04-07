@@ -1,24 +1,17 @@
 import deepmerge from "deepmerge";
 import { inject, injectable } from "inversify";
-import path from "path";
-const electron = require("electron");
-const app = electron.app || electron.remote.app;
-
 import TYPES from "ioc/types";
 import { IDirectoryManager, IKeysManager } from "managers";
+import ConfigManager from "managers/ConfigManager";
 import { IKeyMap } from "models";
 import applicationKeys from "settings/internal/keys";
-import Utils from "Utils";
 
 /** Manages parsing key maps from application and user settings files. */
 @injectable()
-class KeysManager implements IKeysManager {
+class KeysManager extends ConfigManager implements IKeysManager {
 
     /** The internally held key map for this manager. */
     private _keyMap?: IKeyMap;
-
-    /** The directory manager used to read user-defined key map file. */
-    private directoryManager: IDirectoryManager;
 
     /**
      * Initialises an instance of the KeysManager class.
@@ -28,11 +21,7 @@ class KeysManager implements IKeysManager {
     public constructor(
         @inject(TYPES.IDirectoryManager) directoryManager: IDirectoryManager) {
 
-        if (!directoryManager) {
-            throw new ReferenceError("Directory manager must be defined");
-        }
-
-        this.directoryManager = directoryManager;
+        super(directoryManager);
     }
 
     /** @inheritDoc */
@@ -50,34 +39,11 @@ class KeysManager implements IKeysManager {
      * @returns a fully-formed key map object
      */
     private retrieve(): IKeyMap {
-        const userKeys = this.parseUserKeys();
+        const userKeys = this.parseFile<IKeyMap>("freeman.keys.json");
 
         return userKeys ?
             deepmerge(applicationKeys, userKeys, { arrayMerge: (destination: any[], source: any[]) => source }) :
             applicationKeys;
-    }
-
-    /**
-     * Parses user-specific key map settings file.
-     *
-     * @returns a fully-formed key map object, or null if no settings could
-     *      be read
-     */
-    private parseUserKeys(): IKeyMap | null {
-        const fileName = path.join(
-            app.getPath("userData"),
-            "freeman.keys.json");
-
-        try {
-            const userKeys = this.directoryManager.readFileSync(fileName);
-            Utils.trace(`Retrieving user keys from ${fileName}`);
-
-            return JSON.parse(userKeys);
-        } catch {
-            Utils.trace(`Cannot parse key map from ${fileName}`);
-
-            return null;
-        }
     }
 }
 

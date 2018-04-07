@@ -25,66 +25,54 @@ if (parsedArguments.verbose) {
 
 const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
 
-buildWindow();
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        Utils.trace("Shutting application down");
+        app.quit();
+    }
+});
 
-/** Handles constructing the main window. */
-function buildWindow() {
-    app.on("activate", () => {
-        if (mainWindow === null) {
-            Utils.trace("Building window");
-            buildWindow();
+app.on("ready", () => {
+    const windowOptions: Electron.BrowserWindowConstructorOptions = {
+        backgroundColor: "#272822",
+        disableAutoHideCursor: true,
+        height: 800,
+        minHeight: 400,
+        minWidth: 700,
+        show: false,
+        title: "FreeMAN",
+        width: 1400
+    };
+
+    mainWindow = new FreemanWindow(windowOptions);
+    settingsManager.settings.fullscreen && mainWindow.maximize();
+    const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
+    Menu.setApplicationMenu(menu);
+
+    mainWindow.on("closed", () => {
+        Utils.trace("Main window closing");
+        mainWindow = null;
+    });
+
+    mainWindow.on("unresponsive", () => {
+        Utils.trace("Main window unresponsive");
+        const killIndex = 0;
+        const cancelIndex = 1;
+        const kill = dialog.showMessageBox(mainWindow!, {
+            buttons: ["OK", "Wait"],
+            cancelId: cancelIndex,
+            defaultId: killIndex,
+            message: "Would you like to kill the process?",
+            title: "FreeMAN unresponsive",
+            type: "warning"
+        });
+
+        if (kill === killIndex) {
+            app.exit(1);
         }
     });
 
-    app.on("window-all-closed", () => {
-        if (process.platform !== "darwin") {
-            Utils.trace("Shutting application down");
-            app.quit();
-        }
+    ipcMain.on("reload-request", () => {
+        mainWindow && mainWindow.reload();
     });
-
-    app.on("ready", () => {
-        const windowOptions: Electron.BrowserWindowConstructorOptions = {
-            backgroundColor: "#272822",
-            disableAutoHideCursor: true,
-            height: 800,
-            minHeight: 400,
-            minWidth: 700,
-            show: false,
-            title: "FreeMAN",
-            width: 1400
-        };
-
-        mainWindow = new FreemanWindow(windowOptions);
-        settingsManager.settings.fullscreen && mainWindow.maximize();
-        const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
-        Menu.setApplicationMenu(menu);
-
-        mainWindow.on("closed", () => {
-            Utils.trace("Main window closing");
-            mainWindow = null;
-        });
-
-        mainWindow.on("unresponsive", () => {
-            Utils.trace("Main window unresponsive");
-            const killIndex = 0;
-            const cancelIndex = 1;
-            const kill = dialog.showMessageBox(mainWindow!, {
-                buttons: ["OK", "Wait"],
-                cancelId: cancelIndex,
-                defaultId: killIndex,
-                message: "Would you like to kill the process?",
-                title: "FreeMAN unresponsive",
-                type: "warning"
-            });
-
-            if (kill === killIndex) {
-                app.exit(1);
-            }
-        });
-
-        ipcMain.on("reload-request", () => {
-            mainWindow && mainWindow.reload();
-        });
-    });
-}
+});
