@@ -36,10 +36,11 @@ This pull request closes #*{issue number}*
 
 ## Documentation
 
-<!--- If no documentation changes were required, remove the checklist / section -->
+<!--- If no documentation / config changes were required, remove the checklist / section -->
 
 - [ ] Added / updated Markdown documentation (e.g. `README.md`)
 - [ ] Added / updated JSDoc documentation
+- [ ] Updated example config files (e.g. `freeman.settings.json`)
 
 ## Screenshots
 
