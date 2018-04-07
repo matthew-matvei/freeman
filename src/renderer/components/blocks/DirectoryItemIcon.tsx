@@ -1,6 +1,6 @@
 import fileIcons from "file-icons-js";
 import * as React from "react";
-import { FaFileO, FaFolderO } from "react-icons/lib/fa";
+import { FaFileO, FaFolderO, FaLock } from "react-icons/lib/fa";
 
 import LoggedError from "errors/LoggedError";
 import { IDirectoryItemIconProps } from "props/blocks";
@@ -22,6 +22,10 @@ class DirectoryItemIcon extends React.PureComponent<IDirectoryItemIconProps> {
      */
     public render(): JSX.Element {
         const { directoryItem, directoryItemType, theme } = this.props;
+
+        if (directoryItem && !directoryItem.accessible) {
+            return <FaLock style={this.iconStyles} />;
+        }
 
         if (directoryItem && directoryItem.isDirectory || directoryItemType === "folder") {
             return <FaFolderO style={this.iconStyles} color={theme.directoryItem.directoryIconColour} />;
