@@ -72,7 +72,15 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
         const shownItems = Utils.fuzzySearchItems(this.state.searchTerm, items);
         shownItems.unshift(this.state.currentDirectory);
 
-        return shownItems.map(item => <li key={item} value={item}>{item}</li>);
+        return this.state.directoryItems
+            .filter(item => shownItems.includes(item.path))
+            .map(item => {
+                const itemStyles: React.CSSProperties = {
+                    color: !item.accessible && this.props.theme.directoryItem.inaccessibleColour
+                };
+
+                return <li key={item.path} value={item.path} style={itemStyles}>{item.path}</li>;
+            });
     }
 
     /**
