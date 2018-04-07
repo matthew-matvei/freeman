@@ -51,19 +51,28 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * @returns a JSX element representing the goto view
      */
     public render(): JSX.Element {
-        const items = this.state.directoryItems.map(item => item.path);
-        const shownItems = Utils.fuzzySearchItems(this.state.searchTerm, items);
-        shownItems.unshift(this.state.currentDirectory);
-
         return <QuickSelect
             isOpen={this.props.isOpen}
             onClose={this.props.onClose}
-            initialItems={shownItems}
+            initialItems={this.renderItems()}
             onKeyUp={this.handleKeyUp}
             onSelect={this.handleSelect}
             inputValue={this.state.quickSelectValue}
             onUpdate={this.handleUpdate}
             theme={this.props.theme} />;
+    }
+
+    /**
+     * Renders the items passed to the Goto's QuickSelect.
+     *
+     * @returns a list of rendered items to be passed to the QuickSelect
+     */
+    private renderItems(): JSX.Element[] {
+        const items = this.state.directoryItems.map(item => item.path);
+        const shownItems = Utils.fuzzySearchItems(this.state.searchTerm, items);
+        shownItems.unshift(this.state.currentDirectory);
+
+        return shownItems.map(item => <li key={item} value={item}>{item}</li>);
     }
 
     /**
