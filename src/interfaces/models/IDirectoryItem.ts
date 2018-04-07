@@ -7,11 +7,14 @@ interface IDirectoryItem {
     /** The display name of the directory item. */
     name: string;
 
-    /** Whether the directory item is a directory. */
+    /** Whether the directory item is a directory (i.e., a 'folder'). */
     isDirectory: boolean;
 
     /** Whether the directory item is hidden. */
     isHidden: boolean;
+
+    /** Whether the directory item can be accessed by the user, if it's a folder. */
+    accessible?: boolean;
 
     /** The size (in bytes) of the file, if any. */
     size?: number;

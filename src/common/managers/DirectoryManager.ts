@@ -22,6 +22,7 @@ const renameAsync = promisify(fs.rename);
 const mkdirAsync = promisify(fs.mkdir);
 const copyFileAsync = promisify(ncp.ncp);
 const writeFileAsync = promisify(fs.writeFile);
+const accessAsync = promisify(fs.access);
 
 /** Provides methods for reading, writing and creating files and folders. */
 @injectable()
@@ -30,8 +31,14 @@ class DirectoryManager implements IDirectoryManager {
     /** A watcher that observes changes to a directory. */
     private watcher?: fs.FSWatcher;
 
+    /** A manager that handles directory item attributes on Windows. */
     private attributesManager: IAttributesManager;
 
+    /**
+     * Initialises a new instance of the DirectoryManager class.
+     *
+     * @param attributesManager - a manager that handles directory item attributes on Windows
+     */
     public constructor(@inject(TYPES.IAttributesManager) attributesManager: IAttributesManager) {
         this.attributesManager = attributesManager;
     }
@@ -59,11 +66,12 @@ class DirectoryManager implements IDirectoryManager {
             throw new DirectoryError("Could not list items in directory", filePath);
         }
 
-        const filePromises = fileList.map(async fileName => {
+        const files = await Promise.all(fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
             const fileStats = await lstatAsync(fullPath);
 
             return {
+                accessible: await DirectoryManager.isAccessible(fullPath),
                 isDirectory: fileStats.isDirectory(),
                 isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems),
                 lastModified: fileStats.mtime,
@@ -71,9 +79,7 @@ class DirectoryManager implements IDirectoryManager {
                 path: fullPath,
                 size: !fileStats.isDirectory() && fileStats.size || undefined
             } as IDirectoryItem;
-        });
-
-        const files = await Promise.all(filePromises);
+        }));
 
         return sort(files).filter(filterCondition);
     }
@@ -215,6 +221,23 @@ class DirectoryManager implements IDirectoryManager {
                 pathToItem,
                 error);
 
+            return false;
+        }
+    }
+
+    /**
+     * Returns whether the user has at least read access to the directory at pathToItem.
+     *
+     * @param pathToItem the path to test accessibility
+     *
+     * @returns whether the user has at least read access to the directory at pathToItem
+     */
+    private static async isAccessible(pathToItem: string): Promise<boolean> {
+        try {
+            await accessAsync(pathToItem, fs.constants.R_OK);
+
+            return true;
+        } catch {
             return false;
         }
     }
