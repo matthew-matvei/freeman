@@ -68,12 +68,23 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * @returns a list of rendered items to be passed to the QuickSelect
      */
     private renderItems(): JSX.Element[] {
-        const items = this.state.directoryItems.map(item => item.path);
-        const shownItems = Utils.fuzzySearchItems(this.state.searchTerm, items);
-        shownItems.unshift(this.state.currentDirectory);
+        const shownItems = Utils.fuzzySearchItems<IDirectoryItem>(
+            this.state.searchTerm,
+            this.state.directoryItems,
+            item => item.path);
 
-        return this.state.directoryItems
-            .filter(item => shownItems.includes(item.path))
+        const defaultItem: IDirectoryItem = {
+            accessible: true,
+            isDirectory: true,
+            isHidden: false,
+            lastModified: new Date(),
+            name: path.basename(this.state.currentDirectory),
+            path: this.state.currentDirectory
+        };
+
+        shownItems.unshift(defaultItem);
+
+        return shownItems
             .map(item => {
                 const itemStyles: React.CSSProperties = {
                     color: !item.accessible && this.props.theme.directoryItem.inaccessibleColour

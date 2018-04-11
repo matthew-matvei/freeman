@@ -118,7 +118,7 @@ describe("<Goto />", () => {
         const quickSelect = wrapper.findWhere(n => n.name() === "QuickSelect");
         const quickSelectProps = quickSelect.instance().props as IQuickSelectProps;
 
-        expect(quickSelectProps.initialItems[0]).to.equal(state.currentDirectory);
+        expect(quickSelectProps.initialItems[0].props.value).to.equal(state.currentDirectory);
     });
 
     it("updating 'items' re-renders the component once", async () => {
