@@ -17,6 +17,7 @@ describe("DirectoryManager's", () => {
     let fakeDirPath: string;
     let fakeFolder: string;
     let fakeFolder2: string;
+    let inaccessibleFolder: string;
     let fakeFile: string;
     let fakeFile2: string;
     let newFileName: string;
@@ -35,6 +36,7 @@ describe("DirectoryManager's", () => {
         fakeDirPath = "/path/to/fake/dir";
         fakeFolder = "fakeFolder";
         fakeFolder2 = "fakeFolder2";
+        inaccessibleFolder = "inaccessibleFolder";
         fakeFile = "fakeFile.txt";
         fakeFile2 = "fakeFile2.txt";
         newFileName = "newItem.txt";
@@ -59,7 +61,11 @@ describe("DirectoryManager's", () => {
                 "fakeFile.txt": "With fake news",
                 "fakeFile2.txt": "And fake media",
                 fakeFolder: {},
-                fakeFolder2: {}
+                fakeFolder2: {},
+                inaccessibleFolder: mock.directory({
+                    items: {},
+                    mode: 0
+                })
             }
         });
 
@@ -156,7 +162,14 @@ describe("DirectoryManager's", () => {
                 (!item.isDirectory && item.size !== undefined))).to.be.true;
         });
 
-        it("returns accessibility for a given item");
+        it("returns accessibility for a given item", async () => {
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
+            const accessibleDirectoryItem = result.find(item => item.name === fakeFolder)!;
+            const inaccessibleDirectoryItem = result.find(item => item.name === inaccessibleFolder)!;
+
+            expect(accessibleDirectoryItem.accessible).to.be.true;
+            expect(inaccessibleDirectoryItem.accessible).to.be.false;
+        });
     });
 
     describe("createItem method", () => {
