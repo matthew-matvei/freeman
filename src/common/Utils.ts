@@ -26,6 +26,7 @@ export default {
      *
      * @param pathToFind the path whose basename is to be found within items
      * @param items an array of paths
+     * @param translate a function to translate each given item into a searchable string
      *
      * @returns all items in which pathToFind is fuzzy found
      */
