@@ -68,7 +68,19 @@ class DirectoryManager implements IDirectoryManager {
 
         const files = await Promise.all(fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
-            const fileStats = await lstatAsync(fullPath);
+            let fileStats: fs.Stats;
+            
+            try {
+                fileStats = await lstatAsync(fullPath);
+            } catch {
+                return {
+                    accessible: false,
+                    isDirectory: true,
+                    isHidden: false,
+                    name: fileName,
+                    path: fullPath
+                } as IDirectoryItem;
+            }
 
             return {
                 accessible: await DirectoryManager.isAccessible(fullPath),
