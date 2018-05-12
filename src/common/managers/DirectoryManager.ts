@@ -76,7 +76,7 @@ class DirectoryManager implements IDirectoryManager {
                 return {
                     accessible: false,
                     isDirectory: true,
-                    isHidden: false,
+                    isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems),
                     name: fileName,
                     path: fullPath
                 } as IDirectoryItem;
