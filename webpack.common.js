@@ -7,6 +7,7 @@ const extractSass = new ExtractTextPlugin({ filename: "[name].css" });
 const commonConfig = {
     output: { path: path.resolve(__dirname, "app"), filename: "[name].js" },
     devtool: "cheap-module-eval-source-map",
+    mode: "development",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"],
         modules: [
@@ -19,7 +20,7 @@ const commonConfig = {
         ]
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,

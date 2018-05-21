@@ -6,6 +6,7 @@ const common = require("./webpack.common");
 
 const commonProduction = {
     devtool: false,
+    mode: "production",
     plugins: [
         new UglifyJsPlugin({ sourceMap: true }),
         new webpack.DefinePlugin({

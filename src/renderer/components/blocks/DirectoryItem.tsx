@@ -5,7 +5,7 @@ import moment from "moment";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 
-import { IHandlers } from "models";
+import { IDirectoryItemStyles, IHandlers } from "models";
 import { IDirectoryItemProps } from "props/blocks";
 import Utils from "Utils";
 
@@ -41,41 +41,20 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
     public render(): JSX.Element {
         const { isSelected, model } = this.props;
         const selectedClass = isSelected ? "selected" : "";
+
         const {
-            fileColour,
-            directoryColour,
-            backgroundColour,
-            chosenColour,
-            selectedColour
-        } = this.props.theme.directoryItem;
-
-        const backgroundColourStyle: React.CSSProperties = {
-            backgroundColor: isSelected ? selectedColour : backgroundColour
-        };
-
-        const nameColumnStyle: React.CSSProperties = {
-            color: (this.props.isChosen ? chosenColour :
-                (!model.isDirectory && fileColour) ||
-                (model.isDirectory && directoryColour)),
-            width: `${this.props.columnSizes.name}px`
-        };
-
-        const sizeColumnStyle: React.CSSProperties = {
-            ...nameColumnStyle,
-            width: `${this.props.columnSizes.size}px`
-        };
-
-        const lastModifiedColumnStyle: React.CSSProperties = {
-            ...nameColumnStyle,
-            width: `${this.props.columnSizes.lastModified}px`
-        };
+            backgroundStyle,
+            nameColumnStyle,
+            sizeColumnStyle,
+            lastModifiedColumnStyle
+        } = this.itemStyles;
 
         return <HotKeys
             handlers={this.handlers}
             ref={component => component && isSelected && Utils.autoFocus(component)}>
             <div
                 className={`Item DirectoryItem ${selectedClass}`}
-                style={backgroundColourStyle}>
+                style={backgroundStyle}>
                 <DirectoryItemIcon directoryItem={this.props.model} theme={this.props.theme} />
                 <button
                     style={nameColumnStyle}
@@ -99,6 +78,46 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                 </button>
             </div>
         </HotKeys>;
+    }
+
+    /** Gets the directory item styles based on the component's current props. */
+    private get itemStyles(): IDirectoryItemStyles {
+        const { isSelected, model } = this.props;
+        const {
+            fileColour,
+            directoryColour,
+            backgroundColour,
+            chosenColour,
+            selectedColour
+        } = this.props.theme.directoryItem;
+
+        const backgroundStyle: React.CSSProperties = {
+            backgroundColor: isSelected ? selectedColour : backgroundColour
+        };
+
+        const nameColumnStyle: React.CSSProperties = {
+            color: (this.props.isChosen ? chosenColour :
+                (!model.isDirectory && fileColour) ||
+                (model.isDirectory && directoryColour)),
+            width: `${this.props.columnSizes.name}px`
+        };
+
+        const sizeColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: `${this.props.columnSizes.size}px`
+        };
+
+        const lastModifiedColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: `${this.props.columnSizes.lastModified}px`
+        };
+
+        return {
+            backgroundStyle,
+            lastModifiedColumnStyle,
+            nameColumnStyle,
+            sizeColumnStyle
+        };
     }
 
     /** Handles sending up the directory's path to the parent component. */

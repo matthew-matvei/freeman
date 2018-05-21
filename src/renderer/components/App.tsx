@@ -28,7 +28,7 @@ class App extends React.Component<IAppProps, IAppState> {
     private statusNotifier: IStatusNotifier;
 
     /** A timer used for the status message. */
-    private statusMessageTimeout?: NodeJS.Timer;
+    private statusMessageTimeout?: NodeJS.Timer | number;
 
     /**
      * Defines how the main app component is rendered.
@@ -144,7 +144,7 @@ class App extends React.Component<IAppProps, IAppState> {
             status.chosenCount = payload as number;
         } else {
             status.message = payload as string;
-            this.statusMessageTimeout && clearTimeout(this.statusMessageTimeout);
+            this.statusMessageTimeout && clearTimeout(this.statusMessageTimeout as NodeJS.Timer);
             this.statusMessageTimeout = setTimeout(() => {
                 status.message = "";
                 this.setState({ status } as IAppState);
