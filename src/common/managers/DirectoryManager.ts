@@ -1,11 +1,9 @@
 import log from "electron-log";
 import fs from "fs";
 import { inject, injectable } from "inversify";
-import ncp from "ncp";
 import os from "os";
 import path from "path";
 import trash from "trash";
-import { promisify } from "util";
 
 import DirectoryError from "errors/DirectoryError";
 import TYPES from "ioc/types";
@@ -14,15 +12,7 @@ import { IDirectoryItem, IListDirectoryOptions } from "models";
 import { DirectorySorter } from "objects";
 import { ItemType } from "types";
 import Utils from "Utils";
-
-const lstatAsync = promisify(fs.lstat);
-const rmdirAsync = promisify(fs.rmdir);
-const unlinkAsync = promisify(fs.unlink);
-const renameAsync = promisify(fs.rename);
-const mkdirAsync = promisify(fs.mkdir);
-const copyFileAsync = promisify(ncp.ncp);
-const writeFileAsync = promisify(fs.writeFile);
-const accessAsync = promisify(fs.access);
+import { IFileSystemWrapper } from "wrappers";
 
 /** Provides methods for reading, writing and creating files and folders. */
 @injectable()
@@ -31,15 +21,23 @@ class DirectoryManager implements IDirectoryManager {
     /** A watcher that observes changes to a directory. */
     private watcher?: fs.FSWatcher;
 
+    /** A wrapper that abstracts file system operations. */
+    private fileSystemWrapper: IFileSystemWrapper;
+
     /** A manager that handles directory item attributes on Windows. */
     private attributesManager: IAttributesManager;
 
     /**
      * Initialises a new instance of the DirectoryManager class.
      *
+     * @param fileSystemWrapper - a wrapper that abstracts file system operations
      * @param attributesManager - a manager that handles directory item attributes on Windows
      */
-    public constructor(@inject(TYPES.IAttributesManager) attributesManager: IAttributesManager) {
+    public constructor(
+        @inject(TYPES.IFileSystemWrapper) fileSystemWrapper: IFileSystemWrapper,
+        @inject(TYPES.IAttributesManager) attributesManager: IAttributesManager
+    ) {
+        this.fileSystemWrapper = fileSystemWrapper;
         this.attributesManager = attributesManager;
     }
 
@@ -49,7 +47,7 @@ class DirectoryManager implements IDirectoryManager {
         options: IListDirectoryOptions
     ): Promise<IDirectoryItem[]> {
 
-        if (!(await DirectoryManager.isDirectory(filePath))) {
+        if (!(await this.isDirectory(filePath))) {
             throw new DirectoryError("Cannot call listDirectory on a non-directory item", filePath);
         }
 
@@ -69,9 +67,9 @@ class DirectoryManager implements IDirectoryManager {
         const files = await Promise.all(fileList.map(async fileName => {
             const fullPath = path.join(filePath, fileName);
             let fileStats: fs.Stats;
-            
+
             try {
-                fileStats = await lstatAsync(fullPath);
+                fileStats = await this.fileSystemWrapper.lstatAsync(fullPath);
             } catch {
                 return {
                     accessible: false,
@@ -83,7 +81,7 @@ class DirectoryManager implements IDirectoryManager {
             }
 
             return {
-                accessible: await DirectoryManager.isAccessible(fullPath),
+                accessible: await this.isAccessible(fullPath),
                 isDirectory: fileStats.isDirectory(),
                 isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems),
                 lastModified: fileStats.mtime,
@@ -102,13 +100,13 @@ class DirectoryManager implements IDirectoryManager {
 
         if (itemType === "folder") {
             try {
-                await mkdirAsync(fullItemName);
+                await this.fileSystemWrapper.mkdirAsync(fullItemName);
             } catch {
                 throw new DirectoryError("Could not create directory", fullItemName);
             }
         } else {
             try {
-                await writeFileAsync(fullItemName, "");
+                await this.fileSystemWrapper.writeFileAsync(fullItemName, "");
             } catch {
                 throw new DirectoryError("Could not create file", fullItemName);
             }
@@ -125,7 +123,7 @@ class DirectoryManager implements IDirectoryManager {
         const newNameFull = path.join(itemPath, newName);
 
         try {
-            await renameAsync(oldNameFull, newNameFull);
+            await this.fileSystemWrapper.renameAsync(oldNameFull, newNameFull);
         } catch {
             throw new DirectoryError("Could not rename item", oldNameFull, newNameFull);
         }
@@ -134,7 +132,7 @@ class DirectoryManager implements IDirectoryManager {
     /** @inheritDoc */
     public async deleteItems(itemsToDelete: IDirectoryItem[]): Promise<void> {
         const itemDeletions = itemsToDelete.map(async item => {
-            await DirectoryManager.deleteItem(item.path, Utils.parseItemType(item));
+            await this.deleteItem(item.path, Utils.parseItemType(item));
         });
 
         await Promise.all(itemDeletions);
@@ -152,7 +150,7 @@ class DirectoryManager implements IDirectoryManager {
     /** @inheritDoc */
     public async copyItems(itemsToCopy: IDirectoryItem[], destinationDirectory: string): Promise<void> {
         const itemCopies = itemsToCopy.map(async item => {
-            await DirectoryManager.copyItem(item.path, destinationDirectory);
+            await this.copyItem(item.path, destinationDirectory);
         });
 
         await Promise.all(itemCopies);
@@ -161,7 +159,7 @@ class DirectoryManager implements IDirectoryManager {
     /** @inheritDoc */
     public async moveItems(itemsToMove: IDirectoryItem[], destinationDirectory: string): Promise<void> {
         const itemMoves = itemsToMove.map(async item => {
-            await DirectoryManager.moveItem(item.path, destinationDirectory, Utils.parseItemType(item));
+            await this.moveItem(item.path, destinationDirectory, Utils.parseItemType(item));
         });
 
         await Promise.all(itemMoves);
@@ -244,9 +242,9 @@ class DirectoryManager implements IDirectoryManager {
      *
      * @returns whether the user has at least read access to the directory at pathToItem
      */
-    private static async isAccessible(pathToItem: string): Promise<boolean> {
+    private async isAccessible(pathToItem: string): Promise<boolean> {
         try {
-            await accessAsync(pathToItem, fs.constants.R_OK);
+            await this.fileSystemWrapper.accessAsync(pathToItem, fs.constants.R_OK);
 
             return true;
         } catch {
@@ -260,12 +258,12 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath the full path to the source item
      * @param destinationDirectory the directory to copy the item to
      */
-    private static async copyItem(itemPath: string, destinationDirectory: string): Promise<void> {
+    private async copyItem(itemPath: string, destinationDirectory: string): Promise<void> {
         const fileName = path.basename(itemPath);
         const destinationFileName = path.join(destinationDirectory, fileName);
 
         try {
-            await copyFileAsync(itemPath, destinationFileName);
+            await this.fileSystemWrapper.copyFileAsync(itemPath, destinationFileName);
         } catch {
             throw new DirectoryError("Failed to copy item", itemPath, destinationFileName);
         }
@@ -279,10 +277,10 @@ class DirectoryManager implements IDirectoryManager {
      * @param destinationDirectory the directory to move the item to
      * @param itemType the type of the source item
      */
-    private static async moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void> {
+    private async moveItem(itemPath: string, destinationDirectory: string, itemType: ItemType): Promise<void> {
         try {
-            await DirectoryManager.copyItem(itemPath, destinationDirectory);
-            await DirectoryManager.deleteItem(itemPath, itemType);
+            await this.copyItem(itemPath, destinationDirectory);
+            await this.deleteItem(itemPath, itemType);
         } catch {
             throw new DirectoryError("Failed to copy item", itemPath, destinationDirectory);
         }
@@ -294,20 +292,33 @@ class DirectoryManager implements IDirectoryManager {
      * @param itemPath the full path to the item to be deleted
      * @param itemType the type of the item to be deleted
      */
-    private static async deleteItem(itemPath: string, itemType: ItemType): Promise<void> {
+    private async deleteItem(itemPath: string, itemType: ItemType): Promise<void> {
         if (itemType === "folder") {
             try {
-                await rmdirAsync(itemPath);
+                await this.fileSystemWrapper.rmdirAsync(itemPath);
             } catch {
                 throw new DirectoryError("Cannot remove folder", itemPath);
             }
         } else {
             try {
-                await unlinkAsync(itemPath);
+                await this.fileSystemWrapper.unlinkAsync(itemPath);
             } catch {
                 throw new DirectoryError("Cannot remove file", itemPath);
             }
         }
+    }
+
+    /**
+     * Returns whether the file at the given path is a directory.
+     *
+     * @param pathToItem the path to the file
+     *
+     * @returns whether the file is a directory
+     */
+    private async isDirectory(pathToItem: string): Promise<boolean> {
+        const stats = await this.fileSystemWrapper.lstatAsync(pathToItem);
+
+        return stats.isDirectory();
     }
 
     /**
@@ -321,19 +332,6 @@ class DirectoryManager implements IDirectoryManager {
         } catch {
             throw new DirectoryError("Could not send item to trash", itemPath);
         }
-    }
-
-    /**
-     * Returns whether the file at the given path is a directory.
-     *
-     * @param pathToItem the path to the file
-     *
-     * @returns whether the file is a directory
-     */
-    private static async isDirectory(pathToItem: string): Promise<boolean> {
-        const stats = await lstatAsync(pathToItem);
-
-        return stats.isDirectory();
     }
 
     /**

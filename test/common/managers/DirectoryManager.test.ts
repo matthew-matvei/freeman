@@ -10,6 +10,7 @@ import { IMock, It, Mock } from "typemoq";
 import DirectoryError from "errors/DirectoryError";
 import { DirectoryManager, IAttributesManager, IDirectoryManager } from "managers";
 import { IAttributes, IDirectoryItem, IListDirectoryOptions } from "models";
+import { IFileSystemWrapper } from "wrappers";
 
 chai.use(chaiAsPromised);
 
@@ -23,6 +24,7 @@ describe("DirectoryManager's", () => {
     let newFileName: string;
     let newFolderName: string;
 
+    let fileSystemWrapper: IMock<IFileSystemWrapper>;
     let attributesManager: IMock<IAttributesManager>;
     let directoryManager: IDirectoryManager;
     let options: IListDirectoryOptions;
@@ -42,13 +44,14 @@ describe("DirectoryManager's", () => {
         newFileName = "newItem.txt";
         newFolderName = "newItem";
 
+        fileSystemWrapper = Mock.ofType<IFileSystemWrapper>();
         attributesManager = Mock.ofType<IAttributesManager>();
         const attributes: IAttributes = {
             hidden: false
         };
         attributesManager.setup(async am => am.getAttributesAsync(It.isAnyString()))
             .returns(Sinon.stub().resolves(attributes));
-        directoryManager = new DirectoryManager(attributesManager.object);
+        directoryManager = new DirectoryManager(fileSystemWrapper.object, attributesManager.object);
         options = {
             hideUnixStyleHiddenItems: false
         };
