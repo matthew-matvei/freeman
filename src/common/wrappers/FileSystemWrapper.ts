@@ -13,9 +13,10 @@ class FileSystemWrapper implements IFileSystemWrapper {
     public unlinkAsync = promisify(fs.unlink);
     public renameAsync = promisify(fs.rename);
     public mkdirAsync = promisify(fs.mkdir);
-    public copyFileAsync = promisify(ncp.ncp);
+    public copyAsync = promisify(ncp.ncp);
     public writeFileAsync = promisify(fs.writeFile);
     public accessAsync = promisify(fs.access);
+    public readdirAsync = promisify(fs.readdir);
 }
 
 export default FileSystemWrapper;

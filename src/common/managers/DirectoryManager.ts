@@ -59,7 +59,7 @@ class DirectoryManager implements IDirectoryManager {
         let fileList;
 
         try {
-            fileList = await DirectoryManager.getDirectoryPaths(filePath);
+            fileList = await this.fileSystemWrapper.readdirAsync(filePath);
         } catch {
             throw new DirectoryError("Could not list items in directory", filePath);
         }
@@ -263,7 +263,7 @@ class DirectoryManager implements IDirectoryManager {
         const destinationFileName = path.join(destinationDirectory, fileName);
 
         try {
-            await this.fileSystemWrapper.copyFileAsync(itemPath, destinationFileName);
+            await this.fileSystemWrapper.copyAsync(itemPath, destinationFileName);
         } catch {
             throw new DirectoryError("Failed to copy item", itemPath, destinationFileName);
         }
@@ -332,25 +332,6 @@ class DirectoryManager implements IDirectoryManager {
         } catch {
             throw new DirectoryError("Could not send item to trash", itemPath);
         }
-    }
-
-    /**
-     * Returns a list of directory item paths in the given filePath.
-     *
-     * @param filePath the path to the directory to get a list of files for
-     *
-     * @returns a list of directory item paths in the given filePath
-     */
-    private static async getDirectoryPaths(filePath: string): Promise<string[]> {
-        return new Promise<string[]>((resolve, reject) => {
-            fs.readdir(filePath, (error, paths) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(paths);
-                }
-            });
-        });
     }
 }
 

@@ -1,11 +1,10 @@
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import fs from "fs";
-import mock from "mock-fs";
 import path from "path";
 import "reflect-metadata";
 import Sinon, { SinonSandbox } from "sinon";
-import { IMock, It, Mock } from "typemoq";
+import { IMock, It, Mock, Times } from "typemoq";
 
 import DirectoryError from "errors/DirectoryError";
 import { DirectoryManager, IAttributesManager, IDirectoryManager } from "managers";
@@ -58,20 +57,6 @@ describe("DirectoryManager's", () => {
     });
 
     beforeEach(() => {
-        mock({
-            "/path/to/fake/dir": {
-                anotherFakeFolder: {},
-                "fakeFile.txt": "With fake news",
-                "fakeFile2.txt": "And fake media",
-                fakeFolder: {},
-                fakeFolder2: {},
-                inaccessibleFolder: mock.directory({
-                    items: {},
-                    mode: 0
-                })
-            }
-        });
-
         testFile = {
             accessible: true,
             isDirectory: false,
@@ -109,7 +94,9 @@ describe("DirectoryManager's", () => {
         };
     });
 
-    afterEach(mock.restore);
+    afterEach(() => {
+        fileSystemWrapper.reset();
+    });
 
     describe("listDirectory method", () => {
         let sandbox: SinonSandbox;
@@ -124,25 +111,52 @@ describe("DirectoryManager's", () => {
 
         it("throws a DirectoryError if given path is not a directory", async () => {
             const nonDirectory = path.join(fakeDirPath, "fakeFile.txt");
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await {
+                    isDirectory: () => false
+                } as fs.Stats);
 
             expect(directoryManager.listDirectory(nonDirectory, options)).to.eventually.be.rejectedWith(DirectoryError);
         });
 
         it("returns an empty list when pointed to empty folder", async () => {
             const emptyFolder = path.join(fakeDirPath, fakeFolder);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString())).returns(async () => []);
+
             const result = await directoryManager.listDirectory(emptyFolder, options);
 
             expect(result).to.be.empty;
         });
 
         it("can return a child file of the given path", async () => {
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString())).returns(async () => [fakeFile]);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .returns(async () => await {
+                    isDirectory: () => false,
+                    mtime: new Date(),
+                    size: 1024
+                } as fs.Stats);
+
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
-            expect(result.some(item => item.name === "fakeFile.txt" &&
+            expect(result.some(item => item.name === fakeFile &&
                 !item.isDirectory)).to.be.true;
         });
 
         it("can return a child folder of the given path", async () => {
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString())).returns(async () => [fakeFolder]);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .returns(async () => await {
+                    isDirectory: () => true,
+                    mtime: new Date()
+                } as fs.Stats);
+
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.some(item => item.name === fakeFolder &&
@@ -150,6 +164,10 @@ describe("DirectoryManager's", () => {
         });
 
         it("returns false if attributes manager throws getting file attributes", async () => {
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString()))
+                .returns(async () => [fakeFile, fakeFolder]);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
             attributesManager.setup(async am => am.getAttributesAsync(It.isAnyString()))
                 .returns(sandbox.stub().rejects());
 
@@ -159,6 +177,17 @@ describe("DirectoryManager's", () => {
         });
 
         it("returns a size for a given item if it is not a directory", async () => {
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString()))
+                .returns(async () => [fakeFile]);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .returns(async () => await {
+                    isDirectory: () => false,
+                    mtime: new Date(),
+                    size: 1024
+                } as fs.Stats);
+
             const result = await directoryManager.listDirectory(fakeDirPath, options);
 
             expect(result.every(item => (item.isDirectory && item.size === undefined) ||
@@ -166,6 +195,28 @@ describe("DirectoryManager's", () => {
         });
 
         it("returns accessibility for a given item", async () => {
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString()))
+                .returns(async () => [fakeFolder, inaccessibleFolder]);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .returns(async () => await {
+                    isDirectory: () => false,
+                    mtime: new Date(),
+                    size: 1024
+                } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .returns(async () => await {
+                    isDirectory: () => false,
+                    mtime: new Date(),
+                    size: 1024
+                } as fs.Stats);
+            fileSystemWrapper.setup(fsw =>
+                fsw.accessAsync(
+                    It.is<string>(pathToItem => pathToItem.includes(inaccessibleFolder)),
+                    fs.constants.R_OK))
+                .throws(new Error());
+
             const result = await directoryManager.listDirectory(fakeDirPath, options);
             const accessibleDirectoryItem = result.find(item => item.name === fakeFolder)!;
             const inaccessibleDirectoryItem = result.find(item => item.name === inaccessibleFolder)!;
@@ -177,19 +228,22 @@ describe("DirectoryManager's", () => {
 
     describe("createItem method", () => {
         it("can create a file with given name at given path", async () => {
-            return directoryManager.createItem(newFileName, fakeDirPath, "file").then(resolved => {
-                const newFile = fs.lstatSync(path.resolve(fakeDirPath, newFileName));
+            await directoryManager.createItem(newFileName, fakeDirPath, "file");
 
-                expect(newFile.isFile()).to.be.true;
-            });
+            fileSystemWrapper.verify(
+                fsw => fsw.writeFileAsync(
+                    It.is<string>(fullPath => fullPath === path.join(fakeDirPath, newFileName)),
+                    ""),
+                Times.once());
         });
 
         it("can create a folder with given name at given path", async () => {
-            return directoryManager.createItem(newFolderName, fakeDirPath, "folder").then(resolved => {
-                const newFolder = fs.lstatSync(path.resolve(fakeDirPath, newFolderName));
+            await directoryManager.createItem(newFolderName, fakeDirPath, "folder");
 
-                expect(newFolder.isDirectory()).to.be.true;
-            });
+            fileSystemWrapper.verify(
+                fsw => fsw.mkdirAsync(
+                    It.is<string>(fullPath => fullPath === path.join(fakeDirPath, newFolderName))
+                ), Times.once());
         });
 
         it("rejects if given an invalid path", () => {
@@ -202,31 +256,19 @@ describe("DirectoryManager's", () => {
         it("can rename a file", async () => {
             const newName = "renamedFakeFile.txt";
 
-            return directoryManager.renameItem(fakeFile, newName, fakeDirPath).then(resolved => {
-                const renamedFile = fs.lstatSync(path.join(fakeDirPath, newName));
+            await directoryManager.renameItem(fakeFile, newName, fakeDirPath);
 
-                expect(renamedFile).to.not.be.undefined;
-            });
-        });
+            fileSystemWrapper.verify(
+                fsw => fsw.renameAsync(
+                    It.is<string>(fullOldName => fullOldName === path.join(fakeDirPath, fakeFile)),
+                    It.is<string>(fullNewName => fullNewName === path.join(fakeDirPath, newName))), Times.once());
 
-        it("can rename a folder", async () => {
-            const newName = "renamedFakeFolder";
-
-            return directoryManager.renameItem(fakeFolder, newName, fakeDirPath).then(resolved => {
-                const renamedFolder = fs.lstatSync(path.join(fakeDirPath, newName));
-
-                expect(renamedFolder).to.not.be.undefined;
-            });
         });
 
         it("handles renaming to same name", async () => {
-            return directoryManager.renameItem(fakeFile, fakeFile, fakeDirPath)
-                .then(() => {
-                    const oldNamedFile = fs.lstatSync(path.join(fakeDirPath, fakeFile));
-                    const newNamedFile = fs.lstatSync(path.join(fakeDirPath, fakeFile));
+            await directoryManager.renameItem(fakeFile, fakeFile, fakeDirPath);
 
-                    expect(newNamedFile).to.deep.equal(oldNamedFile);
-                });
+            fileSystemWrapper.verify(fsw => fsw.renameAsync(It.isAnyString(), It.isAnyString()), Times.never());
         });
 
         it("rejects if given an invalid path", () => {
@@ -321,41 +363,27 @@ describe("DirectoryManager's", () => {
         });
 
         it("moves a file to the given destination", async () => {
-            return directoryManager.moveItems([testFile], destinationFolder).then(() => {
-                try {
-                    fs.accessSync(testFile.path);
-                } catch (error) {
-                    expect(error).to.not.be.null;
-                }
+            await directoryManager.moveItems([testFile], destinationFolder);
 
-                const destinationFileName = path.join(destinationFolder, "fakeFile.txt");
-
-                try {
-                    fs.accessSync(destinationFileName);
-                } catch (error) {
-                    expect(error).to.be.null;
-                }
-            });
+            fileSystemWrapper.verify(
+                fsw => fsw.copyAsync(
+                    testFile.path,
+                    It.is<string>(destination => destination.includes(destinationFolder))),
+                Times.once());
+            fileSystemWrapper.verify(fsw => fsw.unlinkAsync(testFile.path), Times.once());
         });
 
         it("moves a directory to the given destination", async () => {
             destinationFolder = path.join(fakeDirPath, "anotherFakeFolder");
 
-            return directoryManager.moveItems([testFolder], destinationFolder).then(() => {
-                try {
-                    fs.accessSync(testFolder.path);
-                } catch (error) {
-                    expect(error).to.not.be.null;
-                }
+            await directoryManager.moveItems([testFolder], destinationFolder);
 
-                const destinationFolderName = path.join(destinationFolder, fakeFolder);
-
-                try {
-                    fs.accessSync(destinationFolderName);
-                } catch (error) {
-                    expect(error).to.be.null;
-                }
-            });
+            fileSystemWrapper.verify(
+                fsw => fsw.copyAsync(
+                    testFolder.path,
+                    It.is<string>(destination => destination.includes(destinationFolder))),
+                Times.once());
+            fileSystemWrapper.verify(fsw => fsw.rmdirAsync(testFolder.path), Times.once());
         });
 
         it("handles moving to the same directory", async () => {
