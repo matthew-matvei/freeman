@@ -224,6 +224,21 @@ describe("DirectoryManager's", () => {
             expect(accessibleDirectoryItem.accessible).to.be.true;
             expect(inaccessibleDirectoryItem.accessible).to.be.false;
         });
+
+        it("deems a directory item is an inaccessible folder if lstat errors", async () => {
+            fileSystemWrapper.setup(fsw => fsw.readdirAsync(It.isAnyString()))
+                .returns(async () => [fakeFolder, inaccessibleFolder]);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.isAnyString()))
+                .returns(async () => await { isDirectory: () => true } as fs.Stats);
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .throws(new Error());
+            fileSystemWrapper.setup(fsw => fsw.lstatAsync(It.is<string>(pathToStat => pathToStat !== fakeDirPath)))
+                .throws(new Error());
+
+            const result = await directoryManager.listDirectory(fakeDirPath, options);
+
+            expect(result.every(item => !item.accessible)).to.be.true;
+        });
     });
 
     describe("createItem method", () => {
