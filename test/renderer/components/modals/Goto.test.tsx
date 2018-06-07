@@ -138,4 +138,8 @@ describe("<Goto />", () => {
 
         expect(state.quickSelectValue).to.be.undefined;
     });
+
+    it("does not navigate into a directory if it is inaccessible");
+
+    it("does not handle selecting an item if it is not accessible");
 });
