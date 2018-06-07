@@ -21,11 +21,11 @@ export default {
     },
 
     /**
-     * Returns all items of type T where pathToFind's basename is fuzzy found in the item's basename,
-     * using the translate function to get a string from any object.
+     * Returns all items of type T where pathToFind's basename is fuzzy found in the item,
+     * using the translate function to get a string from any item T.
      *
      * @param pathToFind the path whose basename is to be found within items
-     * @param items an array of paths
+     * @param items an array of items
      * @param translate a function to translate each given item into a searchable string
      *
      * @returns all items in which pathToFind is fuzzy found
