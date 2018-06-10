@@ -13,14 +13,23 @@ class CommandPalette extends React.PureComponent<ICommandPaletteProps> {
      * @returns a JSX element representing the command palette view
      */
     public render(): JSX.Element {
-        const itemKeys = Object.keys(this.props.applicationCommands);
-
         return <QuickSelect
             isOpen={this.props.isOpen}
             onClose={this.props.onClose}
-            initialItems={itemKeys}
+            initialItems={this.renderItems()}
             onSelect={this.handleSelect}
             theme={this.props.theme} />;
+    }
+
+    /**
+     * Renders the items passed to the CommandPalette's QuickSelect.
+     *
+     * @returns a list of rendered items to be passed to the QuickSelect
+     */
+    private renderItems(): JSX.Element[] {
+        const itemKeys = Object.keys(this.props.applicationCommands);
+
+        return itemKeys.map(item => <li id={item} value={item}>{item}</li>);
     }
 
     /**

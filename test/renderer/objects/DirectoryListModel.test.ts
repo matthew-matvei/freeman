@@ -23,6 +23,7 @@ describe("DirectoryListModel's", () => {
 
     beforeEach(() => {
         directoryItem1 = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),

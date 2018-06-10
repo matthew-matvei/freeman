@@ -9,10 +9,14 @@ export default {
         backgroundColour: "rgb(39, 40, 34)",
         chosenColour: "rgb(226, 220, 43)",
         directoryColour: "rgb(82, 205, 232)",
-        directoryIconColour: "rgb(82, 205, 232)",
         fileColour: "rgb(234, 248, 229)",
+        inaccessibleColour: "rgb(242, 38, 54)",
+        selectedBackgroundColour: "rgb(62, 61, 50)"
+    },
+    directoryItemIcon: {
+        directoryIconColour: "rgb(82, 205, 232)",
         fileIconDefaultColour: "rgb(234, 248, 229)",
-        selectedColour: "rgb(62, 61, 50)"
+        inaccessibleIconColour: "rgb(242, 38, 54)"
     },
     pathPanel: {
         backgroundColour: "rgb(30, 31, 28)"

@@ -56,6 +56,7 @@ describe("<DirectoryList />", () => {
 
         items = [
             {
+                accessible: true,
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),
@@ -63,6 +64,7 @@ describe("<DirectoryList />", () => {
                 path: "/path/to/item1.txt"
             },
             {
+                accessible: true,
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),

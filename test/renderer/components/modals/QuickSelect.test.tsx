@@ -17,12 +17,14 @@ Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 describe("<QuickSelect />", () => {
     let props: IQuickSelectProps;
     let component: React.ReactElement<IQuickSelectProps>;
+    const initialItems = ["item1", "item2"];
+    const renderedItems = initialItems.map(item => <li id={item} value={item}>{item}</li>);
 
     let sandbox: SinonSandbox;
 
     beforeEach(() => {
         props = {
-            initialItems: ["item1", "item2"],
+            initialItems: renderedItems,
             isOpen: false,
             onClose: () => { },
             onSelect: () => { },

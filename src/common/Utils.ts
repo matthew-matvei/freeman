@@ -1,5 +1,6 @@
 import log from "electron-log";
 import fuzzysearch from "fuzzysearch";
+import { List } from "immutable";
 import path from "path";
 import * as ReactDOM from "react-dom";
 import { HotKeys } from "react-hotkeys";
@@ -20,21 +21,29 @@ export default {
     },
 
     /**
-     * Returns all items where pathToFind's basename is fuzzy found in the item's basename.
+     * Returns all items of type T where pathToFind's basename is fuzzy found in the item,
+     * using the translate function to get a string from any item T.
      *
      * @param pathToFind the path whose basename is to be found within items
-     * @param items an array of paths
+     * @param items an array of items
+     * @param translate a function to translate each given item into a searchable string
      *
      * @returns all items in which pathToFind is fuzzy found
      */
-    fuzzySearchItems(pathToFind: string, items: string[]): string[] {
+    fuzzySearchItems<T extends Object>(
+        pathToFind: string,
+        items: T[],
+        translate: (item: T) => string = item => item.toString()): T[] {
+
+        const itemsCopy = List(items).toArray();
+
         if (!pathToFind || pathToFind.endsWith(path.sep)) {
-            return items;
+            return itemsCopy;
         }
 
-        return items.filter(item => {
+        return itemsCopy.filter(item => {
             const searchTermSuffix = path.basename(pathToFind.toLocaleLowerCase());
-            const itemSuffix = path.basename(item.toLocaleLowerCase());
+            const itemSuffix = path.basename(translate(item));
 
             return fuzzysearch(searchTermSuffix, itemSuffix);
         });

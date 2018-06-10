@@ -3,11 +3,12 @@ import { shell } from "electron";
 import Enzyme, { shallow } from "enzyme";
 import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import * as React from "react";
+import { HotKeys, HotKeysProps } from "react-hotkeys";
 import "reflect-metadata";
 import Sinon, { SinonSandbox, SinonSpy } from "sinon";
 
 import { DirectoryItem } from "components/blocks";
-import { IDirectoryItem } from "models";
+import { IDirectoryItem, IHandlers } from "models";
 import { IDirectoryItemProps } from "props/blocks";
 import applicationTheme from "settings/internal/themes/dark";
 
@@ -24,6 +25,7 @@ describe("<DirectoryItem />", () => {
 
     beforeEach(() => {
         directoryModel = {
+            accessible: true,
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -120,5 +122,57 @@ describe("<DirectoryItem />", () => {
         wrapper.forEach(n => n.simulate("doubleClick"));
 
         expect(openItem.callCount).to.equal(wrapper.length);
+    });
+
+    it("background colour changes when item is selected", () => {
+        props.isSelected = false;
+        component = <DirectoryItem {...props} />;
+        const unselectedWrapper = shallow(component);
+
+        expect(unselectedWrapper.findWhere(n => n.type() === "div" &&
+            (n.props().style as React.CSSProperties).backgroundColor ===
+            applicationTheme.directoryItem.backgroundColour)).to.have.length(1);
+
+        props.isSelected = true;
+        component = <DirectoryItem {...props} />;
+        const selectedWrapper = shallow(component);
+
+        expect(selectedWrapper.findWhere(n => n.type() === "div" &&
+            (n.props().style as React.CSSProperties).backgroundColor ===
+            applicationTheme.directoryItem.selectedBackgroundColour)).to.have.length(1);
+    });
+
+    it("foreground colour shows inaccessibility if item is not chosen", () => {
+        props.model.accessible = false;
+        component = <DirectoryItem {...props} />;
+        const wrapper = shallow(component);
+
+        expect(wrapper.findWhere(n => n.type() === "button" &&
+            (n.props().style as React.CSSProperties).color ===
+            applicationTheme.directoryItem.inaccessibleColour)).to.have.length.greaterThan(0);
+    });
+    it("does not open a directory that is inaccessible", () => {
+        const sendPathUp = sandbox.stub();
+        props.model.isDirectory = true;
+        props.model.accessible = false;
+        props.sendPathUp = sendPathUp;
+        component = <DirectoryItem {...props} />;
+        const wrapper = shallow(component);
+        const hotKeys = wrapper.find(HotKeys);
+        ((hotKeys.props() as HotKeysProps).handlers as IHandlers).activate();
+
+        expect(sendPathUp.callCount).to.equal(0);
+    });
+    it("does not activate an item that is inaccessible", () => {
+        const sendPathUp = sandbox.stub();
+        props.model.isDirectory = false;
+        props.model.accessible = false;
+        props.sendPathUp = sendPathUp;
+        component = <DirectoryItem {...props} />;
+        const wrapper = shallow(component);
+        const hotKeys = wrapper.find(HotKeys);
+        ((hotKeys.props() as HotKeysProps).handlers as IHandlers).activate();
+
+        expect(sendPathUp.callCount).to.equal(0);
     });
 });

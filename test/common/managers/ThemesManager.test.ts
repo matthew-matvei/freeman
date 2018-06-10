@@ -81,9 +81,9 @@ describe("ThemesManager's", () => {
             const result = themeManager.theme;
 
             expect(result.directoryItem.backgroundColour).to.equal(userColour);
-            expect(result.directoryItem.selectedColour).to.not.be.undefined;
-            expect(result.directoryItem.selectedColour)
-                .to.equal(applicationTheme.directoryItem.selectedColour);
+            expect(result.directoryItem.selectedBackgroundColour).to.not.be.undefined;
+            expect(result.directoryItem.selectedBackgroundColour)
+                .to.equal(applicationTheme.directoryItem.selectedBackgroundColour);
         });
     });
 });

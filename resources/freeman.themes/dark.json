@@ -8,9 +8,17 @@
         "backgroundColour": "rgb(30, 31, 28)"
     },
     "directoryItem": {
-        "directoryColour": "rgb(82, 205, 232)",
+        "backgroundColour": "rgb(39, 40, 34)",
         "chosenColour": "rgb(226, 220, 43)",
-        "selectedColour": "rgb(62, 61, 50)"
+        "directoryColour": "rgb(82, 205, 232)",
+        "fileColour": "rgb(234, 248, 229)",
+        "inaccessibleColour": "rgb(242, 38, 54)",
+        "selectedBackgroundColour": "rgb(62, 61, 50)"
+    },
+    "directoryItemIcon": {
+        "directoryIconColour": "rgb(82, 205, 232)",
+        "fileIconDefaultColour": "rgb(234, 248, 229)",
+        "inaccessibleIconColour": "rgb(242, 38, 54)"
     },
     "quickSelect": {
         "colour": "rgb(234, 248, 229)",

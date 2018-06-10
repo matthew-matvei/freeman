@@ -6,7 +6,7 @@ import { ICloseableProps, IOpenableProps, IThemeableProps } from "props/common";
 interface IQuickSelectProps extends ICloseableProps, IOpenableProps, IThemeableProps {
 
     /** The items to select within the quick select component. */
-    initialItems: string[];
+    initialItems: JSX.Element[];
 
     /** The input value to provide to the search field, if any. */
     inputValue?: string;

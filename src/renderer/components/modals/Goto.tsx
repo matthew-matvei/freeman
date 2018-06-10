@@ -51,19 +51,47 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * @returns a JSX element representing the goto view
      */
     public render(): JSX.Element {
-        const items = this.state.directoryItems.map(item => item.path);
-        const shownItems = Utils.fuzzySearchItems(this.state.searchTerm, items);
-        shownItems.unshift(this.state.currentDirectory);
-
         return <QuickSelect
             isOpen={this.props.isOpen}
             onClose={this.props.onClose}
-            initialItems={shownItems}
+            initialItems={this.renderItems()}
             onKeyUp={this.handleKeyUp}
             onSelect={this.handleSelect}
             inputValue={this.state.quickSelectValue}
             onUpdate={this.handleUpdate}
             theme={this.props.theme} />;
+    }
+
+    /**
+     * Renders the items passed to the Goto's QuickSelect.
+     *
+     * @returns a list of rendered items to be passed to the QuickSelect
+     */
+    private renderItems(): JSX.Element[] {
+        const shownItems = Utils.fuzzySearchItems<IDirectoryItem>(
+            this.state.searchTerm,
+            this.state.directoryItems,
+            item => item.path);
+
+        const defaultItem: IDirectoryItem = {
+            accessible: true,
+            isDirectory: true,
+            isHidden: false,
+            lastModified: new Date(),
+            name: path.basename(this.state.currentDirectory),
+            path: this.state.currentDirectory
+        };
+
+        shownItems.unshift(defaultItem);
+
+        return shownItems
+            .map(item => {
+                const itemStyles: React.CSSProperties = {
+                    color: !item.accessible && this.props.theme.directoryItem.inaccessibleColour
+                };
+
+                return <li key={item.path} value={item.path} style={itemStyles}>{item.path}</li>;
+            });
     }
 
     /**
@@ -121,6 +149,12 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      * @param newPath the new path entered in the GoTo's input field
      */
     private async handleNavigateIn(newPath: string) {
+        const strippedPath = newPath.endsWith(path.sep) ? newPath.substr(0, newPath.lastIndexOf(path.sep)) : newPath;
+        const directoryToNavigateInto = this.state.directoryItems.find(item => item.path === strippedPath)!;
+        if (!directoryToNavigateInto.accessible) {
+            return;
+        }
+
         const nonHiddenDirectoryItems = await this.getNonHiddenFolders(newPath);
 
         this.setState(
@@ -155,6 +189,11 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
      */
     @autobind
     private handleSelect(selectedItem: string) {
+        const directoryToNavigateInto = this.state.directoryItems.find(item => item.path === selectedItem)!;
+        if (!directoryToNavigateInto.accessible) {
+            return;
+        }
+
         this.props.navigateTo(selectedItem);
 
         this.props.onClose();

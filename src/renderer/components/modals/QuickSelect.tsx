@@ -78,9 +78,12 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         const { selectedColour, backgroundColour } = this.props.theme.quickSelect;
 
         const items = this.props.initialItems.map((item, i) => {
-            return this.state.selectedIndex === i ?
-                <li key={item} style={{ backgroundColor: selectedColour }}>{item}</li>
-                : <li key={item} style={{ backgroundColor: backgroundColour }}>{item}</li>;
+            const containerBackground: React.CSSProperties = {
+                backgroundColor: this.state.selectedIndex === i ?
+                    selectedColour : backgroundColour
+            };
+
+            return <div key={item.key as string} style={containerBackground}>{item}</div>;
         });
 
         return <ReactModal
@@ -116,12 +119,12 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
         const selectedItem = this.props.initialItems[this.state.selectedIndex];
 
         if (this.input) {
-            this.input.value = selectedItem;
+            this.input.value = selectedItem.props.value;
         }
 
         this.setState({ selectedIndex: 0 } as IQuickSelectState);
 
-        this.props.onUpdate && this.props.onUpdate(selectedItem);
+        this.props.onUpdate && this.props.onUpdate(selectedItem.props.value);
     }
 
     /** Handles the user selecting an item. */
@@ -129,7 +132,7 @@ class QuickSelect extends React.Component<IQuickSelectProps, IQuickSelectState> 
     private handleSelectItem() {
         const selectedItem = this.props.initialItems[this.state.selectedIndex];
 
-        this.props.onSelect(selectedItem);
+        this.props.onSelect(selectedItem.props.value);
     }
 
     /**
