@@ -1,12 +1,13 @@
 import { expect } from "chai";
 import Enzyme, { mount, shallow } from "enzyme";
 import ReactSixteenAdapter from "enzyme-adapter-react-16";
+import path from "path";
 import * as React from "react";
 import "reflect-metadata";
 import Sinon, { SinonSandbox, SinonSpy } from "sinon";
 import { IMock, It, Mock } from "typemoq";
 
-import { Goto } from "components/modals";
+import { Goto, QuickSelect } from "components/modals";
 import { IDirectoryManager, ISettingsManager } from "managers";
 import { IDirectoryItem } from "models";
 import { IGotoProps, IQuickSelectProps } from "props/modals";
@@ -25,6 +26,7 @@ describe("<Goto />", () => {
 
     let item1: IDirectoryItem;
     let item2: IDirectoryItem;
+    let inaccessibleItem: IDirectoryItem;
 
     let directoryManager: IMock<IDirectoryManager>;
     let settingsManager: IMock<ISettingsManager>;
@@ -50,9 +52,18 @@ describe("<Goto />", () => {
             path: "/path/to/Item 2"
         };
 
+        inaccessibleItem = {
+            accessible: false,
+            isDirectory: true,
+            isHidden: false,
+            lastModified: new Date(),
+            name: "Inaccessible",
+            path: "/path/to/Inaccessible"
+        };
+
         directoryManager = Mock.ofType<IDirectoryManager>();
         directoryManager.setup(async dm => dm.listDirectory(It.isAnyString(), It.isAny()))
-            .returns(sandbox.stub().resolves([item1, item2]));
+            .returns(sandbox.stub().resolves([item1, item2, inaccessibleItem]));
 
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
@@ -108,7 +119,7 @@ describe("<Goto />", () => {
             .then(() => {
                 const state = wrapper.state() as IGotoState;
 
-                expect(state.directoryItems).to.deep.equal([item1, item2]);
+                expect(state.directoryItems).to.deep.equal([item1, item2, inaccessibleItem]);
             });
     });
 
@@ -139,7 +150,27 @@ describe("<Goto />", () => {
         expect(state.quickSelectValue).to.be.undefined;
     });
 
-    it("does not navigate into a directory if it is inaccessible");
+    it("does not navigate into a directory if it is inaccessible", () => {
+        const wrapper = shallow(component);
+        wrapper.setState({ searchTerm: inaccessibleItem.path });
+        const quickSelect = wrapper.find(QuickSelect);
+        const quickSelectProps = quickSelect.props() as IQuickSelectProps;
+        const { currentDirectory } = wrapper.state() as IGotoState;
 
-    it("does not handle selecting an item if it is not accessible");
+        quickSelectProps.onKeyUp!({ key: path.sep } as any);
+
+        expect((wrapper.state() as IGotoState).currentDirectory).to.equal(currentDirectory);
+    });
+
+    it("does not handle selecting an item if it is not accessible", async () => {
+        const wrapper = shallow(component);
+        wrapper.setState({ searchTerm: inaccessibleItem.path }, async () => {
+            const quickSelect = wrapper.find(QuickSelect);
+            const quickSelectProps = quickSelect.props() as IQuickSelectProps;
+            const { currentDirectory } = wrapper.state() as IGotoState;
+            quickSelectProps.onSelect(inaccessibleItem.path);
+
+            expect((wrapper.state() as IGotoState).currentDirectory).to.equal(currentDirectory);
+        });
+    });
 });
