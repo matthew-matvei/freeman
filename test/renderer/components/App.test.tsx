@@ -9,7 +9,7 @@ import { IMock, Mock } from "typemoq";
 import { App } from "components";
 import { IDirectoryManager, IKeysManager, ISettingsManager, IThemesManager } from "managers";
 import { IHandlers } from "models";
-import { IIntegratedTerminal } from "objects";
+import { IIntegratedTerminal, IPersister } from "objects";
 import { IAppProps } from "props";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
 import applicationTheme from "settings/internal/themes/dark";
@@ -25,6 +25,7 @@ describe("<App />", () => {
     let settingsManager: IMock<ISettingsManager>;
     let themeManager: IMock<IThemesManager>;
     let integratedTerminal: IMock<IIntegratedTerminal>;
+    let persister: IMock<IPersister>;
 
     let component: React.ReactElement<IAppProps>;
 
@@ -37,14 +38,17 @@ describe("<App />", () => {
         themeManager = Mock.ofType<IThemesManager>();
         themeManager.setup(tm => tm.theme).returns(() => applicationTheme);
         integratedTerminal = Mock.ofType<IIntegratedTerminal>();
+        persister = Mock.ofType<IPersister>();
 
         props = {
             directoryManager: directoryManager.object,
             keysManager: keysManager.object,
             leftTerminal: integratedTerminal.object,
+            persister: persister.object,
             rightTerminal: integratedTerminal.object,
             settingsManager: settingsManager.object,
             themeManager: themeManager.object
+
         };
 
         component = <App {...props} />;

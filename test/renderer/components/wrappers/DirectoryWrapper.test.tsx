@@ -10,7 +10,7 @@ import { IMock, It, Mock } from "typemoq";
 import { DirectoryWrapper } from "components/wrappers";
 import { IDirectoryManager, ISettingsManager } from "managers";
 import { IHandlers, IStatusNotifier } from "models";
-import { IIntegratedTerminal } from "objects";
+import { IIntegratedTerminal, IPersister } from "objects";
 import { IDirectoryWrapperProps } from "props/wrappers";
 import applicationSettings from "settings/internal/settings";
 import applicationTheme from "settings/internal/themes/dark";
@@ -28,6 +28,7 @@ describe("<DirectoryWrapper />", () => {
     let directoryManager: IMock<IDirectoryManager>;
     let settingsManager: IMock<ISettingsManager>;
     let integratedTerminal: IMock<IIntegratedTerminal>;
+    let persister: IMock<IPersister>;
 
     before(() => {
         directoryManager = Mock.ofType<IDirectoryManager>();
@@ -35,6 +36,7 @@ describe("<DirectoryWrapper />", () => {
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
         integratedTerminal = Mock.ofType<IIntegratedTerminal>();
         integratedTerminal.setup(it => it.shellName).returns(() => "bash");
+        persister = Mock.ofType<IPersister>();
 
         const statusNotifier = {} as IStatusNotifier;
 
@@ -46,6 +48,7 @@ describe("<DirectoryWrapper />", () => {
             initialPath: "path/to/initial",
             integratedTerminal: integratedTerminal.object,
             isSelectedPane: true,
+            persister: persister.object,
             sendSelectedPaneUp: () => { },
             settingsManager: settingsManager.object,
             statusNotifier,

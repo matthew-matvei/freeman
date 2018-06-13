@@ -87,7 +87,8 @@ class App extends React.Component<IAppProps, IAppState> {
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
                                 theme={themeManager.theme}
-                                integratedTerminal={this.props.leftTerminal} />
+                                integratedTerminal={this.props.leftTerminal}
+                                persister={this.props.persister} />
                             <DirectoryWrapper
                                 id="right"
                                 initialPath={os.homedir()}
@@ -97,7 +98,8 @@ class App extends React.Component<IAppProps, IAppState> {
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
                                 theme={themeManager.theme}
-                                integratedTerminal={this.props.rightTerminal} />
+                                integratedTerminal={this.props.rightTerminal}
+                                persister={this.props.persister} />
                         </SplitPane>
                     </div>
                     <Status {...this.state.status} theme={themeManager.theme} />
