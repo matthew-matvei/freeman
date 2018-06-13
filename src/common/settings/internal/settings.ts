@@ -8,7 +8,6 @@ export default {
     linux: {
         shell: "bash"
     },
-    maximised: false,
     terminal: {
         cursorBlink: true,
         displayAtStartup: false,

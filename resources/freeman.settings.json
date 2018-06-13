@@ -6,7 +6,6 @@
         "hideUnixStyleHiddenItems": false,
         "shell": "powershell.exe"
     },
-    "maximised": false,
     "themeName": "dark",
     "confirmation": {
         "requiredBeforeTrash": true,

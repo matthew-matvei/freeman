@@ -4,9 +4,6 @@ import "reflect-metadata";
 require("electron-debug")({ enabled: true });
 
 import { ArgumentsParser } from "arguments";
-import container from "ioc/container";
-import TYPES from "ioc/types";
-import { ISettingsManager } from "managers";
 import Utils from "Utils";
 import { FreemanWindow } from "widgets";
 
@@ -23,8 +20,6 @@ if (parsedArguments.verbose) {
     process.env.VERBOSE = "1";
     Utils.trace("Running application in verbose mode");
 }
-
-const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
@@ -54,7 +49,6 @@ app.on("ready", () => {
     };
 
     mainWindow = new FreemanWindow(windowOptions);
-    settingsManager.settings.maximised && mainWindow.maximize();
     mainWindowState.manage(mainWindow);
 
     const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);

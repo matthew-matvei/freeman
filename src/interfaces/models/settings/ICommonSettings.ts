@@ -9,9 +9,6 @@ interface ICommonSettings {
     /** Windows-specific settings. */
     windows: IWindowsSettings;
 
-    /** Whether to start the application maximised. */
-    maximised: boolean;
-
     /** The name of the theme the application uses. */
     themeName: string;
 
