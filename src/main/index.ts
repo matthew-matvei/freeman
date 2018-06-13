@@ -1,4 +1,5 @@
 import { app, dialog, ipcMain, Menu } from "electron";
+import windowStateKeeper from "electron-window-state";
 import "reflect-metadata";
 require("electron-debug")({ enabled: true });
 
@@ -33,19 +34,29 @@ app.on("window-all-closed", () => {
 });
 
 app.on("ready", () => {
+    const mainWindowState = windowStateKeeper({
+        defaultHeight: 800,
+        defaultWidth: 1400
+    });
+
     const windowOptions: Electron.BrowserWindowConstructorOptions = {
         backgroundColor: "#272822",
         disableAutoHideCursor: true,
-        height: 800,
+        fullscreen: mainWindowState.isFullScreen,
+        height: mainWindowState.height,
         minHeight: 400,
         minWidth: 700,
         show: false,
         title: "FreeMAN",
-        width: 1400
+        width: mainWindowState.width,
+        x: mainWindowState.x,
+        y: mainWindowState.y
     };
 
     mainWindow = new FreemanWindow(windowOptions);
-    settingsManager.settings.fullscreen && mainWindow.maximize();
+    settingsManager.settings.maximised && mainWindow.maximize();
+    mainWindowState.manage(mainWindow);
+
     const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
     Menu.setApplicationMenu(menu);
 

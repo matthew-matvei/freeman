@@ -5,10 +5,10 @@ export default {
         requiredBeforeDeletion: true,
         requiredBeforeTrash: true
     },
-    fullscreen: false,
     linux: {
         shell: "bash"
     },
+    maximised: false,
     terminal: {
         cursorBlink: true,
         displayAtStartup: false,
