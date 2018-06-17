@@ -1,6 +1,5 @@
-import settings from "electron-settings";
+import Config from "electron-config";
 import { injectable } from "inversify";
-import path from "path";
 
 import { IPersister } from "objects";
 
@@ -8,19 +7,24 @@ import { IPersister } from "objects";
 @injectable()
 class Persister implements IPersister {
 
+    /** The underlying config object used for persisting internal application state. */
+    private readonly config: Config;
+
     /** Initialises a new instance of the Persister class. */
     constructor() {
-        settings.setPath(path.join(path.dirname(settings.file()), "freeman.internal.state.json"));
+        this.config = new Config({
+            name: "freeman.internal.state"
+        });
     }
 
     /** @inheritDoc */
     public set(key: string, value: any): void {
-        settings.set(key, value);
+        this.config.set(key, value);
     }
 
     /** @inheritDoc */
     public get(key: string): any {
-        return settings.get(key);
+        return this.config.get(key);
     }
 }
 
