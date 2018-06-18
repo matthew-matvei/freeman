@@ -18,13 +18,13 @@ class Persister implements IPersister {
     }
 
     /** @inheritDoc */
-    public set(key: string, value: any): void {
+    public set<T>(key: string, value: T): void {
         this.config.set(key, value);
     }
 
     /** @inheritDoc */
-    public get(key: string): any {
-        return this.config.get(key);
+    public get<T>(key: string): T {
+        return this.config.get(key) as T;
     }
 }
 

@@ -11,6 +11,8 @@ interface IDirectoryWrapperState {
 
     /** The sizes of the columns visible in the directory list. */
     columnSizes: IColumnSizes;
+
+    directoryListHeight: string;
 }
 
 export default IDirectoryWrapperState;
