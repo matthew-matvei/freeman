@@ -38,7 +38,11 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
 
-        const { settingsManager, initialPath } = this.props;
+        const { id, persister, settingsManager, initialPath } = this.props;
+
+        const isTerminalOpen = settingsManager.settings.terminal.displayAtStartup ||
+            persister.get<boolean>(`terminal.${this.props.id}.isOpen`);
+        const storedDirectoryScrollAreaHeight = persister.get<string>(`dimensions.directoryScrollArea.${id}`);
 
         this.state = {
             columnSizes: {
@@ -46,7 +50,9 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 name: 50,
                 size: 50
             },
-            isTerminalOpen: settingsManager.settings.terminal.displayAtStartup,
+            directoryListHeight: isTerminalOpen ?
+                storedDirectoryScrollAreaHeight || "65vh" : "100%",
+            isTerminalOpen,
             path: initialPath
         };
     }
@@ -61,7 +67,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
             backgroundColor: "rgb(65, 67, 57)"
         };
         const directoryListHeight = this.state.isTerminalOpen ?
-            this.prevScrollAreaHeight || "65vh" : "100%";
+            this.prevScrollAreaHeight || this.state.directoryListHeight : "100%";
         const resizerStyle: React.CSSProperties = {
             backgroundColor: this.props.theme.resizers.colour,
             display: this.state.isTerminalOpen ? "block" : "none"
@@ -120,6 +126,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     private storeDirectoryListHeight() {
         if (this.directoryScrollArea) {
             this.prevScrollAreaHeight = `${this.directoryScrollArea.clientHeight}px`;
+            this.props.persister.set<string>(`dimensions.directoryScrollArea.${this.props.id}`,
+                `${this.directoryScrollArea.clientHeight}px`);
         }
     }
 
