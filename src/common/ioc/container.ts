@@ -13,7 +13,7 @@ import {
     SettingsManager,
     ThemesManager
 } from "managers";
-import { IShell, Shell } from "objects";
+import { IPersister, IShell, Persister, Shell } from "objects";
 import { FileSystemWrapper, IFileSystemWrapper } from "wrappers";
 
 const container = new Container({ defaultScope: "Singleton" });
@@ -26,5 +26,6 @@ container.bind<IThemesManager>(TYPES.IThemesManager).to(ThemesManager);
 container.bind<IAttributesManager>(TYPES.IAttributesManager).to(AttributesManager);
 container.bind<IShell>(TYPES.IShell).to(Shell).inTransientScope();
 container.bind<IFileSystemWrapper>(TYPES.IFileSystemWrapper).to(FileSystemWrapper);
+container.bind<IPersister>(TYPES.IPersister).to(Persister);
 
 export default container;
