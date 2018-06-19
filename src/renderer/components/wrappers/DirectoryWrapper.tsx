@@ -141,7 +141,12 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 Utils.autoFocus(this.directoryList.KeysTrapper);
             }
 
+            this.props.persister.set<boolean>(`terminal.${this.props.id}.isOpen`, !previousState.isTerminalOpen);
+
+            const directoryListHeight = !previousState.isTerminalOpen ? this.prevScrollAreaHeight || "65vh" : "100%";
+
             return {
+                directoryListHeight,
                 isTerminalOpen: !previousState.isTerminalOpen
             } as IDirectoryWrapperState;
         });
