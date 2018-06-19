@@ -30,6 +30,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         toggleIntegratedTerminal: this.toggleIntegratedTerminal
     };
 
+    private get storedDirectoryScrollAreaHeight() {
+        return this.props.persister.get<string>(`dimensions.directoryScrollArea.${this.props.id}`);
+    }
+
     /**
      * Instantiates the DirectoryWrapper component.
      *
@@ -38,13 +42,12 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
 
-        const { id, persister, settingsManager, initialPath } = this.props;
+        const { persister, settingsManager, initialPath } = this.props;
 
         const { displayAtStartup } = settingsManager.settings.terminal;
 
         const isTerminalOpen = displayAtStartup !== undefined ?
             displayAtStartup : persister.get<boolean>(`terminal.${this.props.id}.isOpen`);
-        const storedDirectoryScrollAreaHeight = persister.get<string>(`dimensions.directoryScrollArea.${id}`);
 
         this.state = {
             columnSizes: {
@@ -53,7 +56,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 size: 50
             },
             directoryListHeight: isTerminalOpen ?
-                storedDirectoryScrollAreaHeight || "65vh" : "100%",
+                this.storedDirectoryScrollAreaHeight || "65vh" : "100%",
             isTerminalOpen,
             path: initialPath
         };
@@ -143,7 +146,9 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
 
             this.props.persister.set<boolean>(`terminal.${this.props.id}.isOpen`, !previousState.isTerminalOpen);
 
-            const directoryListHeight = !previousState.isTerminalOpen ? this.prevScrollAreaHeight || "65vh" : "100%";
+            const directoryListHeight = !previousState.isTerminalOpen ?
+                this.prevScrollAreaHeight || this.storedDirectoryScrollAreaHeight || "65vh" :
+                "100%";
 
             return {
                 directoryListHeight,
