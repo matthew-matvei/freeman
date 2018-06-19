@@ -10,7 +10,7 @@ export default {
     },
     terminal: {
         cursorBlink: true,
-        displayAtStartup: false,
+        displayAtStartup: undefined,
         syncNavigation: true
     },
     themeName: "dark",

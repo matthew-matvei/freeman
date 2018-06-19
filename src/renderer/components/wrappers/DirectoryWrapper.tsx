@@ -40,8 +40,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
 
         const { id, persister, settingsManager, initialPath } = this.props;
 
-        const isTerminalOpen = settingsManager.settings.terminal.displayAtStartup ||
-            persister.get<boolean>(`terminal.${this.props.id}.isOpen`);
+        const { displayAtStartup } = settingsManager.settings.terminal;
+
+        const isTerminalOpen = displayAtStartup !== undefined ?
+            displayAtStartup : persister.get<boolean>(`terminal.${this.props.id}.isOpen`);
         const storedDirectoryScrollAreaHeight = persister.get<string>(`dimensions.directoryScrollArea.${id}`);
 
         this.state = {
