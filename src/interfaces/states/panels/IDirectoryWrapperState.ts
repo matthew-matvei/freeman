@@ -12,6 +12,7 @@ interface IDirectoryWrapperState {
     /** The sizes of the columns visible in the directory list. */
     columnSizes: IColumnSizes;
 
+    /** The height of the directory list, including the unit of fixed or relative measurement. */
     directoryListHeight: string;
 }
 
