@@ -122,4 +122,7 @@ describe("<DirectoryWrapper />", () => {
 
         expect(autoFocusStub.calledOnce).to.be.true;
     });
+
+    it("retrieves whether a terminal is open when setting to open terminal on start up is not configured");
+    it("persists whether the terminal is open or closed when terminal toggled");
 });
