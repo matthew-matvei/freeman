@@ -5,7 +5,7 @@ import * as React from "react";
 import { HotKeys, HotKeysProps } from "react-hotkeys";
 import "reflect-metadata";
 import Sinon, { SinonSandbox } from "sinon";
-import { IMock, It, Mock } from "typemoq";
+import { IMock, It, Mock, Times } from "typemoq";
 
 import { DirectoryWrapper } from "components/wrappers";
 import { IDirectoryManager, ISettingsManager } from "managers";
@@ -30,7 +30,7 @@ describe("<DirectoryWrapper />", () => {
     let integratedTerminal: IMock<IIntegratedTerminal>;
     let persister: IMock<IPersister>;
 
-    before(() => {
+    beforeEach(() => {
         directoryManager = Mock.ofType<IDirectoryManager>();
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
@@ -54,9 +54,7 @@ describe("<DirectoryWrapper />", () => {
             statusNotifier,
             theme: applicationTheme
         };
-    });
 
-    beforeEach(() => {
         component = <DirectoryWrapper {...props} />;
         sandbox = Sinon.createSandbox();
         directoryManager.setup(async dm => dm.listDirectory(It.isAnyString(), It.isAny()))
@@ -123,6 +121,20 @@ describe("<DirectoryWrapper />", () => {
         expect(autoFocusStub.calledOnce).to.be.true;
     });
 
-    it("retrieves whether a terminal is open when setting to open terminal on start up is not configured");
-    it("persists whether the terminal is open or closed when terminal toggled");
+    it("retrieves whether a terminal is open when setting to open terminal on start up is not configured", () => {
+        shallow(component);
+
+        persister.verify(p => p.get<boolean>(`terminal.${props.id}.isOpen`), Times.once());
+    });
+
+    it("persists whether the terminal is open or closed when terminal toggled", () => {
+        const terminalPreviousState = false;
+        const wrapper = shallow(component);
+        wrapper.setState({ isTerminalOpen: terminalPreviousState } as IDirectoryWrapperState);
+        const hotkeys = wrapper.find(HotKeys).first();
+        const hotkeysProps = hotkeys.props() as HotKeysProps;
+        (hotkeysProps.handlers as IHandlers).toggleIntegratedTerminal();
+
+        persister.verify(p => p.set<boolean>(`terminal.${props.id}.isOpen`, !terminalPreviousState), Times.once());
+    });
 });
