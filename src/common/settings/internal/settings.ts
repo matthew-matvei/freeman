@@ -5,13 +5,12 @@ export default {
         requiredBeforeDeletion: true,
         requiredBeforeTrash: true
     },
-    fullscreen: false,
     linux: {
         shell: "bash"
     },
     terminal: {
         cursorBlink: true,
-        displayAtStartup: false,
+        displayAtStartup: undefined,
         syncNavigation: true
     },
     themeName: "dark",

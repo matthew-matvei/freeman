@@ -14,7 +14,7 @@ import {
     ISettingsManager,
     IThemesManager
 } from "managers";
-import { IIntegratedTerminal, IntegratedTerminal, IShell } from "objects";
+import { IIntegratedTerminal, IntegratedTerminal, IPersister, IShell } from "objects";
 import Utils from "Utils";
 
 import "styles/main.scss";
@@ -38,6 +38,7 @@ const themeManager = container.get<IThemesManager>(TYPES.IThemesManager);
 const directoryManager = container.get<IDirectoryManager>(TYPES.IDirectoryManager);
 const leftShell = container.get<IShell>(TYPES.IShell);
 const rightShell = container.get<IShell>(TYPES.IShell);
+const persister = container.get<IPersister>(TYPES.IPersister);
 const leftTerminal = buildTerminal(settingsManager, leftShell);
 const rightTerminal = buildTerminal(settingsManager, rightShell);
 
@@ -46,6 +47,7 @@ ReactDOM.render(<App
     keysManager={keysManager}
     themeManager={themeManager}
     directoryManager={directoryManager}
+    persister={persister}
     leftTerminal={leftTerminal}
     rightTerminal={rightTerminal} />,
     document.getElementById("app-root"));

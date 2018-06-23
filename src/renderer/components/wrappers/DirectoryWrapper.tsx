@@ -30,6 +30,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         toggleIntegratedTerminal: this.toggleIntegratedTerminal
     };
 
+    private get storedDirectoryScrollAreaHeight() {
+        return this.props.persister.get<string>(`dimensions.directoryScrollArea.${this.props.id}`);
+    }
+
     /**
      * Instantiates the DirectoryWrapper component.
      *
@@ -38,7 +42,12 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
 
-        const { settingsManager, initialPath } = this.props;
+        const { persister, settingsManager, initialPath } = this.props;
+
+        const { displayAtStartup } = settingsManager.settings.terminal;
+
+        const isTerminalOpen = displayAtStartup !== undefined ?
+            displayAtStartup : persister.get<boolean>(`terminal.${this.props.id}.isOpen`);
 
         this.state = {
             columnSizes: {
@@ -46,7 +55,9 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 name: 50,
                 size: 50
             },
-            isTerminalOpen: settingsManager.settings.terminal.displayAtStartup,
+            directoryListHeight: isTerminalOpen ?
+                this.storedDirectoryScrollAreaHeight || "65vh" : "100%",
+            isTerminalOpen,
             path: initialPath
         };
     }
@@ -61,7 +72,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
             backgroundColor: "rgb(65, 67, 57)"
         };
         const directoryListHeight = this.state.isTerminalOpen ?
-            this.prevScrollAreaHeight || "65vh" : "100%";
+            this.prevScrollAreaHeight || this.state.directoryListHeight : "100%";
         const resizerStyle: React.CSSProperties = {
             backgroundColor: this.props.theme.resizers.colour,
             display: this.state.isTerminalOpen ? "block" : "none"
@@ -120,6 +131,8 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     private storeDirectoryListHeight() {
         if (this.directoryScrollArea) {
             this.prevScrollAreaHeight = `${this.directoryScrollArea.clientHeight}px`;
+            this.props.persister.set<string>(`dimensions.directoryScrollArea.${this.props.id}`,
+                `${this.directoryScrollArea.clientHeight}px`);
         }
     }
 
@@ -131,7 +144,14 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                 Utils.autoFocus(this.directoryList.KeysTrapper);
             }
 
+            this.props.persister.set<boolean>(`terminal.${this.props.id}.isOpen`, !previousState.isTerminalOpen);
+
+            const directoryListHeight = !previousState.isTerminalOpen ?
+                this.prevScrollAreaHeight || this.storedDirectoryScrollAreaHeight || "65vh" :
+                "100%";
+
             return {
+                directoryListHeight,
                 isTerminalOpen: !previousState.isTerminalOpen
             } as IDirectoryWrapperState;
         });

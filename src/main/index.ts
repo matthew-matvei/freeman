@@ -1,11 +1,9 @@
 import { app, dialog, ipcMain, Menu } from "electron";
+import windowStateKeeper from "electron-window-state";
 import "reflect-metadata";
 require("electron-debug")({ enabled: true });
 
 import { ArgumentsParser } from "arguments";
-import container from "ioc/container";
-import TYPES from "ioc/types";
-import { ISettingsManager } from "managers";
 import Utils from "Utils";
 import { FreemanWindow } from "widgets";
 
@@ -23,8 +21,6 @@ if (parsedArguments.verbose) {
     Utils.trace("Running application in verbose mode");
 }
 
-const settingsManager = container.get<ISettingsManager>(TYPES.ISettingsManager);
-
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         Utils.trace("Shutting application down");
@@ -33,19 +29,28 @@ app.on("window-all-closed", () => {
 });
 
 app.on("ready", () => {
+    const mainWindowState = windowStateKeeper({
+        defaultHeight: 800,
+        defaultWidth: 1400
+    });
+
     const windowOptions: Electron.BrowserWindowConstructorOptions = {
         backgroundColor: "#272822",
         disableAutoHideCursor: true,
-        height: 800,
+        fullscreen: mainWindowState.isFullScreen,
+        height: mainWindowState.height,
         minHeight: 400,
         minWidth: 700,
         show: false,
         title: "FreeMAN",
-        width: 1400
+        width: mainWindowState.width,
+        x: mainWindowState.x,
+        y: mainWindowState.y
     };
 
     mainWindow = new FreemanWindow(windowOptions);
-    settingsManager.settings.fullscreen && mainWindow.maximize();
+    mainWindowState.manage(mainWindow);
+
     const menu = Menu.buildFromTemplate(FreemanWindow.menuTemplate);
     Menu.setApplicationMenu(menu);
 

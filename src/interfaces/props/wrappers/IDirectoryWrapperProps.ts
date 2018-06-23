@@ -2,6 +2,7 @@ import { IIntegratedTerminal } from "objects";
 import {
     IDirectoryCommonProps,
     IDirectoryManageableProps,
+    IPersistableProps,
     ISettingsManageableProps,
     IStatusNotifiableProps,
     IThemeableProps
@@ -13,7 +14,8 @@ interface IDirectoryWrapperProps extends
     IDirectoryManageableProps,
     IStatusNotifiableProps,
     ISettingsManageableProps,
-    IThemeableProps {
+    IThemeableProps,
+    IPersistableProps {
 
     /** The initial path the directory wrapper is set to. */
     initialPath: string;
