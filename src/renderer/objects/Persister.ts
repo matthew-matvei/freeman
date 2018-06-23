@@ -1,4 +1,4 @@
-import Config from "electron-config";
+import ElectronConfig from "electron-config";
 import { injectable } from "inversify";
 
 import { IPersister } from "objects";
@@ -8,11 +8,11 @@ import { IPersister } from "objects";
 class Persister implements IPersister {
 
     /** The underlying config object used for persisting internal application state. */
-    private readonly config: Config;
+    private readonly config: ElectronConfig;
 
     /** Initialises a new instance of the Persister class. */
     constructor() {
-        this.config = new Config({
+        this.config = new ElectronConfig({
             name: "freeman.internal.state"
         });
     }
