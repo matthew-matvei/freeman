@@ -60,7 +60,7 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
                     size={this.props.columnSizes.size}>
                     <div>Size</div>
                     <SplitPane
-                        size={this.props.columnSizes.createdOn}>
+                        size={this.props.columnSizes.lastModified}>
                         <div>Modified on</div>
                         <div>Created on</div>
                     </SplitPane>
