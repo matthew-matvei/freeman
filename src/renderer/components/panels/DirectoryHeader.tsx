@@ -53,16 +53,13 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
             style={directoryHeaderStyles}
             ref={element => this.container = element}>
             <SplitPane
-                allowResize={false}
                 style={splitPaneStyles}
                 size={this.props.columnSizes.name}>
                 <div>Name</div>
                 <SplitPane
-                    allowResize={false}
                     size={this.props.columnSizes.size}>
                     <div>Size</div>
                     <SplitPane
-                        allowResize={false}
                         size={this.props.columnSizes.createdOn}>
                         <div>Modified on</div>
                         <div>Created on</div>
