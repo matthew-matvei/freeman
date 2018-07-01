@@ -21,6 +21,9 @@ interface IDirectoryItem {
 
     /** The last time the directory item was modified. */
     lastModified: Date;
+
+    /** The date time the directory item was created. */
+    created: Date;
 }
 
 export default IDirectoryItem;

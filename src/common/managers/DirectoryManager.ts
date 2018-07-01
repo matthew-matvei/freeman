@@ -82,6 +82,7 @@ class DirectoryManager implements IDirectoryManager {
 
             return {
                 accessible: await this.isAccessible(fullPath),
+                created: fileStats.ctime,
                 isDirectory: fileStats.isDirectory(),
                 isHidden: await this.isHidden(fullPath, options.hideUnixStyleHiddenItems),
                 lastModified: fileStats.mtime,

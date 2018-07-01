@@ -9,6 +9,9 @@ interface IColumnSizes {
 
     /** The size of the 'last modified' column. */
     lastModified: number;
+
+    /** The size of the 'created on' column. */
+    createdOn: number;
 }
 
 export default IColumnSizes;

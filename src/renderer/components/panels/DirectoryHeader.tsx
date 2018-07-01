@@ -11,7 +11,7 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
     /** Divisors to use when calculating column widths. */
     private readonly divisors = {
         half: 2,
-        quarter: 4
+        sixth: 6
     };
 
     /** The parent container used for calculating column widths. */
@@ -27,8 +27,9 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
 
         this.props.updateColumnSizes(
             containerWidth / this.divisors.half,
-            containerWidth / this.divisors.quarter,
-            containerWidth / this.divisors.quarter);
+            containerWidth / this.divisors.sixth,
+            containerWidth / this.divisors.sixth,
+            containerWidth / this.divisors.sixth);
     }
 
     /**
@@ -60,7 +61,12 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
                     allowResize={false}
                     size={this.props.columnSizes.size}>
                     <div>Size</div>
-                    <div>Modified on</div>
+                    <SplitPane
+                        allowResize={false}
+                        size={this.props.columnSizes.createdOn}>
+                        <div>Modified on</div>
+                        <div>Created on</div>
+                    </SplitPane>
                 </SplitPane>
             </SplitPane>
         </div>;
