@@ -1,6 +1,7 @@
 import * as React from "react";
 import SplitPane from "react-split-pane";
 
+import { ColumnHeader } from "components/panels";
 import { IDirectoryHeaderProps } from "props/panels";
 
 import "styles/panels/DirectoryHeader.scss";
@@ -14,6 +15,8 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
         sixth: 6
     };
 
+    private nameSplitPane: SplitPane | null = null;
+
     /** The parent container used for calculating column widths. */
     private container?: HTMLDivElement | null;
 
@@ -25,11 +28,10 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
 
         const containerWidth = this.container.clientWidth;
 
-        this.props.updateColumnSizes(
-            containerWidth / this.divisors.half,
-            containerWidth / this.divisors.sixth,
-            containerWidth / this.divisors.sixth,
-            containerWidth / this.divisors.sixth);
+        this.props.updateColumnSize("name", containerWidth / this.divisors.half);
+        this.props.updateColumnSize("size", containerWidth / this.divisors.sixth);
+        this.props.updateColumnSize("lastModified", containerWidth / this.divisors.sixth);
+        this.props.updateColumnSize("createdOn", containerWidth / this.divisors.sixth);
     }
 
     /**
@@ -52,22 +54,20 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
             className="DirectoryHeader"
             style={directoryHeaderStyles}
             ref={element => this.container = element}>
-            <SplitPane
-                style={splitPaneStyles}
-                size={this.props.columnSizes.name}>
-                <div>Name</div>
-                <SplitPane
-                    size={this.props.columnSizes.size}>
-                    <div>Size</div>
-                    <SplitPane
-                        size={this.props.columnSizes.lastModified}>
-                        <div>Modified on</div>
+            <ColumnHeader heading="Name" columnStyles={splitPaneStyles} columnSize={this.props.columnSizes.name}>
+                <ColumnHeader heading="Size" columnSize={this.props.columnSizes.size}>
+                    <ColumnHeader heading="Modified on" columnSize={this.props.columnSizes.lastModified}>
                         <div>Created on</div>
-                    </SplitPane>
-                </SplitPane>
-            </SplitPane>
+                    </ColumnHeader>
+                </ColumnHeader>
+            </ColumnHeader>
         </div>;
+    }
+
+    private handleSizeChange(newSize: number) {
+        if (this.nameSplitPane) { }
     }
 }
 
 export default DirectoryHeader;
+

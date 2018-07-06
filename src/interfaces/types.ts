@@ -18,3 +18,5 @@ export type StatusUpdate = "notification" | "itemCount" | "chosenCount";
 
 /** The direction in which to scroll a scroll area. */
 export type ScrollToDirection = "top" | "bottom";
+
+export type ColumnType = "name" | "size" | "lastModified" | "createdOn";
