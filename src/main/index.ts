@@ -6,11 +6,6 @@ import { ArgumentsParser } from "arguments";
 import Utils from "Utils";
 import { FreemanWindow } from "widgets";
 
-const isDev = require("electron-is-dev");
-if (isDev) {
-    require("electron-debug")({ enabled: true });
-}
-
 let mainWindow: FreemanWindow | null = null;
 
 const parsedArguments = ArgumentsParser.parse(process.argv);
@@ -23,6 +18,11 @@ if (parsedArguments.version) {
 if (parsedArguments.verbose) {
     process.env.VERBOSE = "1";
     Utils.trace("Running application in verbose mode");
+}
+
+const isDev = require("electron-is-dev");
+if (parsedArguments.openInDevelopment || isDev) {
+    require("electron-debug")({ enabled: true });
 }
 
 app.on("window-all-closed", () => {

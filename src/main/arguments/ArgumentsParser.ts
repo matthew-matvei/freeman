@@ -12,6 +12,7 @@ export default {
      */
     parse(args: string[]): IParsedArguments {
         const result: IParsedArguments = {
+            openInDevelopment: false,
             verbose: false,
             version: false
         };
@@ -21,6 +22,8 @@ export default {
                 result.version = true;
             } else if (verboseRequested(arg)) {
                 result.verbose = true;
+            } else if (openInDevelopmentRequested(arg)) {
+                result.openInDevelopment = true;
             }
         });
 
@@ -48,4 +51,8 @@ function verboseRequested(arg: string): boolean {
  */
 function versionRequested(arg: string): boolean {
     return arg === "--version" || arg === "-v";
+}
+
+function openInDevelopmentRequested(arg: string): boolean {
+    return arg === "--dev" || arg === "-d";
 }

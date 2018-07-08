@@ -2,6 +2,7 @@
 interface IParsedArguments {
     verbose: boolean;
     version: boolean;
+    openInDevelopment: boolean;
 }
 
 export default IParsedArguments;
