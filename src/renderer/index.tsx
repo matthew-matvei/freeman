@@ -19,9 +19,12 @@ import Utils from "Utils";
 
 import "styles/main.scss";
 
-installExtension(REACT_DEVELOPER_TOOLS)
-    .then(name => log.info("Installed plugin", name))
-    .catch(error => log.error(error));
+const isDev = require("electron-is-dev");
+if (isDev) {
+    installExtension(REACT_DEVELOPER_TOOLS)
+        .then(name => log.info("Installed plugin", name))
+        .catch(error => log.error(error));
+}
 
 if (remote.process.env.VERBOSE) {
     process.env.VERBOSE = "1";
