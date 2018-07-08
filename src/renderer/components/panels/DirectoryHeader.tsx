@@ -1,7 +1,9 @@
+import autobind from "autobind-decorator";
 import * as React from "react";
-import SplitPane from "react-split-pane";
 
+import { ColumnHeader } from "components/panels";
 import { IDirectoryHeaderProps } from "props/panels";
+import { ColumnType } from "types";
 
 import "styles/panels/DirectoryHeader.scss";
 
@@ -11,7 +13,7 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
     /** Divisors to use when calculating column widths. */
     private readonly divisors = {
         half: 2,
-        quarter: 4
+        sixth: 6
     };
 
     /** The parent container used for calculating column widths. */
@@ -25,10 +27,9 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
 
         const containerWidth = this.container.clientWidth;
 
-        this.props.updateColumnSizes(
-            containerWidth / this.divisors.half,
-            containerWidth / this.divisors.quarter,
-            containerWidth / this.divisors.quarter);
+        this.props.updateColumnSize("name", containerWidth / this.divisors.half);
+        this.props.updateColumnSize("size", containerWidth / this.divisors.sixth);
+        this.props.updateColumnSize("lastModified", containerWidth / this.divisors.sixth);
     }
 
     /**
@@ -51,19 +52,32 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
             className="DirectoryHeader"
             style={directoryHeaderStyles}
             ref={element => this.container = element}>
-            <SplitPane
-                allowResize={false}
-                style={splitPaneStyles}
-                size={this.props.columnSizes.name}>
-                <div>Name</div>
-                <SplitPane
-                    allowResize={false}
-                    size={this.props.columnSizes.size}>
-                    <div>Size</div>
-                    <div>Modified on</div>
-                </SplitPane>
-            </SplitPane>
+            <ColumnHeader
+                heading="Name"
+                columnType="name"
+                columnStyles={splitPaneStyles}
+                columnSize={this.props.columnSizes.name}
+                onChange={this.handleSizeChange}>
+                <ColumnHeader
+                    heading="Size"
+                    columnType="size"
+                    columnSize={this.props.columnSizes.size}
+                    onChange={this.handleSizeChange}>
+                    <ColumnHeader
+                        heading="Modified on"
+                        columnType="lastModified"
+                        columnSize={this.props.columnSizes.lastModified}
+                        onChange={this.handleSizeChange}>
+                        <div>Created on</div>
+                    </ColumnHeader>
+                </ColumnHeader>
+            </ColumnHeader>
         </div>;
+    }
+
+    @autobind
+    private handleSizeChange(newSize: number, columnType: ColumnType) {
+        this.props.updateColumnSize(columnType, newSize);
     }
 }
 

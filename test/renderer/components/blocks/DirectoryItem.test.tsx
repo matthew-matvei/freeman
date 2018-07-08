@@ -26,6 +26,7 @@ describe("<DirectoryItem />", () => {
     beforeEach(() => {
         directoryModel = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -35,6 +36,7 @@ describe("<DirectoryItem />", () => {
 
         props = {
             columnSizes: {
+                createdOn: 0,
                 lastModified: 25,
                 name: 50,
                 size: 25

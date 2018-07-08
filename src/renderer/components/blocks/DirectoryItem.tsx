@@ -22,6 +22,8 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         openInNativeExplorer: this.openInNativeExplorer
     };
 
+    private dateFormat = "L LTS";
+
     /** Gets the size of the directory item rendered in Kilobytes. */
     private get sizeInKiloBytes(): string | undefined {
         if (!this.props.model.size) {
@@ -44,6 +46,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
         const {
             backgroundStyle,
+            createdOnColumnStyle,
             nameColumnStyle,
             sizeColumnStyle,
             lastModifiedColumnStyle
@@ -74,7 +77,14 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
                     style={lastModifiedColumnStyle}
                     onClick={this.select}
                     onDoubleClick={this.activate}>
-                    {moment(model.lastModified).format("HH:mm:ss - D MMM, Y")}
+                    {moment(model.lastModified).format(this.dateFormat)}
+                </button>
+                <button
+                    className="createdOnColumn"
+                    style={createdOnColumnStyle}
+                    onClick={this.select}
+                    onDoubleClick={this.activate}>
+                    {moment(model.created).format(this.dateFormat)}
                 </button>
             </div>
         </HotKeys>;
@@ -119,8 +129,14 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
             width: `${this.props.columnSizes.lastModified}px`
         };
 
+        const createdOnColumnStyle: React.CSSProperties = {
+            ...nameColumnStyle,
+            width: undefined
+        };
+
         return {
             backgroundStyle,
+            createdOnColumnStyle,
             lastModifiedColumnStyle,
             nameColumnStyle,
             sizeColumnStyle

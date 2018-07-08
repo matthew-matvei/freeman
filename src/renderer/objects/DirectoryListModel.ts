@@ -2,7 +2,7 @@ import { IDirectoryItem, IItemClipboard } from "models";
 import { DirectoryTextFinder } from "objects";
 import { IDirectoryListProps } from "props/panels";
 import { IDirectoryListState } from "states/panels";
-import { ClipboardAction } from "types";
+import { ClipboardAction, MappedColumnSizes } from "types";
 
 /** Provides a model that handles non-view DirectoryList functionality. */
 class DirectoryListModel {
@@ -75,7 +75,8 @@ class DirectoryListModel {
      */
     public propsChanged(prevProps: IDirectoryListProps, nextProps: IDirectoryListProps): boolean {
         return prevProps.isSelectedPane !== nextProps.isSelectedPane ||
-            prevProps.path !== nextProps.path;
+            prevProps.path !== nextProps.path ||
+            DirectoryListModel.columnSizeChanged(prevProps.columnSizes, nextProps.columnSizes);
     }
 
     /**
@@ -132,6 +133,22 @@ class DirectoryListModel {
     /** Clears the selected index cache. */
     public clearSelectedIndexCache() {
         this.selectedIndexCache = [];
+    }
+
+    /**
+     * Returns whether a column size has changed between the given previous and next column sizes.
+     *
+     * @param previousColumnSizes the previous column sizes
+     * @param nextColumnSizes the next received column sizes
+     *
+     * @returns whether a column size has changed between the given previous and next column sizes
+     */
+    private static columnSizeChanged(
+        previousColumnSizes: MappedColumnSizes,
+        nextColumnSizes: MappedColumnSizes): boolean {
+        const keys = Object.keys(previousColumnSizes) as Array<keyof MappedColumnSizes>;
+
+        return keys.some(columnType => previousColumnSizes[columnType] !== nextColumnSizes[columnType]);
     }
 }
 

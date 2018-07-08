@@ -75,6 +75,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
 
         const defaultItem: IDirectoryItem = {
             accessible: true,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),

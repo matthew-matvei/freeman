@@ -3,5 +3,9 @@
     .Item {
         display: flex;
         align-items: center;
+
+        button {
+            flex: 0 0 auto;
+        }
     }
 }

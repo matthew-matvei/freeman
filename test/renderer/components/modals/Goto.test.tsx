@@ -36,6 +36,7 @@ describe("<Goto />", () => {
 
         item1 = {
             accessible: true,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -45,6 +46,7 @@ describe("<Goto />", () => {
 
         item2 = {
             accessible: true,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -54,6 +56,7 @@ describe("<Goto />", () => {
 
         inaccessibleItem = {
             accessible: false,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
