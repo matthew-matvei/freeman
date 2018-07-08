@@ -105,6 +105,7 @@
     "electron-debug": "^2.0.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-fswin": "^2.18.2",
+    "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.13",
     "electron-window-state": "^4.1.1",
     "file-icons-js": "github:websemantics/file-icons-js",

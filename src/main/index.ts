@@ -1,11 +1,15 @@
 import { app, dialog, ipcMain, Menu } from "electron";
 import windowStateKeeper from "electron-window-state";
 import "reflect-metadata";
-require("electron-debug")({ enabled: true });
 
 import { ArgumentsParser } from "arguments";
 import Utils from "Utils";
 import { FreemanWindow } from "widgets";
+
+const isDev = require("electron-is-dev");
+if (isDev) {
+    require("electron-debug")({ enabled: true });
+}
 
 let mainWindow: FreemanWindow | null = null;
 
