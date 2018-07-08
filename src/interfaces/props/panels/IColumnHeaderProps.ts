@@ -4,7 +4,8 @@ interface IColumnHeaderProps {
     columnSize: number;
     columnStyles?: React.CSSProperties;
     heading: string;
-    onChange(newSize: number, columnName: ColumnType): void;
+    columnType: ColumnType;
+    onChange(newSize: number, columnType: ColumnType): void;
 }
 
 export default IColumnHeaderProps;

@@ -10,7 +10,7 @@ class ColumnHeader extends React.PureComponent<IColumnHeaderProps> {
         return <SplitPane
             style={this.props.columnStyles}
             size={this.props.columnSize}
-            onChange={}>
+            onChange={this.handleChange}>
             <div>{this.props.heading}</div>
             {this.props.children}
         </SplitPane>;
@@ -18,7 +18,7 @@ class ColumnHeader extends React.PureComponent<IColumnHeaderProps> {
 
     @autobind
     private handleChange(newSize: number) {
-
+        this.props.onChange(newSize, this.props.columnType);
     }
 }
 

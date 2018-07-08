@@ -1,4 +1,4 @@
-import { IColumnSizes } from "models";
+import { MappedColumnSizes } from "types";
 
 /** Describes the internal state of the DirectoryPane. */
 interface IDirectoryWrapperState {
@@ -10,7 +10,7 @@ interface IDirectoryWrapperState {
     isTerminalOpen: boolean;
 
     /** The sizes of the columns visible in the directory list. */
-    columnSizes: IColumnSizes;
+    columnSizes: MappedColumnSizes;
 
     /** The height of the directory list, including the unit of fixed or relative measurement. */
     directoryListHeight: string;

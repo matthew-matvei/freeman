@@ -20,3 +20,7 @@ export type StatusUpdate = "notification" | "itemCount" | "chosenCount";
 export type ScrollToDirection = "top" | "bottom";
 
 export type ColumnType = "name" | "size" | "lastModified" | "createdOn";
+
+export type MappedColumnSizes = {
+    [P in ColumnType]: number
+};

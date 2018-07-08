@@ -7,10 +7,10 @@ interface IDirectoryHeaderProps extends IColumnProps, IThemeableProps {
     /**
      * Updates the named directory list column's size with the one given (in pixels).
      *
-     * @param columnName the name of the column whose size is to be updated
+     * @param columnType the name of the column whose size is to be updated
      * @param newSize the size to update the given column to
      */
-    updateColumnSize(columnName: ColumnType, newSize: number): void;
+    updateColumnSize(columnType: ColumnType, newSize: number): void;
 }
 
 export default IDirectoryHeaderProps;

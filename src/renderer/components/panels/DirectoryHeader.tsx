@@ -1,8 +1,9 @@
+import autobind from "autobind-decorator";
 import * as React from "react";
-import SplitPane from "react-split-pane";
 
 import { ColumnHeader } from "components/panels";
 import { IDirectoryHeaderProps } from "props/panels";
+import { ColumnType } from "types";
 
 import "styles/panels/DirectoryHeader.scss";
 
@@ -14,8 +15,6 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
         half: 2,
         sixth: 6
     };
-
-    private nameSplitPane: SplitPane | null = null;
 
     /** The parent container used for calculating column widths. */
     private container?: HTMLDivElement | null;
@@ -54,9 +53,22 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
             className="DirectoryHeader"
             style={directoryHeaderStyles}
             ref={element => this.container = element}>
-            <ColumnHeader heading="Name" columnStyles={splitPaneStyles} columnSize={this.props.columnSizes.name}>
-                <ColumnHeader heading="Size" columnSize={this.props.columnSizes.size}>
-                    <ColumnHeader heading="Modified on" columnSize={this.props.columnSizes.lastModified}>
+            <ColumnHeader
+                heading="Name"
+                columnType="name"
+                columnStyles={splitPaneStyles}
+                columnSize={this.props.columnSizes.name}
+                onChange={this.handleSizeChange}>
+                <ColumnHeader
+                    heading="Size"
+                    columnType="size"
+                    columnSize={this.props.columnSizes.size}
+                    onChange={this.handleSizeChange}>
+                    <ColumnHeader
+                        heading="Modified on"
+                        columnType="lastModified"
+                        columnSize={this.props.columnSizes.lastModified}
+                        onChange={this.handleSizeChange}>
                         <div>Created on</div>
                     </ColumnHeader>
                 </ColumnHeader>
@@ -64,10 +76,10 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
         </div>;
     }
 
-    private handleSizeChange(newSize: number) {
-        if (this.nameSplitPane) { }
+    @autobind
+    private handleSizeChange(newSize: number, columnType: ColumnType) {
+        this.props.updateColumnSize(columnType, newSize);
     }
 }
 
 export default DirectoryHeader;
-

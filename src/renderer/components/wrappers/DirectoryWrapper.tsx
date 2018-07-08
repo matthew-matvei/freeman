@@ -12,6 +12,7 @@ import { IDirectoryWrapperState } from "states/panels";
 import Utils from "Utils";
 
 import "styles/wrappers/DirectoryWrapper.scss";
+import { ColumnType } from "types";
 
 /** The wrapper component for displaying directory content and terminal. */
 class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirectoryWrapperState> {
@@ -93,7 +94,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
                             className="scrollAreaWrapper">
                             <DirectoryHeader
                                 columnSizes={this.state.columnSizes}
-                                updateColumnSizes={this.updateColumnSizes}
+                                updateColumnSize={this.updateColumnSize}
                                 theme={this.props.theme} />
                             <div className="clippedHeight">
                                 <ScrollArea
@@ -161,19 +162,18 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     /**
      * Updates the column sizes with those given (in pixels).
      *
-     * @param nameColumnSize - the size that the 'name' column should be
-     * @param sizeColumnSize - the size that the 'size' column should be
-     * @param lastModifiedSize - the size that the 'last modified on' column should be
+     * @param newColumnSize - the size that the 'name' column should be
      */
     @autobind
-    private updateColumnSizes(nameColumnSize: number, sizeColumnSize: number, lastModifiedSize: number) {
-        this.setState({
-            columnSizes: {
-                lastModified: lastModifiedSize,
-                name: nameColumnSize,
-                size: sizeColumnSize
-            }
-        } as IDirectoryWrapperState);
+    private updateColumnSize(columnType: ColumnType, newColumnSize: number) {
+        if (this.state.columnSizes[columnType] === newColumnSize) {
+            return;
+        }
+
+        const nextSizes = { ...this.state.columnSizes };
+        nextSizes[columnType] = newColumnSize;
+
+        this.setState({ columnSizes: nextSizes });
     }
 
     /**
