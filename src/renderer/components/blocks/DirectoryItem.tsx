@@ -131,7 +131,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
 
         const createdOnColumnStyle: React.CSSProperties = {
             ...nameColumnStyle,
-            width: `${this.props.columnSizes.createdOn}px`
+            width: undefined
         };
 
         return {

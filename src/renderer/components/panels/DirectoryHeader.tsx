@@ -30,7 +30,6 @@ class DirectoryHeader extends React.PureComponent<IDirectoryHeaderProps> {
         this.props.updateColumnSize("name", containerWidth / this.divisors.half);
         this.props.updateColumnSize("size", containerWidth / this.divisors.sixth);
         this.props.updateColumnSize("lastModified", containerWidth / this.divisors.sixth);
-        this.props.updateColumnSize("createdOn", containerWidth / this.divisors.sixth);
     }
 
     /**

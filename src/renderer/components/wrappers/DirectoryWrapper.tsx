@@ -52,7 +52,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
 
         this.state = {
             columnSizes: {
-                createdOn: 50,
+                createdOn: 0,
                 lastModified: 50,
                 name: 50,
                 size: 50
