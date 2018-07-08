@@ -1,4 +1,3 @@
-import { IColumnSizes } from "models";
 import { MappedColumnSizes } from "types";
 
 /** Describes column properties of any components that contain columns. */
