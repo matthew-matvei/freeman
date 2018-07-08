@@ -135,6 +135,14 @@ class DirectoryListModel {
         this.selectedIndexCache = [];
     }
 
+    /**
+     * Returns whether a column size has changed between the given previous and next column sizes.
+     *
+     * @param previousColumnSizes the previous column sizes
+     * @param nextColumnSizes the next received column sizes
+     *
+     * @returns whether a column size has changed between the given previous and next column sizes
+     */
     private static columnSizeChanged(
         previousColumnSizes: MappedColumnSizes,
         nextColumnSizes: MappedColumnSizes): boolean {

@@ -19,8 +19,10 @@ export type StatusUpdate = "notification" | "itemCount" | "chosenCount";
 /** The direction in which to scroll a scroll area. */
 export type ScrollToDirection = "top" | "bottom";
 
+/** The type of the directory list column. */
 export type ColumnType = "name" | "size" | "lastModified" | "createdOn";
 
+/** A mapping of column types to their respective sizes. */
 export type MappedColumnSizes = {
     [P in ColumnType]: number
 };
