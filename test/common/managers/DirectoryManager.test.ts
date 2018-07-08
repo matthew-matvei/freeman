@@ -59,6 +59,7 @@ describe("DirectoryManager's", () => {
     beforeEach(() => {
         testFile = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -68,6 +69,7 @@ describe("DirectoryManager's", () => {
 
         testFile2 = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -77,6 +79,7 @@ describe("DirectoryManager's", () => {
 
         testFolder = {
             accessible: true,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -86,6 +89,7 @@ describe("DirectoryManager's", () => {
 
         testFolder2 = {
             accessible: true,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -122,7 +126,7 @@ describe("DirectoryManager's", () => {
         it("returns an empty list when pointed to empty folder", async () => {
             const emptyFolder = path.join(fakeDirPath, fakeFolder);
             fileSystemWrapper.setup(async fsw => fsw.lstatAsync(It.isAnyString()))
-                .returns(async () =>  ({ isDirectory: () => true }) as fs.Stats);
+                .returns(async () => ({ isDirectory: () => true }) as fs.Stats);
             fileSystemWrapper.setup(async fsw => fsw.readdirAsync(It.isAnyString())).returns(async () => []);
 
             const result = await directoryManager.listDirectory(emptyFolder, options);
@@ -361,6 +365,7 @@ describe("DirectoryManager's", () => {
             const invalidFileName = "invalidFileName.txt";
             testFile = {
                 accessible: true,
+                created: new Date(),
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),
@@ -463,6 +468,7 @@ describe("DirectoryManager's", () => {
             const invalidFileName = "invalidFileName.txt";
             testFile = {
                 accessible: true,
+                created: new Date(),
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),

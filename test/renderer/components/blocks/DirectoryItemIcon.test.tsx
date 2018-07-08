@@ -22,6 +22,7 @@ describe("<DirectoryItemIcon />", () => {
     beforeEach(() => {
         directoryItem = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),

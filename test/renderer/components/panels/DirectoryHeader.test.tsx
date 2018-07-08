@@ -19,18 +19,18 @@ describe("<DirectoryHeader />", () => {
 
     before(() => {
         sandbox = Sinon.createSandbox();
-
     });
 
     beforeEach(() => {
         props = {
             columnSizes: {
+                createdOn: 0,
                 lastModified: 50,
                 name: 50,
                 size: 50
             },
             theme: applicationTheme,
-            updateColumnSizes: sandbox.stub()
+            updateColumnSize: sandbox.stub()
         };
 
         component = <DirectoryHeader {...props} />;
@@ -48,11 +48,11 @@ describe("<DirectoryHeader />", () => {
     });
 
     it("updates column sizes after mounting", () => {
-        const updateColumnSizesStub = sandbox.stub();
-        props.updateColumnSizes = updateColumnSizesStub;
+        const updateColumnSizeStub = sandbox.stub();
+        props.updateColumnSize = updateColumnSizeStub;
         component = <DirectoryHeader {...props} />;
         mount(component);
 
-        expect(updateColumnSizesStub.calledOnce).to.be.true;
+        expect(updateColumnSizeStub.callCount).to.be.greaterThan(0);
     });
 });

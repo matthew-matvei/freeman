@@ -24,6 +24,7 @@ describe("DirectoryListModel's", () => {
     beforeEach(() => {
         directoryItem1 = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -114,6 +115,7 @@ describe("DirectoryListModel's", () => {
 
             const commonProps: IDirectoryListProps = {
                 columnSizes: {
+                    createdOn: 0,
                     lastModified: 25,
                     name: 50,
                     size: 25
@@ -129,8 +131,8 @@ describe("DirectoryListModel's", () => {
                 theme: applicationTheme
             };
 
-            prevProps = { ...commonProps };
-            nextProps = { ...commonProps };
+            prevProps = JSON.parse(JSON.stringify(commonProps));
+            nextProps = JSON.parse(JSON.stringify(commonProps));
         });
 
         it("returns false when nothing has changed", () => {
@@ -141,6 +143,20 @@ describe("DirectoryListModel's", () => {
 
         it("detects changes in 'isSelectedPane'", () => {
             nextProps.isSelectedPane = true;
+            const result = directoryListModel.propsChanged(prevProps, nextProps);
+
+            expect(result).to.be.true;
+        });
+
+        it("detects changes in 'path'", () => {
+            nextProps.path = "some/other/path";
+            const result = directoryListModel.propsChanged(prevProps, nextProps);
+
+            expect(result).to.be.true;
+        });
+
+        it("detects changes in column sizes", () => {
+            nextProps.columnSizes.name = prevProps.columnSizes.name * 2;
             const result = directoryListModel.propsChanged(prevProps, nextProps);
 
             expect(result).to.be.true;

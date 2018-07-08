@@ -15,6 +15,7 @@ describe("DirectorySorter's", () => {
         items = [];
         testItem1 = {
             accessible: true,
+            created: new Date(),
             isDirectory: true,
             isHidden: false,
             lastModified: new Date(),
@@ -23,6 +24,7 @@ describe("DirectorySorter's", () => {
         };
         testItem2 = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
@@ -31,6 +33,7 @@ describe("DirectorySorter's", () => {
         };
         testItem3 = {
             accessible: true,
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),

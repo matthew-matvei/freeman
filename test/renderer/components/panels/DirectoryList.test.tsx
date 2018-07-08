@@ -57,6 +57,7 @@ describe("<DirectoryList />", () => {
         items = [
             {
                 accessible: true,
+                created: new Date(),
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),
@@ -65,6 +66,7 @@ describe("<DirectoryList />", () => {
             },
             {
                 accessible: true,
+                created: new Date(),
                 isDirectory: false,
                 isHidden: false,
                 lastModified: new Date(),
@@ -81,6 +83,7 @@ describe("<DirectoryList />", () => {
 
         props = {
             columnSizes: {
+                createdOn: 0,
                 lastModified: 25,
                 name: 50,
                 size: 25
