@@ -1,8 +1,11 @@
 .DirectoryList {
 
     .Item {
-        // display: flex;
-        display: inline-block;
-        // align-items: center;
+        display: flex;
+        align-items: center;
+
+        button {
+            flex: 0 0 auto;
+        }
     }
 }
