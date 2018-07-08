@@ -1,7 +1,7 @@
 {
   "name": "freeman",
   "productName": "FreeMAN",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "A free, extensible, cross-platform file manager for power users",
   "main": "app/main.js",
   "build": {
@@ -103,8 +103,9 @@
     "electron-about-window": "^1.10.0",
     "electron-config": "^1.0.0",
     "electron-debug": "^2.0.0",
-    "electron-devtools-installer": "^2.2.3",
+    "electron-devtools-installer": "^2.2.4",
     "electron-fswin": "^2.18.2",
+    "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.13",
     "electron-window-state": "^4.1.1",
     "file-icons-js": "github:websemantics/file-icons-js",

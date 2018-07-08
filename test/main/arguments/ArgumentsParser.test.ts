@@ -32,5 +32,19 @@ describe("ArgumentsParser's", () => {
 
             expect(result.version).to.be.true;
         });
+
+        it("parses '--dev' flag successfully", () => {
+            const args = ["--dev"];
+            const result = ArgumentsParser.parse(args);
+
+            expect(result.openInDevelopment).to.be.true;
+        });
+
+        it("parses '-d' flag successfully", () => {
+            const args = ["-d"];
+            const result = ArgumentsParser.parse(args);
+
+            expect(result.openInDevelopment).to.be.true;
+        });
     });
 });

@@ -1,7 +1,6 @@
 import { app, dialog, ipcMain, Menu } from "electron";
 import windowStateKeeper from "electron-window-state";
 import "reflect-metadata";
-require("electron-debug")({ enabled: true });
 
 import { ArgumentsParser } from "arguments";
 import Utils from "Utils";
@@ -19,6 +18,11 @@ if (parsedArguments.version) {
 if (parsedArguments.verbose) {
     process.env.VERBOSE = "1";
     Utils.trace("Running application in verbose mode");
+}
+
+const isDev = require("electron-is-dev");
+if (parsedArguments.openInDevelopment || isDev) {
+    require("electron-debug")({ enabled: true });
 }
 
 app.on("window-all-closed", () => {
