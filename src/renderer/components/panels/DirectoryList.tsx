@@ -466,9 +466,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (oldName && newName) {
             Utils.trace(`Requesting to rename item from ${oldName} to ${newName}`);
             await this.props.directoryManager.renameItem(oldName, newName, this.props.path);
-
-            this.setState({ renamingItem: false } as IDirectoryListState);
         }
+
+        this.setState({ renamingItem: false } as IDirectoryListState);
     }
 
     /**
