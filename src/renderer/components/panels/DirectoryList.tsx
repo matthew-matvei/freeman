@@ -352,6 +352,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
+        if (this.state.creatingNewItem || this.state.renamingItem) {
+            return;
+        }
+
         if (event.key.length === 1) {
             const indexToSelect = this.model.textFinder.addCharAndSearch(
                 event.key, this.nonHiddenDirectoryItems);
