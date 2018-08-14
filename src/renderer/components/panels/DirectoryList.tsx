@@ -275,9 +275,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (itemName && itemTypeToCreate) {
             Utils.trace(`Requesting to create ${itemTypeToCreate} called ${itemName} at ${this.props.path}`);
             await this.props.directoryManager.createItem(itemName, this.props.path, itemTypeToCreate);
-
-            this.setState({ creatingNewItem: false } as IDirectoryListState);
         }
+
+        this.setState({ creatingNewItem: false } as IDirectoryListState);
     }
 
     /**

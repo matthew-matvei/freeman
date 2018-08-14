@@ -89,18 +89,6 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      */
     @autobind
     private handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
-        if (!this.input) {
-            return;
-        }
-
-        if (!this.validate(this.input.value)) {
-            this.setState({ isInvalid: true } as IInputItemState);
-
-            return;
-        } else {
-            this.setState({ isInvalid: false } as IInputItemState);
-        }
-
         if (this.props.sendUpCreateItem) {
             return this.handleCreate(event);
         } else if (this.props.sendUpRenameItem) {
@@ -118,10 +106,24 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      * @require this.input && this.props.sendUpCreateItem
      */
     private handleCreate(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (!this.input) {
+            return;
+        }
+
+        if (event.key === "Escape") {
+            return this.props.sendUpCreateItem!();
+        }
+
+        if (!this.validate(this.input.value)) {
+            this.setState({ isInvalid: true } as IInputItemState);
+
+            return;
+        } else {
+            this.setState({ isInvalid: false } as IInputItemState);
+        }
+
         if (event.key === "Enter") {
             return this.props.sendUpCreateItem!(this.input!.value, this.props.creatingItemType);
-        } else if (event.key === "Escape") {
-            return this.props.sendUpCreateItem!();
         }
     }
 
@@ -137,6 +139,22 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
             throw new LoggedError("sendUpRenameItem is not defined");
         }
 
+        if (!this.input) {
+            return;
+        }
+
+        if (event.key === "Escape") {
+            return this.props.sendUpRenameItem();
+        }
+
+        if (!this.validate(this.input.value)) {
+            this.setState({ isInvalid: true } as IInputItemState);
+
+            return;
+        } else {
+            this.setState({ isInvalid: false } as IInputItemState);
+        }
+
         if (event.key === "Enter") {
             if (!this.props.thisItem) {
                 throw new LoggedError("thisItem is not defined");
@@ -144,8 +162,6 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
 
             return this.props.sendUpRenameItem(this.props.thisItem.name, this.input!.value);
 
-        } else if (event.key === "Escape") {
-            return this.props.sendUpRenameItem();
         }
     }
 
