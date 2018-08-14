@@ -89,6 +89,10 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      */
     @autobind
     private handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (!this.input) {
+            return;
+        }
+
         if (this.props.sendUpCreateItem) {
             return this.handleCreate(event);
         } else if (this.props.sendUpRenameItem) {
@@ -106,15 +110,11 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      * @require this.input && this.props.sendUpCreateItem
      */
     private handleCreate(event: React.KeyboardEvent<HTMLInputElement>) {
-        if (!this.input) {
-            return;
-        }
-
         if (event.key === "Escape") {
             return this.props.sendUpCreateItem!();
         }
 
-        if (!this.validate(this.input.value)) {
+        if (!this.validate(this.input!.value)) {
             this.setState({ isInvalid: true } as IInputItemState);
 
             return;
@@ -135,19 +135,11 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
      * @require this.input && this.props.sendUpRenameItem
      */
     private handleRename(event: React.KeyboardEvent<HTMLInputElement>) {
-        if (!this.props.sendUpRenameItem) {
-            throw new LoggedError("sendUpRenameItem is not defined");
-        }
-
-        if (!this.input) {
-            return;
-        }
-
         if (event.key === "Escape") {
-            return this.props.sendUpRenameItem();
+            return this.props.sendUpRenameItem!();
         }
 
-        if (!this.validate(this.input.value)) {
+        if (!this.validate(this.input!.value)) {
             this.setState({ isInvalid: true } as IInputItemState);
 
             return;
@@ -160,7 +152,7 @@ class InputItem extends React.Component<IInputItemProps, IInputItemState> {
                 throw new LoggedError("thisItem is not defined");
             }
 
-            return this.props.sendUpRenameItem(this.props.thisItem.name, this.input!.value);
+            return this.props.sendUpRenameItem!(this.props.thisItem.name, this.input!.value);
 
         }
     }
