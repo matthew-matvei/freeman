@@ -22,6 +22,10 @@ script:
   - npm run test
   - npm run package
 
+cache:
+  directories:
+    - "node_modules"
+
 deploy:
   provider: releases
   api_key:
