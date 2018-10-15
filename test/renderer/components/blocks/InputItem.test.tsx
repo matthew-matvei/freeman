@@ -6,10 +6,10 @@ import "reflect-metadata";
 import Sinon, { SinonSandbox } from "sinon";
 
 import { InputItem } from "components/blocks";
+import { IDirectoryItem } from "models";
 import { IInputItemProps } from "props/blocks";
 import applicationTheme from "settings/internal/themes/dark";
 import { IInputItemState } from "states/blocks";
-import { IDirectoryItem } from 'models';
 
 Enzyme.configure({ adapter: new ReactSixteenAdapter() });
 
@@ -108,14 +108,14 @@ describe("<InputItem />", () => {
 
     describe("when renaming an item", () => {
         let sendUpRenameItemStub: Sinon.SinonStub;
-        let item: IDirectoryItem = {
+        const item: IDirectoryItem = {
             accessible: true,
-            name: "Some item",
-            path: "/path/to/",
+            created: new Date(),
             isDirectory: false,
             isHidden: false,
             lastModified: new Date(),
-            created: new Date()
+            name: "Some item",
+            path: "/path/to/"
         };
 
         beforeEach(() => {
@@ -123,7 +123,7 @@ describe("<InputItem />", () => {
             props.sendUpRenameItem = sendUpRenameItemStub;
             props.thisItem = item;
             component = <InputItem {...props} />;
-        })
+        });
 
         it("always allows the user to cancel item renaming", () => {
             const wrapper = mount(component);
