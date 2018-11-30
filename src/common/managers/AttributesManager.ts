@@ -1,4 +1,4 @@
-import * as fswin from "electron-fswin";
+import * as fswin from "fswin";
 import { injectable } from "inversify";
 
 import LoggedError from "errors/LoggedError";
@@ -12,7 +12,7 @@ class AttributesManager implements IAttributesManager {
     /** @inheritDoc */
     public async getAttributesAsync(pathToItem: string): Promise<IAttributes> {
         if (!fswin) {
-            throw new LoggedError("Could not import electron-fswin module");
+            throw new LoggedError("Could not import fswin module");
         }
 
         return new Promise<IAttributes>((resolve, reject) => {
