@@ -12,7 +12,7 @@ class Persister implements IPersister {
 
     /** Initialises a new instance of the Persister class. */
     constructor() {
-        this.config = new ElectronStore({
+        this.config = new ElectronStore<{}>({
             name: "freeman.internal.state"
         });
     }
