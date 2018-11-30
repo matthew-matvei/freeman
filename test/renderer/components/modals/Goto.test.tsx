@@ -65,8 +65,8 @@ describe("<Goto />", () => {
         };
 
         directoryManager = Mock.ofType<IDirectoryManager>();
-        directoryManager.setup(dm => dm.listDirectory(It.isAnyString(), It.isAny()))
-            .returns(() => Promise.resolve([item1, item2, inaccessibleItem]));
+        directoryManager.setup(async dm => dm.listDirectory(It.isAnyString(), It.isAny()))
+            .returns(async () => Promise.resolve([item1, item2, inaccessibleItem]));
 
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
@@ -116,7 +116,8 @@ describe("<Goto />", () => {
     });
 
     it("updates 'items' in state after mounting", async () => {
-        const wrapper = await shallow(component);
+        const wrapper = shallow(component);
+        await Promise.resolve();
         await Promise.resolve();
 
         const state = wrapper.state() as IGotoState;
@@ -135,7 +136,8 @@ describe("<Goto />", () => {
 
     it("updating 'items' re-renders the component once", async () => {
         renderSpy = Sinon.spy(Goto.prototype, "render");
-        await shallow(component);
+        shallow(component);
+        await Promise.resolve();
 
         expect(renderSpy.callCount).to.equal(1);
     });
