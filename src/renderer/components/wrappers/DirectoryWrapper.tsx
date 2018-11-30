@@ -1,4 +1,5 @@
 import autobind from "autobind-decorator";
+import os from "os";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 import ScrollArea from "react-scrollbar/dist/no-css";
@@ -43,7 +44,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     public constructor(props: IDirectoryWrapperProps) {
         super(props);
 
-        const { persister, settingsManager, initialPath } = this.props;
+        const { persister, settingsManager } = this.props;
 
         const { displayAtStartup } = settingsManager.settings.terminal;
 
@@ -60,8 +61,16 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
             directoryListHeight: isTerminalOpen ?
                 this.storedDirectoryScrollAreaHeight || "65vh" : "100%",
             isTerminalOpen,
-            path: initialPath
+            path: os.homedir()
         };
+    }
+
+    public async componentDidMount() {
+        const lastPath = await this.getLastPath();
+
+        if (lastPath && lastPath !== this.state.path) {
+            this.setState({ path: lastPath });
+        }
     }
 
     /**
@@ -186,6 +195,21 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         this.setState({ path } as IDirectoryWrapperState);
         this.props.settingsManager.settings.terminal.syncNavigation &&
             this.props.integratedTerminal.changeDirectory(path);
+    }
+
+    private async getLastPath(): Promise<string | null> {
+        const lastPath = this.props.persister.get<string>(`directories.lastOpen.${this.props.id}`);
+        if (!lastPath) {
+            return null;
+        }
+
+        try {
+            await this.props.directoryManager.listDirectory(lastPath);
+
+            return lastPath;
+        } catch {
+            return null;
+        }
     }
 }
 

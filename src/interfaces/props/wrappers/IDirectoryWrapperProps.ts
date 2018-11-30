@@ -17,9 +17,6 @@ interface IDirectoryWrapperProps extends
     IThemeableProps,
     IPersistableProps {
 
-    /** The initial path the directory wrapper is set to. */
-    initialPath: string;
-
     integratedTerminal: IIntegratedTerminal;
 }
 

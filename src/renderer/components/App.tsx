@@ -1,5 +1,4 @@
 import autobind from "autobind-decorator";
-import os from "os";
 import * as React from "react";
 import { HotKeys } from "react-hotkeys";
 import SplitPane from "react-split-pane";
@@ -64,7 +63,9 @@ class App extends React.Component<IAppProps, IAppState> {
      * @returns a JSX element representing the main application view
      */
     public render(): JSX.Element {
-        const { directoryManager, keysManager, settingsManager, themeManager } = this.props;
+        const {
+            directoryManager, keysManager, settingsManager, themeManager, leftTerminal, rightTerminal, persister
+        } = this.props;
         const appStyle = { color: themeManager.theme.primaryColour };
         const resizerStyle: React.CSSProperties = {
             backgroundColor: this.props.themeManager.theme.resizers.colour
@@ -80,26 +81,24 @@ class App extends React.Component<IAppProps, IAppState> {
                             resizerStyle={resizerStyle}>
                             <DirectoryWrapper
                                 id="left"
-                                initialPath={os.homedir()}
                                 isSelectedPane={this.state.selectedPane === "left"}
                                 sendSelectedPaneUp={this.selectPane}
                                 directoryManager={directoryManager}
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
                                 theme={themeManager.theme}
-                                integratedTerminal={this.props.leftTerminal}
-                                persister={this.props.persister} />
+                                integratedTerminal={leftTerminal}
+                                persister={persister} />
                             <DirectoryWrapper
                                 id="right"
-                                initialPath={os.homedir()}
                                 isSelectedPane={this.state.selectedPane === "right"}
                                 sendSelectedPaneUp={this.selectPane}
                                 directoryManager={directoryManager}
                                 statusNotifier={this.statusNotifier}
                                 settingsManager={settingsManager}
                                 theme={themeManager.theme}
-                                integratedTerminal={this.props.rightTerminal}
-                                persister={this.props.persister} />
+                                integratedTerminal={rightTerminal}
+                                persister={persister} />
                         </SplitPane>
                     </div>
                     <Status {...this.state.status} theme={themeManager.theme} />

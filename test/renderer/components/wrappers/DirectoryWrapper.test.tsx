@@ -45,7 +45,6 @@ describe("<DirectoryWrapper />", () => {
         props = {
             directoryManager: directoryManager.object,
             id: "left",
-            initialPath: "path/to/initial",
             integratedTerminal: integratedTerminal.object,
             isSelectedPane: true,
             persister: persister.object,
@@ -77,13 +76,6 @@ describe("<DirectoryWrapper />", () => {
 
         expect(wrapper.findWhere(n => n.hasClass("directoryScrollArea")))
             .to.have.length(1);
-    });
-
-    it("starts with 'path' set to 'initialPath'", () => {
-        const wrapper = shallow(component);
-        const state = wrapper.state() as IDirectoryWrapperState;
-
-        expect(state.path).to.equal(props.initialPath);
     });
 
     it("re-renders only once when updating path", () => {
