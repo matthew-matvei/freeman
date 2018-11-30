@@ -275,9 +275,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (itemName && itemTypeToCreate) {
             Utils.trace(`Requesting to create ${itemTypeToCreate} called ${itemName} at ${this.props.path}`);
             await this.props.directoryManager.createItem(itemName, this.props.path, itemTypeToCreate);
-
-            this.setState({ creatingNewItem: false } as IDirectoryListState);
         }
+
+        this.setState({ creatingNewItem: false } as IDirectoryListState);
     }
 
     /**
@@ -352,6 +352,10 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
      */
     @autobind
     private handleKeyDown(event: React.KeyboardEvent<HTMLUListElement>) {
+        if (this.state.creatingNewItem || this.state.renamingItem) {
+            return;
+        }
+
         if (event.key.length === 1) {
             const indexToSelect = this.model.textFinder.addCharAndSearch(
                 event.key, this.nonHiddenDirectoryItems);
@@ -462,9 +466,9 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
         if (oldName && newName) {
             Utils.trace(`Requesting to rename item from ${oldName} to ${newName}`);
             await this.props.directoryManager.renameItem(oldName, newName, this.props.path);
-
-            this.setState({ renamingItem: false } as IDirectoryListState);
         }
+
+        this.setState({ renamingItem: false } as IDirectoryListState);
     }
 
     /**

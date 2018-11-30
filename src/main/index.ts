@@ -22,7 +22,7 @@ if (parsedArguments.verbose) {
 
 const isDev = require("electron-is-dev");
 if (parsedArguments.openInDevelopment || isDev) {
-    require("electron-debug")({ enabled: true });
+    require("electron-debug")({ enabled: true, showDevTools: false });
 }
 
 app.on("window-all-closed", () => {
