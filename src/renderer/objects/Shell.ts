@@ -1,6 +1,5 @@
 import { injectable } from "inversify";
 import * as pty from "node-pty";
-import { IPty } from "node-pty";
 import os from "os";
 
 import LoggedError from "errors/LoggedError";
@@ -11,7 +10,7 @@ import { IShell } from "objects";
 class Shell implements IShell {
 
     /** The underlying shell process. */
-    private process?: IPty;
+    private process?: pty.IPty;
 
     /** @inheritDoc */
     public spawn(shellName: string) {
