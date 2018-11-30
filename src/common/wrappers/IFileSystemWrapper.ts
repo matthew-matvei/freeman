@@ -58,7 +58,7 @@ interface IFileSystemWrapper {
      * @param options - options to use when creating the new file
      */
     writeFileAsync(
-        path: string | number | Buffer | URL,
+        path: string | number | Buffer,
         data: any,
         options?: string | {
             encoding?: string | null | undefined,
