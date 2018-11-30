@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import * as pty from "node-pty";
-import { ITerminal, ProcessEnv } from "node-pty/lib/interfaces";
+import { IPty } from "node-pty";
 import os from "os";
 
 import LoggedError from "errors/LoggedError";
@@ -11,13 +11,12 @@ import { IShell } from "objects";
 class Shell implements IShell {
 
     /** The underlying shell process. */
-    private process?: ITerminal;
+    private process?: IPty;
 
     /** @inheritDoc */
     public spawn(shellName: string) {
         this.process = pty.spawn(shellName, [], {
-            cwd: os.homedir(),
-            env: process.env as ProcessEnv
+            cwd: os.homedir()
         });
     }
 
