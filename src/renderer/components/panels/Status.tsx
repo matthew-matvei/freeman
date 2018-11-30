@@ -1,6 +1,6 @@
 import { shell } from "electron";
 import * as React from "react";
-import FaGithub from "react-icons/lib/fa/github";
+import { FaGithub } from "react-icons/fa";
 
 import { IStatusProps } from "props/panels";
 
