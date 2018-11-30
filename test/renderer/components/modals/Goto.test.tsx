@@ -66,7 +66,7 @@ describe("<Goto />", () => {
 
         directoryManager = Mock.ofType<IDirectoryManager>();
         directoryManager.setup(async dm => dm.listDirectory(It.isAnyString(), It.isAny()))
-            .returns(sandbox.stub().resolves([item1, item2, inaccessibleItem]));
+            .returns(async () => Promise.resolve([item1, item2, inaccessibleItem]));
 
         settingsManager = Mock.ofType<ISettingsManager>();
         settingsManager.setup(sm => sm.settings).returns(() => applicationSettings);
@@ -117,13 +117,12 @@ describe("<Goto />", () => {
 
     it("updates 'items' in state after mounting", async () => {
         const wrapper = shallow(component);
+        await Promise.resolve();
+        await Promise.resolve();
 
-        return directoryManager.object.listDirectory("/path/to", {} as any)
-            .then(() => {
-                const state = wrapper.state() as IGotoState;
+        const state = wrapper.state() as IGotoState;
 
-                expect(state.directoryItems).to.deep.equal([item1, item2, inaccessibleItem]);
-            });
+        expect(state.directoryItems).to.deep.equal([item1, item2, inaccessibleItem]);
     });
 
     it("first item in the QuickSelect is the current directory", () => {
@@ -136,13 +135,11 @@ describe("<Goto />", () => {
     });
 
     it("updating 'items' re-renders the component once", async () => {
-        shallow(component);
         renderSpy = Sinon.spy(Goto.prototype, "render");
+        shallow(component);
+        await Promise.resolve();
 
-        return directoryManager.object.listDirectory("/path/to", {} as any)
-            .then(() => {
-                expect(renderSpy.callCount).to.equal(1);
-            });
+        expect(renderSpy.callCount).to.equal(1);
     });
 
     it("clears 'quickSelectValue' on update", () => {
