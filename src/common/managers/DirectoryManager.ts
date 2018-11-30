@@ -44,7 +44,7 @@ class DirectoryManager implements IDirectoryManager {
     /** @inheritDoc */
     public async listDirectory(
         filePath: string,
-        options: IListDirectoryOptions
+        options: IListDirectoryOptions = {}
     ): Promise<IDirectoryItem[]> {
 
         if (!(await this.isDirectory(filePath))) {
@@ -189,7 +189,7 @@ class DirectoryManager implements IDirectoryManager {
      *
      * @returns whether the file at pathToItem is hidden
      */
-    private async isHidden(pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> {
+    private async isHidden(pathToItem: string, hideUnixStyleHiddenItems?: boolean): Promise<boolean> {
         if (!pathToItem) {
             throw new ReferenceError("pathToItem must contain characters");
         }
@@ -215,7 +215,7 @@ class DirectoryManager implements IDirectoryManager {
      *
      * @returns whether the file at pathToItem is hidden
      */
-    private async handleWindowsIshidden(pathToItem: string, hideUnixStyleHiddenItems: boolean): Promise<boolean> {
+    private async handleWindowsIshidden(pathToItem: string, hideUnixStyleHiddenItems?: boolean): Promise<boolean> {
         const itemName = path.basename(pathToItem);
 
         if (hideUnixStyleHiddenItems && itemName.startsWith(".")) {

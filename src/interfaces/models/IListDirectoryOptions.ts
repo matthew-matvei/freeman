@@ -4,7 +4,7 @@ import { IDirectoryItem } from "models";
 interface IListDirectoryOptions {
 
     /** Whether to hide Unix-style hidden items. */
-    hideUnixStyleHiddenItems: boolean;
+    hideUnixStyleHiddenItems?: boolean;
 
     /** A delegate to use to filter returned directory items. */
     filterCondition?(item: IDirectoryItem): boolean;

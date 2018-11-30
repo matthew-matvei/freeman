@@ -14,7 +14,7 @@ interface IDirectoryManager {
      */
     listDirectory(
         filePath: string,
-        options: IListDirectoryOptions
+        options?: IListDirectoryOptions
     ): Promise<IDirectoryItem[]>;
 
     /**
