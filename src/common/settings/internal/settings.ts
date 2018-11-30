@@ -8,6 +8,9 @@ export default {
     linux: {
         shell: "bash"
     },
+    persist: {
+        storeLastOpenDirectory: false
+    },
     terminal: {
         cursorBlink: true,
         displayAtStartup: undefined,

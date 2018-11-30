@@ -1,4 +1,6 @@
-import { IConfirmationSettings, ITerminalSettings, IUnixSettings, IWindowsSettings } from "models/settings";
+import {
+    IConfirmationSettings, IPersistenceSettings, ITerminalSettings, IUnixSettings, IWindowsSettings
+} from "models/settings";
 
 /** Describes settings for the application. */
 interface ICommonSettings {
@@ -17,6 +19,9 @@ interface ICommonSettings {
 
     /** Settings related to the integrated terminal. */
     terminal: ITerminalSettings;
+
+    /** Settings related to storing data. */
+    persist: IPersistenceSettings;
 }
 
 export default ICommonSettings;

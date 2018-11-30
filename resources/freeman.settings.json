@@ -1,19 +1,22 @@
 {
+    "confirmation": {
+        "requiredBeforeTrash": true,
+        "requiredBeforeDeletion": true
+    },
     "linux": {
         "shell": "bash"
+    },
+    "persist": {
+        "storeLastOpenDirectory": false
+    },
+    "themeName": "dark",
+    "terminal": {
+        "displayAtStartup": false,
+        "cursorBlink": true,
+        "syncNavigation": true
     },
     "windows": {
         "hideUnixStyleHiddenItems": false,
         "shell": "powershell.exe"
     },
-    "themeName": "dark",
-    "confirmation": {
-        "requiredBeforeTrash": true,
-        "requiredBeforeDeletion": true
-    },
-    "terminal": {
-        "displayAtStartup": false,
-        "cursorBlink": true,
-        "syncNavigation": true
-    }
 }

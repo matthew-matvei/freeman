@@ -1,5 +1,6 @@
 import ICommonSettings from "./ICommonSettings";
 import IConfirmationSettings from "./IConfirmationSettings";
+import IPersistenceSettings from "./IPersistenceSettings";
 import ISystemDependentSettings from "./ISystemDependentSettings";
 import ITerminalSettings from "./ITerminalSettings";
 import IUnixSettings from "./IUnixSettings";
@@ -11,5 +12,6 @@ export {
     ISystemDependentSettings,
     ITerminalSettings,
     IUnixSettings,
-    IWindowsSettings
+    IWindowsSettings,
+    IPersistenceSettings
 };
