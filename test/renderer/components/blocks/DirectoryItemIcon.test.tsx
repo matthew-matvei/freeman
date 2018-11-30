@@ -3,8 +3,8 @@ import Enzyme, { shallow } from "enzyme";
 import ReactSixteenAdapter from "enzyme-adapter-react-16";
 import fileIcons from "file-icons-js";
 import * as React from "react";
-import { IconBaseProps } from "react-icon-base";
-import { FaFileO, FaFolderO } from "react-icons/lib/fa";
+import { FaRegFile, FaRegFolder } from "react-icons/fa";
+import { IconBaseProps } from "react-icons/lib";
 import "reflect-metadata";
 import Sinon, { SinonSandbox } from "sinon";
 
@@ -42,7 +42,7 @@ describe("<DirectoryItemIcon />", () => {
         const component = <DirectoryItemIcon directoryItem={directoryItem} theme={applicationTheme} />;
         const wrapper = shallow(component);
 
-        expect(wrapper.find(FaFolderO)).to.have.length(1);
+        expect(wrapper.find(FaRegFolder)).to.have.length(1);
     });
 
     it("renders an <FaFileO /> when file type unsresolvable", () => {
@@ -50,7 +50,7 @@ describe("<DirectoryItemIcon />", () => {
         const component = <DirectoryItemIcon directoryItem={directoryItem} theme={applicationTheme} />;
         const wrapper = shallow(component);
 
-        expect(wrapper.find(FaFileO)).to.have.length(1);
+        expect(wrapper.find(FaRegFile)).to.have.length(1);
     });
 
     it("renders an <i /> with retrieved className when file type resolvable", () => {
@@ -67,7 +67,7 @@ describe("<DirectoryItemIcon />", () => {
         directoryItem.isDirectory = true;
         const component = <DirectoryItemIcon directoryItem={directoryItem} theme={applicationTheme} />;
         const wrapper = shallow(component);
-        const folder = wrapper.find(FaFolderO);
+        const folder = wrapper.find(FaRegFolder);
 
         expect((folder.props() as IconBaseProps).color)
             .to.equal(applicationTheme.directoryItemIcon.inaccessibleIconColour);
@@ -79,7 +79,7 @@ describe("<DirectoryItemIcon />", () => {
         directoryItem.isDirectory = false;
         const component = <DirectoryItemIcon directoryItem={directoryItem} theme={applicationTheme} />;
         const wrapper = shallow(component);
-        const file = wrapper.find(FaFileO);
+        const file = wrapper.find(FaRegFile);
 
         expect((file.props() as IconBaseProps).color)
             .to.equal(applicationTheme.directoryItemIcon.inaccessibleIconColour);
