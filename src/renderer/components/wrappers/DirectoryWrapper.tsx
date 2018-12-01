@@ -36,6 +36,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         return this.props.persister.get<string>(`dimensions.directoryScrollArea.${this.props.id}`);
     }
 
+    private get shouldPersistDirectories() {
+        return this.props.settingsManager.settings.persist.storeLastOpenDirectory;
+    }
+
     /**
      * Instantiates the DirectoryWrapper component.
      *
@@ -66,6 +70,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     }
 
     public async componentDidMount() {
+        if (!this.shouldPersistDirectories) {
+            return;
+        }
+
         const lastPath = await this.getLastPath();
 
         if (lastPath && lastPath !== this.state.path) {
@@ -74,7 +82,7 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
     }
 
     public componentWillUnmount() {
-        this.setLastPath();
+        this.shouldPersistDirectories && this.setLastPath();
     }
 
     /**
