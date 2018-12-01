@@ -73,6 +73,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         }
     }
 
+    public componentWillUnmount() {
+        this.setLastPath();
+    }
+
     /**
      * Defines how the directory wrapper component is rendered.
      *
@@ -210,6 +214,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         } catch {
             return null;
         }
+    }
+
+    private setLastPath() {
+        this.props.persister.set<string>(`directories.lastOpen.${this.props.id}`, this.state.path);
     }
 }
 
