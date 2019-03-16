@@ -81,8 +81,10 @@ class DirectoryWrapper extends React.Component<IDirectoryWrapperProps, IDirector
         }
     }
 
-    public componentWillUnmount() {
-        this.shouldPersistDirectories && this.setLastPath();
+    public componentDidUpdate(_: IDirectoryWrapperProps, prevState: IDirectoryWrapperState) {
+        if (prevState.path !== this.state.path) {
+            this.shouldPersistDirectories && this.setLastPath();
+        }
     }
 
     /**

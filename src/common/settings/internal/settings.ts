@@ -9,7 +9,7 @@ export default {
         shell: "bash"
     },
     persist: {
-        storeLastOpenDirectory: false
+        storeLastOpenDirectory: true
     },
     terminal: {
         cursorBlink: true,
