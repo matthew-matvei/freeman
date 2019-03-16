@@ -33,6 +33,16 @@ app.on("window-all-closed", () => {
 });
 
 app.on("ready", () => {
+    dialog.showMessageBox({
+        buttons: ["I accept"],
+        detail: "FreeMAN is currently in active development and intended for development purposes only. " +
+            "It's possible for a user to delete files / folders, bypassing the operating system's Recycle Bin " +
+            "equivalent, for example. It is currently not advised to use the program with important files / folders.",
+        message: "This program is currently Pre-Release and should be used carefully",
+        title: "Pre-release warning",
+        type: "warning"
+    });
+
     const mainWindowState = windowStateKeeper({
         defaultHeight: 800,
         defaultWidth: 1400
