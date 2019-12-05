@@ -620,7 +620,7 @@ class DirectoryList extends React.Component<IDirectoryListProps, IDirectoryListS
 function confirmationDialog(message: string): boolean {
     const confirmIndex = 0;
     const cancelIndex = 1;
-    const confirmation = dialog.showMessageBox({
+    const confirmation = dialog.showMessageBoxSync({
         buttons: ["OK", "Cancel"],
         cancelId: cancelIndex,
         defaultId: cancelIndex,

@@ -115,7 +115,7 @@ class DirectoryItem extends React.PureComponent<IDirectoryItemProps> {
         }
 
         const nameColumnStyle: React.CSSProperties = {
-            color: foregroundColour,
+            color: foregroundColour || undefined,
             width: `${this.props.columnSizes.name}px`
         };
 

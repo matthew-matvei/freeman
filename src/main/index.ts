@@ -77,7 +77,7 @@ app.on("ready", () => {
         Utils.trace("Main window unresponsive");
         const killIndex = 0;
         const cancelIndex = 1;
-        const kill = dialog.showMessageBox(mainWindow!, {
+        const kill = dialog.showMessageBoxSync(mainWindow!, {
             buttons: ["OK", "Wait"],
             cancelId: cancelIndex,
             defaultId: killIndex,
