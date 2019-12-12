@@ -17,7 +17,7 @@ class FreemanWindow extends BrowserWindow {
         super(options);
 
         this.setupHandlers();
-        this.loadURL(path.join(`file://${__dirname}`, "index.html"));
+        this.loadURL(path.join(`file://${__dirname}`, "index.html")).catch(e => console.error(e));
     }
 
     /** Gets the template for the window's menu. */

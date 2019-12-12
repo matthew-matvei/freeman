@@ -88,7 +88,7 @@ class Goto extends React.Component<IGotoProps, IGotoState> {
         return shownItems
             .map(item => {
                 const itemStyles: React.CSSProperties = {
-                    color: !item.accessible && this.props.theme.directoryItem.inaccessibleColour
+                    color: !item.accessible && this.props.theme.directoryItem.inaccessibleColour || undefined
                 };
 
                 return <li key={item.path} value={item.path} style={itemStyles}>{item.path}</li>;

@@ -41,7 +41,7 @@ app.on("ready", () => {
         message: "This program is currently Pre-Release and should be used carefully",
         title: "Pre-release warning",
         type: "warning"
-    });
+    }).catch(e => console.error(e));
 
     const mainWindowState = windowStateKeeper({
         defaultHeight: 800,
@@ -77,7 +77,7 @@ app.on("ready", () => {
         Utils.trace("Main window unresponsive");
         const killIndex = 0;
         const cancelIndex = 1;
-        const kill = dialog.showMessageBox(mainWindow!, {
+        const kill = dialog.showMessageBoxSync(mainWindow!, {
             buttons: ["OK", "Wait"],
             cancelId: cancelIndex,
             defaultId: killIndex,

@@ -40,6 +40,8 @@ The core application is ready for beta use, supporting Linux and Windows OS's. F
 
 ## Getting started
 
+Requires node 12.x, as some dependencies do not build with node 13.x.
+
     npm install
     npm start
 
