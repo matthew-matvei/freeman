@@ -36,7 +36,9 @@ class Status extends React.PureComponent<IStatusProps> {
 
 /** Handles opening the Github page for this project in the user's browser. */
 function openGithub() {
-    shell.openExternal("https://github.com/matthew-matvei/freeman");
+    shell
+        .openExternal("https://github.com/matthew-matvei/freeman")
+        .catch(e => console.error(e));
 }
 
 export default Status;

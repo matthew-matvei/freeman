@@ -38,8 +38,7 @@ class Shell implements IShell {
         xterm.on("data", data => {
             this.process!.write(data);
         });
-
-        this.process.on("data", data => {
+        this.process.onData(data => {
             xterm.write(data);
         });
     }

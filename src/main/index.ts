@@ -33,7 +33,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("ready", () => {
-    dialog.showMessageBox({
+    dialog.showMessageBoxSync({
         buttons: ["I accept"],
         detail: "FreeMAN is currently in active development and intended for development purposes only. " +
             "It's possible for a user to delete files / folders, bypassing the operating system's Recycle Bin " +
