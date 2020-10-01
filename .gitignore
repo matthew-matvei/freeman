@@ -7,3 +7,5 @@ app/*
 .vscode/settings.json
 __tests__
 docs/generated
+.idea/
+.DS_Store
